@@ -1,0 +1,29 @@
+{
+  "project": "richard-strauss",
+  "profile": "",
+  "region": "",
+  "accountId": "",
+  "vpcId": "",
+  "subnetIds": [],
+  "executionRoleArn": "",
+  "useAlb": false,
+  "allowedCidrs": [],
+  "containerPort": 8000,
+  "imageTag": "",
+  "desiredCount": 1,
+  "cpu": "256",
+  "memory": "512",
+  "logRetentionDays": 7,
+  "environment": [],
+  "feasibility": {
+    "fargateConfirmed": false,
+    "passRoleConfirmed": false
+  },
+  "budget": {
+    "approvedBy": "",
+    "reference": "",
+    "maxUsd": 0,
+    "estimatedSessionUsd": 0,
+    "sessionEndsAtUtc": ""
+  }
+}

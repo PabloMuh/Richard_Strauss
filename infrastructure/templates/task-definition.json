@@ -1,0 +1,24 @@
+{
+  "family": "RENDER_REQUIRED",
+  "requiresCompatibilities": ["FARGATE"],
+  "networkMode": "awsvpc",
+  "cpu": "256",
+  "memory": "512",
+  "runtimePlatform": {"operatingSystemFamily": "LINUX", "cpuArchitecture": "X86_64"},
+  "executionRoleArn": "RENDER_REQUIRED",
+  "containerDefinitions": [{
+    "name": "api",
+    "image": "RENDER_REQUIRED",
+    "essential": true,
+    "portMappings": [{"containerPort": 8000, "protocol": "tcp"}],
+    "environment": [],
+    "healthCheck": {
+      "command": ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=4).close()"],
+      "interval": 30, "timeout": 5, "retries": 3, "startPeriod": 30
+    },
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {"awslogs-group": "RENDER_REQUIRED", "awslogs-region": "RENDER_REQUIRED", "awslogs-stream-prefix": "api"}
+    }
+  }]
+}

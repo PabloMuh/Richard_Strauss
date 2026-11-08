@@ -1,0 +1,13 @@
+# Configuracoes locais, credenciais e evidencias ainda nao revisadas
+infrastructure/config.local*.json
+infrastructure/.state/
+infrastructure/generated/
+infrastructure/evidence/
+.tools/
+.aws/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+__pycache__/

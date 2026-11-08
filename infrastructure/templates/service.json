@@ -1,0 +1,18 @@
+{
+  "cluster": "RENDER_REQUIRED",
+  "serviceName": "RENDER_REQUIRED",
+  "taskDefinition": "RENDER_REQUIRED",
+  "desiredCount": 1,
+  "launchType": "FARGATE",
+  "propagateTags": "TASK_DEFINITION",
+  "enableECSManagedTags": true,
+  "platformVersion": "LATEST",
+  "deploymentConfiguration": {
+    "minimumHealthyPercent": 100,
+    "maximumPercent": 200,
+    "deploymentCircuitBreaker": {"enable": true, "rollback": true}
+  },
+  "networkConfiguration": {
+    "awsvpcConfiguration": {"subnets": [], "securityGroups": [], "assignPublicIp": "ENABLED"}
+  }
+}
