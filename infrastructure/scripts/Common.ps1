@@ -178,7 +178,11 @@ function Assert-Owned {
         default { throw "Tipo de recurso desconhecido: $($Resource.kind)" }
     }
     $actual = @{}
-    foreach ($tag in $tags) { $actual[$tag.key] = $tag.value }
+    foreach ($tag in $tags) {
+        $key = $tag['key'] ?? $tag['Key']
+        $value = $tag['value'] ?? $tag['Value']
+        if ($key) { $actual[$key] = $value }
+    }
     foreach ($tag in (Get-ResourceTags $Config $State)) {
         if (-not $actual.ContainsKey($tag.key) -or $actual[$tag.key] -ne $tag.value) { throw "Propriedade nao comprovada para $($Resource.id): tag $($tag.key). Recurso preservado." }
     }
