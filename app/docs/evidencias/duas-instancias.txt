@@ -1,0 +1,19 @@
+# 2026-11-12T09:33:31-03:00
+api-2	ecs-api:local	0.0.0.0:8082->8000/tcp, [::]:8082->8000/tcp	Up 1 second (health: starting)
+api-1	ecs-api:local	0.0.0.0:8081->8000/tcp, [::]:8081->8000/tcp	Up 1 second (health: starting)
+
+## porta 8081
+$ curl localhost:8081/health
+{"status":"ok"}
+$ curl localhost:8081/instance
+{"instance_id":"api-1","hostname":"7eb0c66606a6","pid":1,"version":"local","started_at":"2026-11-12T12:33:31.176082+00:00","uptime_s":0.747,"ecs":null}
+$ curl 'localhost:8081/work?iterations=100000'
+{"instance_id":"api-1","iterations":100000,"digest":"8a8c077b57a273fa06297c69e301204635c18ef01d5a35bf866279d60323df25","duration_ms":36.625}
+
+## porta 8082
+$ curl localhost:8082/health
+{"status":"ok"}
+$ curl localhost:8082/instance
+{"instance_id":"api-2","hostname":"b5a0671b17a5","pid":1,"version":"local","started_at":"2026-11-12T12:33:31.492696+00:00","uptime_s":0.491,"ecs":null}
+$ curl 'localhost:8082/work?iterations=100000'
+{"instance_id":"api-2","iterations":100000,"digest":"8a8c077b57a273fa06297c69e301204635c18ef01d5a35bf866279d60323df25","duration_ms":39.466}

@@ -1,0 +1,12 @@
+# Prova local com duas instâncias da mesma imagem
+services:
+  api-1:
+    build: { context: ., args: { APP_VERSION: local } }
+    image: ecs-api:local
+    environment: { INSTANCE_ID: api-1 }
+    ports: ["8081:8000"]
+  api-2:
+    image: ecs-api:local
+    depends_on: [api-1]
+    environment: { INSTANCE_ID: api-2 }
+    ports: ["8082:8000"]

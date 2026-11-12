@@ -1,6 +1,6 @@
 # Contrato de integração — proposta para alinhar com a pessoa 1
 
-**Estado: aguardando entrega e confirmação da pessoa 1.** Este documento é um roteiro para o integrante compartilhar; nenhuma mensagem foi enviada automaticamente.
+**Estado: confirmado pela pessoa 1 em 12/11/2026** (ver seção final). Proposta original abaixo. Este documento é um roteiro para o integrante compartilhar; nenhuma mensagem foi enviada automaticamente.
 
 ## Entrega solicitada
 
@@ -23,3 +23,15 @@ O nome `instance_id` é uma proposta explícita adotada pelo smoke test. Se a pe
 ## Comprovação local da pessoa 1
 
 Construir a imagem e executar dois containers em portas locais diferentes. Demonstrar `/health`, dois `instance_id` distintos, `/work` limitado e logs. Entregar comandos reproduzíveis. A pessoa 2 publica a imagem no ECR com tag fixa e registra seu digest antes do ECS.
+
+## Confirmação da pessoa 1 — 12/11/2026
+
+Entregue na branch `pessoa1/aplicacao`, pasta [`app/`](../app/README.md).
+
+- **Contexto de build:** `app/` (Dockerfile em `app/Dockerfile`). Publicação: `./infrastructure/scripts/Publish-Image.ps1 -ContextPath ./app`.
+- **Execução:** `python -m api` (CMD da imagem), servidor em `0.0.0.0:8000`. `containerPort` permanece **8000**; `python` disponível na imagem para o health check da task definition.
+- **Imagem:** `python:3.12-slim`, Linux `amd64`, usuário não-root, sem serviços externos.
+- **Variáveis:** nenhuma obrigatória, sem segredos. Opcionais: `PORT` (8000), `APP_VERSION`, `INSTANCE_ID`, `LOG_LEVEL` (INFO), `WORK_DEFAULT_ITERATIONS` (200000), `WORK_MAX_ITERATIONS` (5000000). `environment` da task pode ficar vazio.
+- **Logs:** JSON, uma linha por requisição, em stdout sem buffer (`PYTHONUNBUFFERED=1`). `/health` não é logado.
+- **Rotas:** contrato acima mantido sem alterações de nome. `/instance` retorna `instance_id` = ID da task ECS (via `ECS_CONTAINER_METADATA_URI_V4`), ou hostname fora do ECS. `/work` sem parâmetros leva ~60–75 ms localmente (muito abaixo do limite de 15 s); aceita `?iterations=N` para a calibração da pessoa 3.
+- **Comprovação local:** `app/docs/evidencias/duas-instancias.txt` (dois containers, dois `instance_id`, `/work` limitado, logs) e 8 testes automatizados em `app/tests`.
