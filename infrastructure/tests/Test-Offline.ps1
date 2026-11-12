@@ -103,13 +103,17 @@ try {
         $config = Copy-Fixture; $config.executionRoleArn = 'arn:aws:iam::999999999999:role/other'
         Assert-Throws { Assert-DeploymentConfig $config } 'conta do trabalho'
     }
-    Test-Case 'Preview direto usa digest, porta e health check sem curl' {
+    Test-Case 'Preview direto usa digest, porta, PORT e health check leve sem curl' {
         $config = Copy-Fixture; $config.containerPort = 8081
         $spec = New-DeploymentSpec $config $image 'sg-0123456789abcdef0'
         Assert-True ($spec.task.containerDefinitions[0].image -eq $image)
         Assert-True ($spec.task.containerDefinitions[0].portMappings[0].containerPort -eq 8081)
-        Assert-True ($spec.task.containerDefinitions[0].healthCheck.command[3] -match '8081/health')
-        Assert-True ($spec.task.containerDefinitions[0].healthCheck.command[1] -eq 'python')
+        $health = $spec.task.containerDefinitions[0].healthCheck
+        Assert-True ($health.command[1] -eq 'python')
+        Assert-True ($health.command[-1] -match "\('127\.0\.0\.1',8081\)" -and $health.command[-1] -match 'GET /health ') 'Health check deve consultar /health na porta configurada'
+        Assert-True ($health.command[-1] -notmatch 'urllib') 'Health check deve evitar urllib (custo de CPU em 0,25 vCPU)'
+        Assert-True ($health.timeout -eq 10)
+        Assert-True (@($spec.task.containerDefinitions[0].environment | Where-Object { $_.name -eq 'PORT' -and $_.value -eq '8081' }).Count -eq 1) 'PORT deve acompanhar containerPort'
         Assert-True (-not $spec.task.ContainsKey('taskRoleArn'))
         Assert-True (-not $spec.service.ContainsKey('loadBalancers'))
         Assert-True ($spec.service.networkConfiguration.awsvpcConfiguration.assignPublicIp -eq 'ENABLED')
@@ -165,6 +169,37 @@ try {
     }
     Test-Case 'Recurso de outro deployment e preservado' {
         Assert-Throws { Assert-Owned (Copy-Fixture) @{deploymentId = 'different'} @{kind = 'ecs'; id = 'test'; arn = 'test'} } 'Propriedade nao comprovada'
+    }
+    Test-Case 'Tags no formato real de cada servico comprovam propriedade (ECS, Logs, ECR, EC2, ELB)' {
+        # As respostas passam por ConvertFrom-Json -AsHashtable, como no Invoke-Aws real: o resultado
+        # diferencia maiusculas de minusculas, ao contrario de hashtables literais @{}. ECR, EC2 e ELB
+        # usam Key/Value; ECS usa key/value; Logs devolve um mapa.
+        $upper = '[{"Key":"Project","Value":"richard-strauss"},{"Key":"ManagedBy","Value":"richard-strauss-scripts"},{"Key":"DeploymentId","Value":"test-deploy"}]'
+        $lower = $upper.Replace('"Key"', '"key"').Replace('"Value"', '"value"')
+        $script:Responses = @{
+            ecs   = "{`"tags`":$lower}"
+            logs  = '{"tags":{"Project":"richard-strauss","ManagedBy":"richard-strauss-scripts","DeploymentId":"test-deploy"}}'
+            ecr   = "{`"tags`":$upper}"
+            ec2   = "{`"SecurityGroups`":[{`"GroupId`":`"sg-0123456789abcdef0`",`"Tags`":$upper}]}"
+            elbv2 = "{`"TagDescriptions`":[{`"ResourceArn`":`"arn:test`",`"Tags`":$upper}]}"
+        }
+        $script:FakeHandler = { param($Arguments) return ($script:Responses[$Arguments[0]] | ConvertFrom-Json -AsHashtable) }
+        foreach ($kind in @('ecs', 'logs', 'ecr', 'ec2', 'elbv2')) {
+            try { Assert-Owned (Copy-Fixture) @{deploymentId = 'test-deploy'} @{kind = $kind; id = 'test'; arn = 'test'} }
+            catch { throw "$kind nao reconhecido: $($_.Exception.Message)" }
+            Assert-Throws { Assert-Owned (Copy-Fixture) @{deploymentId = 'different'} @{kind = $kind; id = 'test'; arn = 'test'} } 'Propriedade nao comprovada'
+        }
+    }
+    Test-Case 'PORT em environment deve coincidir com containerPort e nao e duplicado' {
+        $path = Join-Path $testRoot 'config-port.json'
+        $config = Copy-Fixture; $config.environment = @(@{name = 'PORT'; value = '9000'})
+        Write-Json $path $config
+        Assert-Throws { Read-Config $path } 'PORT'
+        $config.environment = @(@{name = 'PORT'; value = '8000'}, @{name = 'LOG_LEVEL'; value = 'DEBUG'})
+        Write-Json $path $config
+        $environment = @((New-DeploymentSpec (Read-Config $path) $image 'sg-0123456789abcdef0').task.containerDefinitions[0].environment)
+        Assert-True (@($environment | Where-Object { $_.name -eq 'PORT' }).Count -eq 1) 'PORT duplicado'
+        Assert-True (@($environment | Where-Object { $_.name -eq 'LOG_LEVEL' -and $_.value -eq 'DEBUG' }).Count -eq 1) 'Variaveis do usuario devem ser preservadas'
     }
     Test-Case 'Falha de permissao nao e tratada como recurso ausente' {
         $script:FakeHandler = { param($Arguments) throw 'An error occurred (AccessDeniedException)' }

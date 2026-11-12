@@ -1,10 +1,10 @@
 # Checklist de viabilidade — Pessoa 2
 
-Atualizado em **08/11/2026**. Situação inicial baseada na inspeção local e nas informações do integrante. Não há validação de permissões AWS enquanto a conta do trabalho não for configurada.
+Atualizado em **08/11/2026**; linha API/Dockerfile atualizada em **12/11/2026**. Situação inicial baseada na inspeção local e nas informações do integrante. Não há validação de permissões AWS enquanto a conta do trabalho não for configurada.
 
 Use **permitido**, **bloqueado** ou **pendente** para cada capacidade. Guarde evidência e data de verificação. `Test-Environment.ps1` reporta consultas de leitura; criar um recurso exige permissões adicionais.
 
-| Item | Estado inicial | O que confirmar / evidência |
+| Item | Estado | O que confirmar / evidência |
 |---|---|---|
 | Modalidade e identidade da conta | Pendente | Academy/Learner Lab ou própria, account ID, perfil dedicado e responsável |
 | Créditos e vencimento | Pendente | Saldo real, período de validade e serviços cobertos; não presumir gratuidade |
@@ -22,7 +22,7 @@ Use **permitido**, **bloqueado** ou **pendente** para cada capacidade. Guarde ev
 | CloudWatch Metrics | Pendente | Consultar CPU/memória de serviço ECS e preservar timestamps/unidades |
 | ALB | Pendente | Permissões de criação/leitura/exclusão, duas AZs, tags, listener e target group IP; orçamento |
 | Limpeza | Pendente | Permissões de parar/deletar o serviço, ELB, SGs, cluster e dados próprios |
-| API/Dockerfile | Pendente | Entrega da pessoa 1 conforme contrato de integração |
+| API/Dockerfile | Entregue (12/11) | Em [`app/`](../app/README.md); build `linux/amd64` e duas réplicas validados localmente ([validação local](validacao-local.md)); pendência sob carga: API-02 |
 
 ## Registro de verificação
 

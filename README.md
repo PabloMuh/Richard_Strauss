@@ -2,7 +2,7 @@
 
 Preparação da **Pessoa 2: infraestrutura AWS e implantação**, com scripts PowerShell 7.2+, AWS CLI v2 e JSON versionado.
 
-**Situação em 08/11/2026:** API/Dockerfile da pessoa 1 ainda não recebidos (entregues em 12/11 em [`app/`](app/README.md)); conta do projeto pendente de identificação/configuração e validação; orçamento ainda não acordado. Nenhum recurso AWS foi provisionado nesta etapa.
+**Situação em 12/11/2026:** API e Dockerfile da pessoa 1 integrados em [`app/`](app/README.md) e validados localmente ([validação local](docs/validacao-local.md)). Um impedimento da API bloqueia os experimentos de carga (API-02 em [impedimentos](docs/impedimentos.md)). Conta AWS, orçamento e provisionamento seguem o [checklist](docs/checklist-aws.md), cujo último registro é de 08/11/2026.
 
 ## Começar agora
 

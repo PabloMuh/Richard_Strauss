@@ -1,6 +1,6 @@
-# Contrato de integração — proposta para alinhar com a pessoa 1
+# Contrato de integração com a pessoa 1
 
-**Estado: confirmado pela pessoa 1 em 12/11/2026** (ver seção final). Proposta original abaixo. Este documento é um roteiro para o integrante compartilhar; nenhuma mensagem foi enviada automaticamente.
+**Estado: confirmado pela pessoa 1 em 12/11/2026** (ver seção final). A proposta original segue abaixo.
 
 ## Entrega solicitada
 
@@ -14,7 +14,7 @@
 
 | Rota | Resposta esperada | Uso na infraestrutura |
 |---|---|---|
-| `GET /health` | HTTP 200 e JSON, ex. `{"status":"ok"}`; chamada rápida e sem trabalho pesado | Health check interno e target group |
+| `GET /health` | HTTP 200 e JSON, ex. `{"status":"ok"}`; chamada rápida e sem trabalho pesado, **inclusive com `/work` ocupando a CPU da task** (ver API-02 em [impedimentos](impedimentos.md)) | Health check interno (timeout 10 s) e target group (timeout 5 s) |
 | `GET /instance` | HTTP 200, JSON com `instance_id` textual não vazio, ex. `{"instance_id":"hostname-da-task"}` | Distinguir réplicas; ID estável durante a vida do container e diferente em outra task |
 | `GET /work` | HTTP 200 e JSON com os parâmetros padrão, trabalho CPU-bound limitado, resposta em até 15 s no smoke test | Teste breve agora; calibração da pessoa 3 na fase de carga |
 

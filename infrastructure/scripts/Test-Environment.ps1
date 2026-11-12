@@ -2,7 +2,7 @@
 [CmdletBinding()]
 param([string]$ConfigPath = (Join-Path $PSScriptRoot '../config.local.json'), [switch]$Offline)
 . "$PSScriptRoot/Common.ps1"
-$report = [ordered]@{timestampUtc = [DateTimeOffset]::UtcNow.ToString('o'); mode = $(if ($Offline) {'offline'} else {'read-only'}); checks = @(); pending = @('Creditos, limite e janela de gastos do grupo', 'Restricoes do laboratorio e duracao das credenciais', 'Fargate e iam:PassRole: consultas de leitura nao comprovam permissao de criacao', 'API e Dockerfile da pessoa 1')}
+$report = [ordered]@{timestampUtc = [DateTimeOffset]::UtcNow.ToString('o'); mode = $(if ($Offline) {'offline'} else {'read-only'}); checks = @(); pending = @('Creditos, limite e janela de gastos do grupo', 'Restricoes do laboratorio e duracao das credenciais', 'Fargate e iam:PassRole: consultas de leitura nao comprovam permissao de criacao')}
 foreach ($name in @('aws', 'docker', 'git')) {
     $available = $null -ne (Get-Command $name -ErrorAction SilentlyContinue)
     if ($name -eq 'aws') { try { $null = Get-AwsExecutable; $available = $true } catch { $available = $false } }

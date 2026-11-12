@@ -40,10 +40,10 @@ O relatório mostra o account ID da sessão. Confira-o no console e preencha `ac
 | `executionRoleArn` | Role existente da conta, com trust para `ecs-tasks.amazonaws.com`, ECR e CloudWatch Logs |
 | `useAlb` | `true` somente se ALB estiver permitido e incluído na estimativa; inicialmente `false` |
 | `allowedCidrs` | Lista dos IPv4 públicos atuais dos participantes, cada um `/32`; restrição aplicada também ao ALB |
-| `containerPort` | Porta acordada com a pessoa 1; proposta inicial `8000` |
+| `containerPort` | Porta da API, `8000` conforme o contrato com a pessoa 1; o deploy define `PORT` com este valor na task |
 | `imageTag` | Tag fixa por versão, por exemplo `api-a1b2c3d`; não usar `latest` |
 | `desiredCount` | `1` para o primeiro deploy; `2` para a validação das réplicas |
-| `environment` | Lista de objetos `name`/`value` textuais, somente configuração não sensível |
+| `environment` | Lista de objetos `name`/`value` textuais, somente configuração não sensível; `PORT` vem de `containerPort` e, se informado aqui, deve ter o mesmo valor |
 | `feasibility` | Marcar Fargate e PassRole como confirmados somente após verificar as restrições reais |
 | `budget` | Responsável/referência do acordo, limite em USD, estimativa da sessão e fim da janela em ISO 8601 UTC |
 
@@ -91,13 +91,14 @@ O inventário em `.state` é salvo após cada criação. Pode-se retomar um prov
 
 ## 5. Publicar a imagem da pessoa 1
 
-Inicie Docker Desktop e confirme os testes locais da API antes de publicar. O Dockerfile deve conter o executável `python`, pois o health check usa a biblioteca padrão Python, sem depender de curl.
+Inicie Docker Desktop e confirme os testes locais da API antes de publicar. A imagem deve conter o executável `python`: o health check da task usa apenas o módulo `socket` da biblioteca padrão (`python -S`, sem curl nem `urllib`), barato em 0,25 vCPU, com timeout de 10 s. Medições em [validação local](../docs/validacao-local.md).
 
 ```powershell
-./infrastructure/scripts/Publish-Image.ps1 -ContextPath 'C:\CAMINHO\DA\API' -Dockerfile 'Dockerfile'
+# Na raiz do repositório; app/ é o contexto de build (Dockerfile em app/Dockerfile).
+./infrastructure/scripts/Publish-Image.ps1 -ContextPath ./app
 ```
 
-O script constrói `linux/amd64`, autentica no ECR por stdin, publica a tag e registra o digest. A tag já existente não é sobrescrita. Para uma nova versão, altere `imageTag`; para reimplantar a mesma versão, execute apenas o deploy. O login Docker desse registry é encerrado ao final.
+O script constrói `linux/amd64` com `APP_VERSION=<imageTag>`, versão exibida em `/instance` e nos logs. Também autentica no ECR por stdin, publica a tag e registra o digest. A tag já existente não é sobrescrita. Para uma nova versão, altere `imageTag`; para reimplantar a mesma versão, execute apenas o deploy. O login Docker desse registry é encerrado ao final.
 
 ## 6. Implantar, observar e testar
 

@@ -25,7 +25,8 @@ if ($existing) { throw 'Tag ja publicada. Para redeploy da mesma imagem, use Dep
 $registry = "$($config.accountId).dkr.ecr.$($config.region).amazonaws.com"
 $taggedUri = "$registry/$($config.project):$($config.imageTag)"
 Write-Host 'Construindo imagem Linux amd64...'
-$null = Invoke-Tool $docker @('build', '--platform', 'linux/amd64', '--file', $dockerfilePath, '--tag', $taggedUri, $context)
+# APP_VERSION = imageTag: /instance e os logs passam a identificar a imagem que gerou cada resultado.
+$null = Invoke-Tool $docker @('build', '--platform', 'linux/amd64', '--build-arg', "APP_VERSION=$($config.imageTag)", '--file', $dockerfilePath, '--tag', $taggedUri, $context)
 # Credencial temporaria somente em memoria e stdin; nunca em argumentos, arquivos ou logs.
 $password = Invoke-Aws $config @('ecr', 'get-login-password') -Raw
 try { $null = Invoke-Tool $docker @('login', '--username', 'AWS', '--password-stdin', $registry) -InputText $password }
