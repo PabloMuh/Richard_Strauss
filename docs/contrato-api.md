@@ -14,7 +14,7 @@
 
 | Rota | Resposta esperada | Uso na infraestrutura |
 |---|---|---|
-| `GET /health` | HTTP 200 e JSON, ex. `{"status":"ok"}`; chamada rápida e sem trabalho pesado, **inclusive com `/work` ocupando a CPU da task** (ver API-02 em [impedimentos](impedimentos.md)) | Health check interno (timeout 10 s) e target group (timeout 5 s) |
+| `GET /health` | HTTP 200 e JSON, ex. `{"status":"ok"}`; chamada rápida e sem trabalho pesado, **inclusive com `/work` ocupando a CPU da task** (API-02, resolvido em 12/11; ver [impedimentos](impedimentos.md)) | Health check interno (timeout 10 s) e target group (timeout 5 s) |
 | `GET /instance` | HTTP 200, JSON com `instance_id` textual não vazio, ex. `{"instance_id":"hostname-da-task"}` | Distinguir réplicas; ID estável durante a vida do container e diferente em outra task |
 | `GET /work` | HTTP 200 e JSON com os parâmetros padrão, trabalho CPU-bound limitado, resposta em até 15 s no smoke test | Teste breve agora; calibração da pessoa 3 na fase de carga |
 
@@ -35,3 +35,5 @@ Entregue na branch `pessoa1/aplicacao`, pasta [`app/`](../app/README.md).
 - **Logs:** JSON, uma linha por requisição, em stdout sem buffer (`PYTHONUNBUFFERED=1`). `/health` não é logado.
 - **Rotas:** contrato acima mantido sem alterações de nome. `/instance` retorna `instance_id` = ID da task ECS (via `ECS_CONTAINER_METADATA_URI_V4`), ou hostname fora do ECS. `/work` sem parâmetros leva ~60–75 ms localmente (muito abaixo do limite de 15 s); aceita `?iterations=N` para a calibração da pessoa 3.
 - **Comprovação local:** `app/docs/evidencias/duas-instancias.txt` (dois containers, dois `instance_id`, `/work` limitado, logs) e 8 testes automatizados em `app/tests`.
+
+**Atualização em 12/11/2026 (API-02, com o OK da pessoa 1):** `/health` passou a ser assíncrono e `/work` passou a executar no máximo `WORK_CONCURRENCY` cálculos simultâneos. É uma variável opcional, com padrão `1`, e os demais pedidos aguardam na fila. As rotas e os formatos de resposta não mudaram.

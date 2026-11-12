@@ -26,7 +26,7 @@ Ambiente: Docker Desktop 28.3 (WSL2), PowerShell 7.4 e AWS CLI 2.40 em container
 
 Medido com o `time` do bash dentro do container, 3 execuções de cada comando.
 
-Também medimos sob carga: 20 clientes simultâneos em `/work` por 90 s, health check a cada 10 s e 3 tentativas. Para isolar o efeito do comando, usamos uma cópia local (não versionada) da API com a correção proposta para API-02.
+Também medimos sob carga: 20 clientes simultâneos em `/work` por 90 s, health check a cada 10 s e 3 tentativas. Para isolar o efeito do comando, usamos uma cópia local da API com a correção de API-02, depois incorporada ao repositório.
 
 | Comando | Timeout | Resultado |
 |---|---|---|
@@ -41,19 +41,32 @@ docker run -d --name api --cpus 0.25 --memory 512m api:local
 docker exec api bash -c 'time python -S -c "<comando de infrastructure/templates/task-definition.json>"'
 ```
 
-### Impedimento API-02 (API atual)
+### Impedimento API-02 — antes e depois da correção
 
-Com 20 clientes simultâneos em `/work` por 60 s, **85% das consultas a `/health` com timeout de 5 s falharam**. Esse é o timeout padrão do target group do ALB.
+**Antes** (`/health` e `/work` síncronos no mesmo pool de threads): com 20 clientes simultâneos em `/work` por 60 s, **85% das consultas a `/health` com timeout de 5 s falharam**. Esse é o timeout padrão do target group do ALB.
 
-- Com o health check anterior, o container ficou `unhealthy` em 49 s.
+- Com o health check anterior da task, o container ficou `unhealthy` em 49 s.
 - Com o atual, chegou a 2 falhas seguidas, de 3 permitidas.
 
-O ajuste da infraestrutura não resolve o problema: a correção precisa ser feita na API.
+**Depois** (`/health` assíncrono e `/work` com `WORK_CONCURRENCY=1`): mesmas condições, health check atual da task, imagem construída do repositório.
+
+| Clientes em `/work` | Falhas em `/health` (timeout 5 s) | `/health` p50 / p95 | Health check do container | `/work` |
+|---|---|---|---|---|
+| 20, por 90 s | 0 de 90 | 86 / 186 ms | `healthy`, nenhuma falha | 1,81 req/s; latência p50 10,2 s |
+| 60, por 60 s | 0 de 60 | 78 / 173 ms | `healthy`, nenhuma falha | 1,80 req/s; latência p50 30,8 s |
+
+A vazão por task fica em ~1,8 req/s do `/work` padrão e não depende do número de clientes. O excedente espera na fila, e por isso a latência cresce com a carga.
+
+Para os experimentos, isso significa:
+
+- poucos usuários virtuais do k6 já saturam uma task;
+- com muitos clientes, a latência de uma única task se aproxima do timeout padrão do k6 (60 s).
+
+O teste `test_health_responds_while_work_is_saturated` reproduz o problema sem medir tempo de CPU: com 50 pedidos de `/work` presos, o código anterior levou 14,5 s para responder `/health`, e o atual responde em menos de 2 s.
 
 ### Ainda não verificado
 
 - Publicação no ECR, deploy e health checks reais no Fargate e no ALB.
-- Comportamento sob carga depois da correção de API-02 na branch da pessoa 1.
 
 ## 08/11/2026 — preparação
 

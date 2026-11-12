@@ -22,7 +22,7 @@ Use **permitido**, **bloqueado** ou **pendente** para cada capacidade. Guarde ev
 | CloudWatch Metrics | Pendente | Consultar CPU/memória de serviço ECS e preservar timestamps/unidades |
 | ALB | Pendente | Permissões de criação/leitura/exclusão, duas AZs, tags, listener e target group IP; orçamento |
 | Limpeza | Pendente | Permissões de parar/deletar o serviço, ELB, SGs, cluster e dados próprios |
-| API/Dockerfile | Entregue (12/11) | Em [`app/`](../app/README.md); build `linux/amd64` e duas réplicas validados localmente ([validação local](validacao-local.md)); pendência sob carga: API-02 |
+| API/Dockerfile | Entregue (12/11) | Em [`app/`](../app/README.md); build `linux/amd64` e duas réplicas validados localmente ([validação local](validacao-local.md)); comportamento sob carga corrigido (API-02) |
 
 ## Registro de verificação
 

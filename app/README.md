@@ -10,7 +10,7 @@ Segue [docs/contrato-api.md](../docs/contrato-api.md). Respostas sempre `applica
 |---|---|---|---|
 | GET | `/health` | Health check do ECS/target group. Barato, sem dependências. | `{"status":"ok"}` |
 | GET | `/instance` | Identifica a réplica. `instance_id` = ID da task no ECS (hostname fora dele), estável durante a vida do container. | `{"instance_id":"a1b2c3...","hostname":"ip-10-0-1-23","pid":1,"version":"3f9c2ab","started_at":"...","uptime_s":12.3,"ecs":{"task_arn":"...","task_id":"a1b2c3...","cluster":"...","family":"...","revision":"4","availability_zone":"us-east-1a"}}` |
-| GET | `/work?iterations=N` | Trabalho **CPU-bound limitado**: N hashes SHA-256 encadeados. Custo linear em N; `digest` determinístico prova que o trabalho foi feito. | `{"instance_id":"...","iterations":200000,"digest":"a43f7d79...","duration_ms":63.2}` |
+| GET | `/work?iterations=N` | Trabalho **CPU-bound limitado**: N hashes SHA-256 encadeados. Custo linear em N; `digest` determinístico prova que o trabalho foi feito. No máximo `WORK_CONCURRENCY` cálculos simultâneos por container; os demais pedidos aguardam na fila. | `{"instance_id":"...","iterations":200000,"digest":"a43f7d79...","duration_ms":63.2}` |
 
 `iterations` é opcional (padrão `WORK_DEFAULT_ITERATIONS` = 200000, ~60–75 ms) e deve estar em `[1, WORK_MAX_ITERATIONS]`.
 
@@ -26,7 +26,7 @@ Erros (sempre JSON):
 | 404 | `not_found` | rota inexistente |
 | 500 | `internal_error` | erro não tratado (logado com stack trace) |
 
-Custo de referência (local, 1 núcleo): ~0,35 ms por 1.000 iterações. Recalibrar na vCPU do Fargate (256 CPU units) antes dos experimentos.
+Custo de referência (local, 1 núcleo): ~0,35 ms por 1.000 iterações. Num container limitado a 0,25 vCPU (simulação local do Fargate), o padrão de 200000 iterações levou ~0,45 s. Recalibrar na vCPU do Fargate (256 CPU units) antes dos experimentos.
 
 ## Variáveis de ambiente
 
@@ -40,6 +40,7 @@ Nenhuma é obrigatória; não há segredos.
 | `LOG_LEVEL` | `INFO` | Nível de log |
 | `WORK_DEFAULT_ITERATIONS` | `200000` | Iterações quando `?iterations` não é informado |
 | `WORK_MAX_ITERATIONS` | `5000000` | Limite superior aceito |
+| `WORK_CONCURRENCY` | `1` | Cálculos de `/work` executados ao mesmo tempo; os demais aguardam na fila. Com 0,25 vCPU, manter `1` |
 | `ECS_CONTAINER_METADATA_URI_V4` | injetada pelo ECS | Task ARN, cluster e AZ em `/instance` |
 
 ## Estrutura
@@ -121,7 +122,11 @@ Mostra as respostas distribuídas entre os IDs das tasks.
 
 - **Stateless**: nenhum estado local → qualquer task atende qualquer requisição.
 - **Um processo por container**: escala horizontal pelo número de tasks no ECS, não por workers internos.
-- **`/work` síncrono**: roda no threadpool do Uvicorn, sem bloquear o event loop; `/health` continua respondendo sob carga.
+- **`/work` com concorrência limitada e `/health` assíncrono**:
+  - o cálculo roda numa thread, no máximo `WORK_CONCURRENCY` (padrão 1) por vez, e os demais pedidos esperam na fila sem consumir CPU;
+  - `/health` responde direto no event loop;
+  - motivo: com 0,25 vCPU, cálculos em paralelo não aumentam a vazão e, disputando a GIL, atrasavam `/health` além do timeout do health check (impedimento API-02);
+  - efeito: sob carga, a latência de `/work` cresce com a fila, e é esse o sinal que o scale-out deve reduzir.
 - **Logs**: uma linha JSON por requisição em stdout (sem buffer: `PYTHONUNBUFFERED=1`); `/health` não é logado para não poluir o CloudWatch.
 
 ## Problemas comuns

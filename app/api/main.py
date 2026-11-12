@@ -11,6 +11,7 @@ import uuid
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 
+import anyio
 from fastapi import FastAPI, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
@@ -27,11 +28,14 @@ STARTED_AT = datetime.now(timezone.utc)
 _START_MONO = time.monotonic()
 
 @asynccontextmanager
-async def lifespan(_app: FastAPI):
+async def lifespan(app_: FastAPI):
+    # Criado dentro do event loop do servidor: limita quantas execuções de /work rodam ao mesmo tempo.
+    app_.state.work_limiter = anyio.CapacityLimiter(settings.work_concurrency)
     log.info("startup", extra={"extra_fields": {
         "port": settings.port, "version": settings.app_version, "instance_id": _instance_id(),
         "work_default_iterations": settings.work_default_iterations,
         "work_max_iterations": settings.work_max_iterations,
+        "work_concurrency": settings.work_concurrency,
     }})
     yield
     log.info("shutdown", extra={"extra_fields": {"instance_id": _instance_id()}})
@@ -95,8 +99,9 @@ async def validation_error(request: Request, exc: RequestValidationError):
     return _error(400, "invalid_parameter", msgs, request)
 
 
+# `async`: responde direto no event loop, sem esperar thread livre nem competir com /work.
 @app.get("/health")
-def health():
+async def health():
     return {"status": "ok"}
 
 
@@ -113,15 +118,19 @@ def instance():
     }
 
 
-# `def` síncrono: o FastAPI executa em threadpool, sem bloquear o event loop.
+# O cálculo roda numa thread, fora do event loop, com no máximo WORK_CONCURRENCY execuções
+# simultâneas (padrão 1); os pedidos excedentes esperam na fila sem consumir CPU. Com 0,25 vCPU,
+# execuções em paralelo não aumentam a vazão: só disputam a GIL com o event loop e atrasavam
+# /health além do timeout do health check (impedimento API-02 em docs/impedimentos.md).
 @app.get("/work")
-def work(
+async def work(
+    request: Request,
     iterations: int | None = Query(
         default=None, ge=1, le=settings.work_max_iterations,
         description="Número de hashes SHA-256 encadeados",
     ),
 ):
     n = iterations or settings.work_default_iterations
-    result = cpu_work(n)
+    result = await anyio.to_thread.run_sync(cpu_work, n, limiter=request.app.state.work_limiter)
     return {"instance_id": _instance_id(), **result}
 

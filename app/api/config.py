@@ -21,6 +21,7 @@ class Settings:
     log_level: str
     work_default_iterations: int
     work_max_iterations: int
+    work_concurrency: int
     ecs_metadata_uri: str | None
 
 
@@ -32,8 +33,11 @@ def load_settings() -> Settings:
         log_level=os.getenv("LOG_LEVEL", "INFO").upper(),
         work_default_iterations=_int_env("WORK_DEFAULT_ITERATIONS", 200_000),
         work_max_iterations=_int_env("WORK_MAX_ITERATIONS", 5_000_000),
+        work_concurrency=_int_env("WORK_CONCURRENCY", 1),
         ecs_metadata_uri=os.getenv("ECS_CONTAINER_METADATA_URI_V4") or None,
     )
     if s.work_default_iterations < 1 or s.work_max_iterations < s.work_default_iterations:
         raise ValueError("Requer 1 <= WORK_DEFAULT_ITERATIONS <= WORK_MAX_ITERATIONS")
+    if s.work_concurrency < 1:
+        raise ValueError("Requer WORK_CONCURRENCY >= 1")
     return s
