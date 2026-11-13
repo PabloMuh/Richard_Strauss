@@ -1,0 +1,12 @@
+[
+  {
+    "timestamp_utc": "2026-11-13T01:48:30.851Z",
+    "tipo": "k6_inicio",
+    "descricao": "k6 iniciado (smoke)"
+  },
+  {
+    "timestamp_utc": "2026-11-13T01:48:34.951Z",
+    "tipo": "k6_fim",
+    "descricao": "k6 terminou (código 0)"
+  }
+]

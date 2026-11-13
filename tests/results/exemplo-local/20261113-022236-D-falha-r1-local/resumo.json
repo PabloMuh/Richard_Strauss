@@ -1,0 +1,128 @@
+{
+  "pasta": "20261113-022236-D-falha-r1-local",
+  "experimento": "D-falha",
+  "repeticao": 1,
+  "ambiente": "local",
+  "inicio_utc": "2026-11-13T02:22:36.929Z",
+  "fim_utc": "2026-11-13T02:25:36.931Z",
+  "duracao_s": 180.0,
+  "k6": {
+    "capacidade_rps": 1.749,
+    "iteracoes": null,
+    "escala_tempo": 0.3,
+    "iteracoes_descartadas": 0,
+    "vus_max": 7,
+    "taxa_checks": 0.9920318725099602,
+    "capacidade_estimada_rps": null
+  },
+  "geral": {
+    "requisicoes": 251,
+    "erros": 2,
+    "taxa_erros_pct": 0.797,
+    "vazao_rps": 1.383,
+    "latencia_p50_ms": 297.5,
+    "latencia_p95_ms": 479.2,
+    "latencia_p99_ms": 695.2,
+    "latencia_max_ms": 753.5
+  },
+  "fases": [
+    {
+      "fase": "constante",
+      "duracao_s": 180,
+      "carga_oferecida_rps": 1.4,
+      "requisicoes": 251,
+      "erros": 2,
+      "taxa_erros_pct": 0.797,
+      "vazao_rps": 1.383,
+      "latencia_p50_ms": 297.5,
+      "latencia_p95_ms": 479.2,
+      "latencia_p99_ms": 695.2,
+      "latencia_max_ms": 753.5,
+      "instancias": {
+        "local-2": 144,
+        "local-1": 105,
+        "balanceador": 2
+      }
+    }
+  ],
+  "instancias": {
+    "local-2": 144,
+    "local-1": 105,
+    "balanceador": 2
+  },
+  "mesma_carga_por_tasks": [
+    {
+      "fase": "constante",
+      "carga_oferecida_rps": 1.4,
+      "grupos": [
+        {
+          "tasks_saudaveis": 1,
+          "duracao_s": 30.1,
+          "requisicoes": 42,
+          "erros": 0,
+          "taxa_erros_pct": 0.0,
+          "vazao_rps": 1.397,
+          "latencia_p50_ms": 306.4,
+          "latencia_p95_ms": 479.2,
+          "latencia_p99_ms": 695.2,
+          "latencia_max_ms": 695.2
+        },
+        {
+          "tasks_saudaveis": 2,
+          "duracao_s": 149.9,
+          "requisicoes": 209,
+          "erros": 2,
+          "taxa_erros_pct": 0.957,
+          "vazao_rps": 1.381,
+          "latencia_p50_ms": 295.3,
+          "latencia_p95_ms": 451.5,
+          "latencia_p99_ms": 623.9,
+          "latencia_max_ms": 753.5
+        }
+      ]
+    }
+  ],
+  "falha": {
+    "parada_utc": "2026-11-13T02:23:31.830Z",
+    "tarefa_encerrada": "api-1",
+    "saudaveis_antes": 2,
+    "queda_observada_utc": "2026-11-13T02:23:36.519Z",
+    "substituta_vista_utc": "2026-11-13T02:23:56.876Z",
+    "recuperada_utc": "2026-11-13T02:24:06.583Z",
+    "tempo_ate_substituta_s": 25.0,
+    "tempo_recuperacao_s": 35.0,
+    "erros_na_janela": 2,
+    "requisicoes_na_janela": 98,
+    "antes": {
+      "requisicoes": 76,
+      "erros": 0,
+      "taxa_erros_pct": 0.0,
+      "vazao_rps": 1.267,
+      "latencia_p50_ms": 304.7,
+      "latencia_p95_ms": 549.9,
+      "latencia_p99_ms": 753.5,
+      "latencia_max_ms": 753.5
+    },
+    "durante": {
+      "requisicoes": 49,
+      "erros": 2,
+      "taxa_erros_pct": 4.082,
+      "vazao_rps": 1.352,
+      "latencia_p50_ms": 305.8,
+      "latencia_p95_ms": 479.2,
+      "latencia_p99_ms": 695.2,
+      "latencia_max_ms": 695.2
+    },
+    "depois": {
+      "requisicoes": 84,
+      "erros": 0,
+      "taxa_erros_pct": 0.0,
+      "vazao_rps": 1.401,
+      "latencia_p50_ms": 287.1,
+      "latencia_p95_ms": 414.2,
+      "latencia_p99_ms": 574.5,
+      "latencia_max_ms": 574.5
+    },
+    "resolucao_s": 5
+  }
+}

@@ -1,0 +1,3 @@
+# Análise dos experimentos (tests/analysis). Os gráficos são opcionais: sem matplotlib, a análise gera só resumo.md/json.
+matplotlib==3.9.2
+pytest==8.3.4

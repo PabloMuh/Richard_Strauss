@@ -1,0 +1,30 @@
+{
+  "experimento": "smoke",
+  "objetivo": "Verificar /health, /instance e /work no ambiente implantado",
+  "hipotese": "As três rotas respondem HTTP 200 com JSON válido.",
+  "repeticao": 1,
+  "responsavel": "leonardo-lbp",
+  "inicio_utc": "2026-11-13T01:48:30.451Z",
+  "fim_utc": "2026-11-13T01:48:34.959Z",
+  "identificacao": {
+    "ambiente": "local",
+    "replicas": 3,
+    "observacao": "Ambiente Docker de tests/local; sem Auto Scaling nem ECS. Serve para validar o script e a análise."
+  },
+  "auto_scaling": null,
+  "k6": {
+    "cenario": "smoke",
+    "base_url": "http://localhost:8080",
+    "capacidade_rps": null,
+    "iteracoes": null,
+    "escala_tempo": 1.0,
+    "executor": "grafana/k6:1.0.0",
+    "codigo_saida": 0
+  },
+  "coleta": {
+    "intervalo_s": 5,
+    "observacao_apos_k6_s": 0,
+    "aguardar_metricas_s": 0
+  },
+  "falha": null
+}

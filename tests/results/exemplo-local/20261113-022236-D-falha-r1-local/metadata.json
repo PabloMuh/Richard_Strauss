@@ -1,0 +1,33 @@
+{
+  "experimento": "D-falha",
+  "objetivo": "Encerrar 1 de 2 tasks sob 80% da capacidade de uma task",
+  "hipotese": "O ECS inicia uma task substituta e volta a 2 tasks saudáveis; a task restante absorve a carga e os erros ficam restritos ao momento da parada.",
+  "repeticao": 1,
+  "responsavel": "leonardo-lbp",
+  "inicio_utc": "2026-11-13T02:22:36.080Z",
+  "fim_utc": "2026-11-13T02:26:17.879Z",
+  "identificacao": {
+    "ambiente": "local",
+    "replicas": 2,
+    "observacao": "Ambiente Docker de tests/local; sem Auto Scaling nem ECS. Serve para validar o script e a análise."
+  },
+  "auto_scaling": null,
+  "k6": {
+    "cenario": "D-falha",
+    "base_url": "http://localhost:8080",
+    "capacidade_rps": 1.749,
+    "iteracoes": null,
+    "escala_tempo": 0.3,
+    "executor": "grafana/k6:1.0.0",
+    "codigo_saida": 0
+  },
+  "coleta": {
+    "intervalo_s": 5,
+    "observacao_apos_k6_s": 36,
+    "aguardar_metricas_s": 0
+  },
+  "falha": {
+    "parar_apos_s": 54.0,
+    "reposicao_local_s": 20
+  }
+}
