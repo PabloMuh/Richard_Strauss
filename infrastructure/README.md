@@ -85,7 +85,7 @@ Somente após fechar viabilidade e orçamento:
 ./infrastructure/scripts/Provision.ps1
 ```
 
-Recursos: ECR privado com tags imutáveis, log group com retenção de sete dias, cluster ECS e security groups. Em modo ALB, também ALB, target group `ip` com `/health` e listener HTTP 80. As tasks têm IP público para saída; com ALB, a entrada na porta da aplicação aceita somente o SG do ALB. Sem ALB, aceita somente os `/32` configurados. A demonstração usa HTTP, sem dados sensíveis.
+Recursos: ECR privado com tags imutáveis, log group com retenção de sete dias, cluster ECS e security groups. Em modo ALB, também ALB, target group `ip` com `/health` e listener HTTP 80. O target group usa health check a cada 10 s (2 acertos ou 2 falhas) e drenagem de 30 s, reaplicados a cada execução. Com os padrões da AWS, uma task nova levaria 150 s para receber tráfego e uma encerrada drenaria por 5 min, distorcendo os tempos dos experimentos. As tasks têm IP público para saída; com ALB, a entrada na porta da aplicação aceita somente o SG do ALB. Sem ALB, aceita somente os `/32` configurados. A demonstração usa HTTP, sem dados sensíveis.
 
 O inventário em `.state` é salvo após cada criação. Pode-se retomar um provisionamento parcial com o mesmo arquivo. Recursos de mesmo nome fora do inventário causam erro; não são adotados. Não execute operações concorrentes com o mesmo inventário. Não altere rede, porta, CIDRs ou modo ALB durante a vida dessa infraestrutura; para mudar esses campos, remova-a e depois reprovisione. Recursos remanescentes ou modificados manualmente exigem revisão.
 
@@ -114,7 +114,34 @@ O deploy registra uma revisão da task definition fixada por digest, cria/atuali
 
 `Test-Deployment` consulta `/health`, `/instance` e `/work`, exige JSON HTTP 200, identifica `instance_id`, verifica saúde e existência de eventos no stream de cada task. Não gera carga contínua. Com ALB, tenta observar as duas réplicas em até 40 consultas adicionais de `/instance`; sem ALB, consulta cada IP público. O IP muda quando uma task é substituída. Não há endpoint único para distribuição de carga sem ALB.
 
-Para demonstrar duas tasks, altere `desiredCount` para `2` e repita deploy/status/teste. Para demonstrar redeploy, publique uma nova tag e repita. Deploys com `maximumPercent=200` podem executar temporariamente até quatro tasks quando o desejado for dois: inclua a sobreposição na estimativa. O limite futuro de Auto Scaling ainda não está configurado.
+Para demonstrar duas tasks, altere `desiredCount` para `2` e repita deploy/status/teste. Para demonstrar redeploy, publique uma nova tag e repita. Deploys com `maximumPercent=200` podem executar temporariamente até quatro tasks quando o desejado for dois: inclua a sobreposição na estimativa.
+
+## 6.1 Auto Scaling (experimentos B e C, com a pessoa 3)
+
+```powershell
+# Target tracking da CPU média do serviço: 1 a 3 tasks, alvo 60%, cooldown 60 s (scale-out) e 180 s (scale-in)
+./infrastructure/scripts/Set-AutoScaling.ps1
+# Remove a política e fixa a quantidade de tasks (2 antes do experimento D)
+./infrastructure/scripts/Remove-AutoScaling.ps1 -DesiredCount 2
+```
+
+`Set-AutoScaling.ps1`:
+
+- registra o serviço no Application Auto Scaling, com as tags de propriedade, e cria a política `<project>-cpu`;
+- aceita `-MinTasks`, `-MaxTasks`, `-TargetCpu`, `-ScaleOutCooldown` e `-ScaleInCooldown`;
+- limita o máximo a 3 tasks, conforme o plano;
+- quando executado de novo, atualiza os valores.
+
+Requer o serviço implantado, a janela de gastos válida e ALB, para que as tasks novas recebam tráfego.
+
+Com o Auto Scaling ativo, quem decide a quantidade de tasks é a política:
+
+- o `Deploy.ps1` não envia `desiredCount` num redeploy;
+- `Remove-Infrastructure.ps1` desregistra o Auto Scaling antes de apagar o serviço.
+
+Os alarmes do target tracking (o de alta exige 3 minutos acima do alvo; o de baixa, cerca de 15 minutos abaixo) são criados e removidos pela própria AWS junto com a política.
+
+Os experimentos são executados por `tests/scripts/Invoke-Experiment.ps1`; veja [tests/README.md](../tests/README.md).
 
 ## 7. Preservar evidências e encerrar
 
