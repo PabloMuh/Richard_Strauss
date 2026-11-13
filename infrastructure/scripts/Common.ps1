@@ -32,6 +32,7 @@ function Read-Config {
     foreach ($item in $config.environment) {
         if ($item.name -notmatch '^[A-Za-z_][A-Za-z0-9_]*$' -or $item.value -isnot [string]) { throw 'Variavel de ambiente invalida: use name e value textual.' }
     }
+    if (@($config.environment | Where-Object { $_.name -eq 'PORT' -and $_.value -ne [string]$config.containerPort }).Count) { throw 'environment.PORT deve ser omitido ou igual a containerPort; o deploy define PORT a partir de containerPort.' }
     return $config
 }
 
@@ -178,7 +179,11 @@ function Assert-Owned {
         default { throw "Tipo de recurso desconhecido: $($Resource.kind)" }
     }
     $actual = @{}
-    foreach ($tag in $tags) { $actual[$tag.key] = $tag.value }
+    foreach ($tag in $tags) {
+        $key = $tag['key'] ?? $tag['Key']
+        $value = $tag['value'] ?? $tag['Value']
+        if ($key) { $actual[$key] = $value }
+    }
     foreach ($tag in (Get-ResourceTags $Config $State)) {
         if (-not $actual.ContainsKey($tag.key) -or $actual[$tag.key] -ne $tag.value) { throw "Propriedade nao comprovada para $($Resource.id): tag $($tag.key). Recurso preservado." }
     }
@@ -226,8 +231,10 @@ function New-DeploymentSpec {
     $container = $task.containerDefinitions[0]
     $container.image = $ImageUri
     $container.portMappings[0].containerPort = $Config.containerPort
-    $container.environment = @($Config.environment)
-    $container.healthCheck.command[3] = "import urllib.request; urllib.request.urlopen('http://127.0.0.1:$($Config.containerPort)/health', timeout=4).close()"
+    # A API escuta em PORT: derivar de containerPort mantem mapeamento, health check e ALB na mesma porta.
+    $container.environment = @(@($Config.environment | Where-Object { $_.name -ne 'PORT' }) + @(@{name = 'PORT'; value = [string]$Config.containerPort}))
+    # Health check leve (socket da biblioteca padrao, sem urllib/ssl): em 0,25 vCPU custa ~1/3 da CPU da versao com urllib.
+    $container.healthCheck.command[-1] = "import socket,sys; s=socket.create_connection(('127.0.0.1',$($Config.containerPort)),4); s.sendall(b'GET /health HTTP/1.0\r\n\r\n'); sys.exit(0 if s.makefile('rb').readline().split()[1:2]==[b'200'] else 1)"
     $container.logConfiguration.options['awslogs-group'] = "/ecs/$($Config.project)"
     $container.logConfiguration.options['awslogs-region'] = $Config.region
     $tags = Get-ResourceTags $Config @{deploymentId = $DeploymentId}

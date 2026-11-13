@@ -29,7 +29,9 @@ function Test-Reuse {
 $existing = Invoke-Aws $config @('ecr', 'describe-repositories', '--repository-names', $prefix) -NotFoundCodes @('RepositoryNotFoundException')
 $found = if ($existing) { $existing.repositories[0].repositoryName } else { '' }
 if (-not (Test-Reuse 'repository' $found)) {
-    $r = (Invoke-Aws $config @('ecr', 'create-repository', '--repository-name', $prefix, '--image-tag-mutability', 'IMMUTABLE', '--tags', $tagJson)).repository
+    $ecrTags = @($tags | ForEach-Object { @{Key = $_.key; Value = $_.value} })
+    $ecrTagJson = ConvertTo-Json -InputObject $ecrTags -Compress
+    $r = (Invoke-Aws $config @('ecr', 'create-repository', '--repository-name', $prefix, '--image-tag-mutability', 'IMMUTABLE', '--tags', $ecrTagJson)).repository
     Add-Resource $config $state 'repository' 'ecr' $r.repositoryName $r.repositoryArn
 }
 

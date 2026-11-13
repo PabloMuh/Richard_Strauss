@@ -2,7 +2,7 @@
 
 Preparação da **Pessoa 2: infraestrutura AWS e implantação**, com scripts PowerShell 7.2+, AWS CLI v2 e JSON versionado.
 
-**Situação em 08/11/2026:** API/Dockerfile da pessoa 1 ainda não recebidos; conta do projeto pendente de identificação/configuração e validação; orçamento ainda não acordado. Nenhum recurso AWS foi provisionado nesta etapa.
+**Situação em 12/11/2026:** API e Dockerfile da pessoa 1 integrados em [`app/`](app/README.md) e validados localmente ([validação local](docs/validacao-local.md)). O problema da API sob carga (API-02 em [impedimentos](docs/impedimentos.md)) foi corrigido no mesmo dia. Conta AWS, orçamento e provisionamento seguem o [checklist](docs/checklist-aws.md), cujo último registro é de 08/11/2026.
 
 ## Começar agora
 
@@ -25,6 +25,7 @@ Copy-Item ./infrastructure/config.example.json ./infrastructure/config.local.jso
 - `infrastructure/templates`: modelos da task definition e do ECS service.
 - `infrastructure/scripts`: validação, renderização local, provisionamento, publicação, deploy, consulta, teste HTTP e limpeza.
 - `infrastructure/tests`: testes locais sem AWS, credenciais ou dependências de teste externas.
+- `app`: API, Dockerfile e testes da pessoa 1 (contexto de build da imagem).
 - `docs`: viabilidade, integração, arquitetura, custos e impedimentos.
 
 Configuração local, inventário e evidências ficam ignorados pelo Git. Antes de compartilhar resultados, revise-os e copie somente o necessário para documentação versionada. Guarde uma cópia segura do inventário: a limpeza depende dele para comprovar a propriedade dos recursos.
