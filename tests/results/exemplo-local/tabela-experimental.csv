@@ -1,0 +1,6 @@
+pasta,experimento,ambiente,repeticao,inicio_utc,vazao_rps,p95_ms,erros_pct,cpu_media_pct,tasks_max,scale_out_1o_degrau_s,scale_in_s,scale_out_2o_degrau_s,recuperacao_s,erros_falha
+20261113-014830-smoke-r1-local,smoke,local,1,2026-11-13T01:48:31.829Z,2.262,500.0,0.0,,,,,,,
+20261113-014909-calibracao-r1-local,calibracao,local,1,2026-11-13T01:49:12.279Z,1.738,3890.6,0.0,,,,,,,
+20261113-021556-A-baseline-r1-local,A-baseline,local,1,2026-11-13T02:15:56.925Z,0.855,330.6,0.0,,,,,,,
+20261113-021744-BC-escalabilidade-r1-local,BC-escalabilidade,local,1,2026-11-13T02:17:45.075Z,1.018,398.7,0.0,,3,,,,,
+20261113-022236-D-falha-r1-local,D-falha,local,1,2026-11-13T02:22:36.929Z,1.383,479.2,0.797,,,,,,35.0,2

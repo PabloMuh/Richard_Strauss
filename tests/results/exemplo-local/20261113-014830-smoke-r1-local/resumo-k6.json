@@ -1,0 +1,27 @@
+{
+  "cenario": "smoke",
+  "base_url": "http://lb",
+  "capacidade_rps": null,
+  "iteracoes": null,
+  "escala_tempo": 1,
+  "timeout": "60s",
+  "plano": [],
+  "inicio_utc": "2026-11-13T01:48:31.829Z",
+  "fim_utc": "2026-11-13T01:48:33.155Z",
+  "duracao_s": 1.316844257,
+  "requisicoes": 9,
+  "vazao_media_rps": 6.834521206405656,
+  "taxa_falhas": 0,
+  "taxa_checks": 1,
+  "iteracoes_descartadas": 0,
+  "vus_max": 1,
+  "latencia_ms": {
+      "avg": 144.61862522222222,
+      "min": 1.313403,
+      "med": 2.15291,
+      "p(90)": 421.3890662,
+      "p(95)": 460.7004866,
+      "p(99)": 492.14962292,
+      "max": 500.011907
+    }
+}

@@ -1,0 +1,58 @@
+name: Load tests (validação local)
+on:
+  push:
+    paths: ['tests/**', 'app/**', '.github/workflows/load-tests.yml']
+  pull_request:
+    paths: ['tests/**', 'app/**', '.github/workflows/load-tests.yml']
+permissions:
+  contents: read
+jobs:
+  analise:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tests
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: pytest -q
+
+  k6-local:
+    # Valida o script k6 e a análise contra o ambiente local (3 réplicas com 0,25 vCPU + nginx), sem AWS.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r tests/requirements.txt
+      - run: docker compose -f tests/local/docker-compose.yml up -d --build --wait
+      - name: smoke e escalabilidade comprimida (5% do tempo)
+        run: |
+          set -euo pipefail
+          for cenario in smoke BC-escalabilidade; do
+            out="tests/results-ci/$cenario"; mkdir -p "$out"
+            docker run --rm --user "$(id -u):$(id -g)" --network rs-local_default -v "$PWD/$out:/resultados" -v "$PWD/tests:/testes:ro" -w /resultados \
+              grafana/k6:1.0.0 run --quiet --no-color --out 'csv=fileName=k6-bruto.csv.gz,timeFormat=unix_milli' \
+              -e BASE_URL=http://lb -e CENARIO=$cenario -e CAPACIDADE_RPS=1.8 -e ESCALA_TEMPO=0.05 /testes/load-test.js
+            echo "{\"experimento\": \"$cenario\", \"repeticao\": 1, \"identificacao\": {\"ambiente\": \"ci\"}}" > "$out/metadata.json"
+            python tests/analysis/analisar.py analisar "$out"
+          done
+          python - <<'EOF'
+          import json
+          r = json.load(open("tests/results-ci/BC-escalabilidade/resumo.json", encoding="utf-8"))
+          assert r["geral"]["requisicoes"] > 0, "nenhuma requisição registrada"
+          assert [f["fase"] for f in r["fases"]] == ["aquecimento", "subida-1", "degrau-1", "subida-2", "degrau-2", "descida", "baixa"], r["fases"]
+          assert len(r["instancias"]) == 3, f"distribuição inesperada: {r['instancias']}"
+          print("ok:", r["geral"])
+          EOF
+      - if: always()
+        run: docker compose -f tests/local/docker-compose.yml down
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resultados-k6-ci
+          path: tests/results-ci

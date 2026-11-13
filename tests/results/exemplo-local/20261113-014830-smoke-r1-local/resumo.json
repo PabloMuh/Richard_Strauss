@@ -1,0 +1,32 @@
+{
+  "pasta": "20261113-014830-smoke-r1-local",
+  "experimento": "smoke",
+  "repeticao": 1,
+  "ambiente": "local",
+  "inicio_utc": "2026-11-13T01:48:31.829Z",
+  "fim_utc": "2026-11-13T01:48:33.155Z",
+  "duracao_s": 1.3,
+  "k6": {
+    "capacidade_rps": null,
+    "iteracoes": null,
+    "escala_tempo": 1,
+    "iteracoes_descartadas": 0,
+    "vus_max": 1,
+    "taxa_checks": 1,
+    "capacidade_estimada_rps": null
+  },
+  "geral": {
+    "requisicoes": 3,
+    "erros": 0,
+    "taxa_erros_pct": 0.0,
+    "vazao_rps": 2.262,
+    "latencia_p50_ms": 401.7,
+    "latencia_p95_ms": 500.0,
+    "latencia_p99_ms": 500.0,
+    "latencia_max_ms": 500.0
+  },
+  "fases": [],
+  "instancias": {
+    "local-2": 3
+  }
+}

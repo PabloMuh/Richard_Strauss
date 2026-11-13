@@ -1,0 +1,30 @@
+{
+  "experimento": "A-baseline",
+  "objetivo": "Linha de base: 1 task, carga constante de 50% da capacidade, sem Auto Scaling",
+  "hipotese": "Vazão igual à oferecida, latência estável, CPU próxima de 50% e nenhum erro.",
+  "repeticao": 1,
+  "responsavel": "leonardo-lbp",
+  "inicio_utc": "2026-11-13T02:15:56.148Z",
+  "fim_utc": "2026-11-13T02:17:27.879Z",
+  "identificacao": {
+    "ambiente": "local",
+    "replicas": 1,
+    "observacao": "Ambiente Docker de tests/local; sem Auto Scaling nem ECS. Serve para validar o script e a análise."
+  },
+  "auto_scaling": null,
+  "k6": {
+    "cenario": "A-baseline",
+    "base_url": "http://localhost:8080",
+    "capacidade_rps": 1.749,
+    "iteracoes": null,
+    "escala_tempo": 0.3,
+    "executor": "grafana/k6:1.0.0",
+    "codigo_saida": 0
+  },
+  "coleta": {
+    "intervalo_s": 5,
+    "observacao_apos_k6_s": 0,
+    "aguardar_metricas_s": 0
+  },
+  "falha": null
+}

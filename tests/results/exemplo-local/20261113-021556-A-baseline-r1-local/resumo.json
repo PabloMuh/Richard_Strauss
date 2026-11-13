@@ -1,0 +1,69 @@
+{
+  "pasta": "20261113-021556-A-baseline-r1-local",
+  "experimento": "A-baseline",
+  "repeticao": 1,
+  "ambiente": "local",
+  "inicio_utc": "2026-11-13T02:15:56.925Z",
+  "fim_utc": "2026-11-13T02:17:26.931Z",
+  "duracao_s": 90.0,
+  "k6": {
+    "capacidade_rps": 1.749,
+    "iteracoes": null,
+    "escala_tempo": 0.3,
+    "iteracoes_descartadas": 0,
+    "vus_max": 5,
+    "taxa_checks": 1,
+    "capacidade_estimada_rps": null
+  },
+  "geral": {
+    "requisicoes": 77,
+    "erros": 0,
+    "taxa_erros_pct": 0.0,
+    "vazao_rps": 0.855,
+    "latencia_p50_ms": 276.9,
+    "latencia_p95_ms": 330.6,
+    "latencia_p99_ms": 621.3,
+    "latencia_max_ms": 621.3
+  },
+  "fases": [
+    {
+      "fase": "constante",
+      "duracao_s": 90,
+      "carga_oferecida_rps": 0.867,
+      "requisicoes": 77,
+      "erros": 0,
+      "taxa_erros_pct": 0.0,
+      "vazao_rps": 0.856,
+      "latencia_p50_ms": 276.9,
+      "latencia_p95_ms": 330.6,
+      "latencia_p99_ms": 621.3,
+      "latencia_max_ms": 621.3,
+      "instancias": {
+        "local-1": 77
+      }
+    }
+  ],
+  "instancias": {
+    "local-1": 77
+  },
+  "mesma_carga_por_tasks": [
+    {
+      "fase": "constante",
+      "carga_oferecida_rps": 0.867,
+      "grupos": [
+        {
+          "tasks_saudaveis": 1,
+          "duracao_s": 90.0,
+          "requisicoes": 77,
+          "erros": 0,
+          "taxa_erros_pct": 0.0,
+          "vazao_rps": 0.856,
+          "latencia_p50_ms": 276.9,
+          "latencia_p95_ms": 330.6,
+          "latencia_p99_ms": 621.3,
+          "latencia_max_ms": 621.3
+        }
+      ]
+    }
+  ]
+}

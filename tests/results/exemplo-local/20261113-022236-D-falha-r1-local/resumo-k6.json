@@ -1,0 +1,37 @@
+{
+  "cenario": "D-falha",
+  "base_url": "http://lb",
+  "capacidade_rps": 1.749,
+  "iteracoes": null,
+  "escala_tempo": 0.3,
+  "timeout": "60s",
+  "plano": [
+    {
+      "fase": "constante",
+      "inicio_s": 0,
+      "fim_s": 180,
+      "taxa_inicial_rps": 1.4,
+      "taxa_final_rps": 1.4,
+      "fracao_inicial": 0.8,
+      "fracao_final": 0.8
+    }
+  ],
+  "inicio_utc": "2026-11-13T02:22:36.929Z",
+  "fim_utc": "2026-11-13T02:25:36.931Z",
+  "duracao_s": 179.994875806,
+  "requisicoes": 251,
+  "vazao_media_rps": 1.3944841422626382,
+  "taxa_falhas": 0.00796812749003984,
+  "taxa_checks": 0.9920318725099602,
+  "iteracoes_descartadas": 0,
+  "vus_max": 7,
+  "latencia_ms": {
+    "min": 231.081749,
+    "med": 297.697264,
+    "p(90)": 402.158532,
+    "p(95)": 502.06651999999997,
+    "p(99)": 724.4022755000001,
+    "max": 2001.756718,
+    "avg": 326.6536034063743
+  }
+}
