@@ -144,3 +144,13 @@ def test_work_concurrency_must_be_positive(monkeypatch):
     monkeypatch.setenv("WORK_CONCURRENCY", "0")
     with pytest.raises(ValueError, match="WORK_CONCURRENCY"):
         load_settings()
+
+
+def test_keep_alive_maior_que_idle_timeout_do_alb(monkeypatch):
+    from api.config import load_settings
+    monkeypatch.delenv("KEEP_ALIVE_TIMEOUT", raising=False)
+    assert load_settings().keep_alive_s > 60
+    monkeypatch.setenv("KEEP_ALIVE_TIMEOUT", "0")
+    import pytest
+    with pytest.raises(ValueError):
+        load_settings()
