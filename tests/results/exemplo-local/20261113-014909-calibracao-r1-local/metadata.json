@@ -1,0 +1,30 @@
+{
+  "experimento": "calibracao",
+  "objetivo": "Medir a vazão máxima de uma task (CAPACIDADE_RPS)",
+  "hipotese": "Com a fila sempre ocupada, a vazão se estabiliza no limite de CPU de uma task.",
+  "repeticao": 1,
+  "responsavel": "leonardo-lbp",
+  "inicio_utc": "2026-11-13T01:49:09.282Z",
+  "fim_utc": "2026-11-13T01:50:44.949Z",
+  "identificacao": {
+    "ambiente": "local",
+    "replicas": 1,
+    "observacao": "Ambiente Docker de tests/local; sem Auto Scaling nem ECS. Serve para validar o script e a análise."
+  },
+  "auto_scaling": null,
+  "k6": {
+    "cenario": "calibracao",
+    "base_url": "http://localhost:8080",
+    "capacidade_rps": null,
+    "iteracoes": null,
+    "escala_tempo": 0.5,
+    "executor": "grafana/k6:1.0.0",
+    "codigo_saida": 0
+  },
+  "coleta": {
+    "intervalo_s": 5,
+    "observacao_apos_k6_s": 0,
+    "aguardar_metricas_s": 0
+  },
+  "falha": null
+}

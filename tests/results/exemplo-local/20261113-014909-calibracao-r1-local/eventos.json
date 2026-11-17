@@ -1,0 +1,12 @@
+[
+  {
+    "timestamp_utc": "2026-11-13T01:49:09.720Z",
+    "tipo": "k6_inicio",
+    "descricao": "k6 iniciado (calibracao)"
+  },
+  {
+    "timestamp_utc": "2026-11-13T01:50:44.942Z",
+    "tipo": "k6_fim",
+    "descricao": "k6 terminou (código 0)"
+  }
+]

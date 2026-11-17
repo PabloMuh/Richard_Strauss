@@ -14,7 +14,9 @@ flowchart LR
 
 Linux x86_64, 0,25 vCPU/512 MiB por task. Uma VPC existente, subnets públicas e IP público por task para saída via Internet Gateway. Não provisionamos NAT Gateway. Com ALB, duas AZs e entrada nas tasks somente a partir do SG do balanceador. Sem ALB, somente `/32` dos participantes na porta da aplicação; a URL muda na substituição da task e não existe distribuição automática por endereço único.
 
-O número desejado começa em um; duas tasks validam replicação. O deploy usa sobreposição de até 200% e pode consumir quatro tasks temporariamente no redeploy de um serviço com duas réplicas. Auto Scaling será tratado com a pessoa 3, posteriormente.
+O número desejado começa em um; duas tasks validam replicação. O deploy usa sobreposição de até 200% e pode consumir quatro tasks temporariamente no redeploy de um serviço com duas réplicas.
+
+O Auto Scaling dos experimentos B e C (`Set-AutoScaling.ps1`) mantém de 1 a 3 tasks pela CPU média do serviço. O roteiro completo dos experimentos ([plano de testes](../tests/plano-de-testes.md)) usa cerca de 3 horas de ALB, com 1 a 3 tasks. Inclua isso na estimativa da sessão de experimentos.
 
 ## Estimativa antes de provisionar
 

@@ -39,7 +39,9 @@ if ($services.Count -eq 0) {
     $response = Invoke-Aws $config @('ecs', 'create-service', '--cli-input-json', (Write-Request 'service' $spec.service))
     Add-Resource $config $state 'service' 'ecs' $serviceName $response.service.serviceArn
 } else {
-    $update = @{cluster = $config.project; service = $serviceName; taskDefinition = $revision; desiredCount = $config.desiredCount; deploymentConfiguration = $spec.service.deploymentConfiguration}
+    $update = @{cluster = $config.project; service = $serviceName; taskDefinition = $revision; deploymentConfiguration = $spec.service.deploymentConfiguration}
+    # Com Auto Scaling ativo, quem decide a quantidade de tasks e a politica; o redeploy nao a sobrescreve.
+    if (-not $state.resources.ContainsKey('scalableTarget')) { $update.desiredCount = $config.desiredCount }
     $null = Invoke-Aws $config @('ecs', 'update-service', '--cli-input-json', (Write-Request 'update-service' $update))
 }
 $deadline = [DateTimeOffset]::UtcNow.AddMinutes($TimeoutMinutes)
@@ -48,7 +50,8 @@ do {
     $primary = @($service.deployments | Where-Object { $_.status -eq 'PRIMARY' })
     if ($primary.Count -and $primary[0].taskDefinition -ne $revision) { throw 'Deploy revertido pelo ECS. Consulte eventos e logs com Get-Status.ps1.' }
     if ($primary.Count -and $primary[0].ContainsKey('rolloutState') -and $primary[0].rolloutState -eq 'FAILED') { throw 'Deploy falhou no ECS. Consulte Get-Status.ps1 e preserve as evidencias.' }
-    if ($service.taskDefinition -eq $revision -and $service.runningCount -eq $config.desiredCount -and $service.pendingCount -eq 0 -and @($service.deployments).Count -eq 1 -and $primary[0].rolloutState -eq 'COMPLETED') {
+    $expected = if ($state.resources.ContainsKey('scalableTarget')) { $service.desiredCount } else { $config.desiredCount }
+    if ($service.taskDefinition -eq $revision -and $service.runningCount -eq $expected -and $service.pendingCount -eq 0 -and @($service.deployments).Count -eq 1 -and $primary[0].rolloutState -eq 'COMPLETED') {
         $snapshot = Get-DeploymentSnapshot $config $state
         Write-Json (Join-Path $script:InfraRoot ('evidence/deploy-' + [DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss-fff') + '.json')) $snapshot
         Write-Host "Deploy estavel: $revision. Execute Test-Deployment.ps1 para validar HTTP e logs."

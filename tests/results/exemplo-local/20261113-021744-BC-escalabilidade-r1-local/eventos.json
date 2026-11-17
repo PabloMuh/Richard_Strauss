@@ -1,0 +1,12 @@
+[
+  {
+    "timestamp_utc": "2026-11-13T02:17:44.579Z",
+    "tipo": "k6_inicio",
+    "descricao": "k6 iniciado (BC-escalabilidade)"
+  },
+  {
+    "timestamp_utc": "2026-11-13T02:21:43.823Z",
+    "tipo": "k6_fim",
+    "descricao": "k6 terminou (código 0)"
+  }
+]

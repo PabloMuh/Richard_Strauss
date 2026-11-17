@@ -1,0 +1,37 @@
+{
+  "pasta": "20261113-014909-calibracao-r1-local",
+  "experimento": "calibracao",
+  "repeticao": 1,
+  "ambiente": "local",
+  "inicio_utc": "2026-11-13T01:49:12.279Z",
+  "fim_utc": "2026-11-13T01:50:43.762Z",
+  "duracao_s": 91.5,
+  "k6": {
+    "capacidade_rps": null,
+    "iteracoes": null,
+    "escala_tempo": 0.5,
+    "iteracoes_descartadas": 0,
+    "vus_max": 4,
+    "taxa_checks": 1,
+    "capacidade_estimada_rps": 1.7384101099645906
+  },
+  "geral": {
+    "requisicoes": 159,
+    "erros": 0,
+    "taxa_erros_pct": 0.0,
+    "vazao_rps": 1.738,
+    "latencia_p50_ms": 1995.1,
+    "latencia_p95_ms": 3890.6,
+    "latencia_p99_ms": 7109.0,
+    "latencia_max_ms": 7604.4
+  },
+  "fases": [],
+  "instancias": {
+    "local-1": 159
+  },
+  "calibracao": {
+    "capacidade_estimada_rps": 1.738,
+    "vazao_estavel_rps": 1.749,
+    "observacao": "use vazao_estavel_rps (exclui os 20 s iniciais) como CAPACIDADE_RPS"
+  }
+}

@@ -41,8 +41,9 @@ function Invoke-Aws {
 $testRoot = Join-Path $script:InfraRoot ('generated/tests-' + [guid]::NewGuid().ToString('N'))
 [IO.Directory]::CreateDirectory($testRoot) | Out-Null
 try {
-    Test-Case 'Todos os scripts PowerShell possuem sintaxe valida' {
-        foreach ($file in (Get-ChildItem -LiteralPath (Join-Path $script:InfraRoot 'scripts') -Filter '*.ps1')) {
+    Test-Case 'Todos os scripts PowerShell possuem sintaxe valida (infrastructure/ e tests/)' {
+        $pastas = @((Join-Path $script:InfraRoot 'scripts'), (Join-Path (Split-Path $script:InfraRoot -Parent) 'tests/scripts')) | Where-Object { Test-Path -LiteralPath $_ }
+        foreach ($file in (Get-ChildItem -LiteralPath $pastas -Filter '*.ps1')) {
             $tokens = $null; $errors = $null
             $null = [Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref]$tokens, [ref]$errors)
             Assert-True (@($errors).Count -eq 0) "$($file.Name): $errors"
@@ -170,10 +171,10 @@ try {
     Test-Case 'Recurso de outro deployment e preservado' {
         Assert-Throws { Assert-Owned (Copy-Fixture) @{deploymentId = 'different'} @{kind = 'ecs'; id = 'test'; arn = 'test'} } 'Propriedade nao comprovada'
     }
-    Test-Case 'Tags no formato real de cada servico comprovam propriedade (ECS, Logs, ECR, EC2, ELB)' {
+    Test-Case 'Tags no formato real de cada servico comprovam propriedade (ECS, Logs, ECR, EC2, ELB, Auto Scaling)' {
         # As respostas passam por ConvertFrom-Json -AsHashtable, como no Invoke-Aws real: o resultado
         # diferencia maiusculas de minusculas, ao contrario de hashtables literais @{}. ECR, EC2 e ELB
-        # usam Key/Value; ECS usa key/value; Logs devolve um mapa.
+        # usam Key/Value; ECS usa key/value; Logs devolve um mapa `tags`; Auto Scaling, um mapa `Tags`.
         $upper = '[{"Key":"Project","Value":"richard-strauss"},{"Key":"ManagedBy","Value":"richard-strauss-scripts"},{"Key":"DeploymentId","Value":"test-deploy"}]'
         $lower = $upper.Replace('"Key"', '"key"').Replace('"Value"', '"value"')
         $script:Responses = @{
@@ -182,9 +183,10 @@ try {
             ecr   = "{`"tags`":$upper}"
             ec2   = "{`"SecurityGroups`":[{`"GroupId`":`"sg-0123456789abcdef0`",`"Tags`":$upper}]}"
             elbv2 = "{`"TagDescriptions`":[{`"ResourceArn`":`"arn:test`",`"Tags`":$upper}]}"
+            'application-autoscaling' = '{"Tags":{"Project":"richard-strauss","ManagedBy":"richard-strauss-scripts","DeploymentId":"test-deploy"}}'
         }
         $script:FakeHandler = { param($Arguments) return ($script:Responses[$Arguments[0]] | ConvertFrom-Json -AsHashtable) }
-        foreach ($kind in @('ecs', 'logs', 'ecr', 'ec2', 'elbv2')) {
+        foreach ($kind in @('ecs', 'logs', 'ecr', 'ec2', 'elbv2', 'aas')) {
             try { Assert-Owned (Copy-Fixture) @{deploymentId = 'test-deploy'} @{kind = $kind; id = 'test'; arn = 'test'} }
             catch { throw "$kind nao reconhecido: $($_.Exception.Message)" }
             Assert-Throws { Assert-Owned (Copy-Fixture) @{deploymentId = 'different'} @{kind = $kind; id = 'test'; arn = 'test'} } 'Propriedade nao comprovada'
@@ -200,6 +202,24 @@ try {
         $environment = @((New-DeploymentSpec (Read-Config $path) $image 'sg-0123456789abcdef0').task.containerDefinitions[0].environment)
         Assert-True (@($environment | Where-Object { $_.name -eq 'PORT' }).Count -eq 1) 'PORT duplicado'
         Assert-True (@($environment | Where-Object { $_.name -eq 'LOG_LEVEL' -and $_.value -eq 'DEBUG' }).Count -eq 1) 'Variaveis do usuario devem ser preservadas'
+    }
+    Test-Case 'Auto Scaling respeita o limite do plano (1 a 3 tasks) e faixas validas' {
+        Assert-AutoScalingParameters 1 3 60 60 180
+        foreach ($invalido in @(@(0, 3, 60, 60, 180), @(1, 4, 60, 60, 180), @(3, 2, 60, 60, 180), @(1, 3, 95, 60, 180), @(1, 3, 60, -1, 180), @(1, 3, 60, 60, 4000))) {
+            Assert-Throws { Assert-AutoScalingParameters @invalido } 'Auto Scaling'
+        }
+    }
+    Test-Case 'Auto Scaling usa target tracking da CPU media do servico e tags de propriedade' {
+        $config = Copy-Fixture
+        $target = New-ScalableTargetRequest $config @{deploymentId = 'test-deploy'} 1 3 -WithTags
+        Assert-True ($target.ResourceId -eq 'service/richard-strauss/richard-strauss-api' -and $target.ScalableDimension -eq 'ecs:service:DesiredCount')
+        Assert-True ($target.MinCapacity -eq 1 -and $target.MaxCapacity -eq 3)
+        Assert-True ($target.Tags.Project -eq 'richard-strauss' -and $target.Tags.ManagedBy -eq 'richard-strauss-scripts' -and $target.Tags.DeploymentId -eq 'test-deploy')
+        Assert-True (-not (New-ScalableTargetRequest $config @{deploymentId = 'x'} 1 3).Contains('Tags')) 'Tags so na criacao'
+        $policy = New-ScalingPolicyRequest $config 60 60 180
+        $tracking = $policy.TargetTrackingScalingPolicyConfiguration
+        Assert-True ($policy.PolicyType -eq 'TargetTrackingScaling' -and $tracking.PredefinedMetricSpecification.PredefinedMetricType -eq 'ECSServiceAverageCPUUtilization')
+        Assert-True ($tracking.TargetValue -eq 60 -and $tracking.ScaleOutCooldown -eq 60 -and $tracking.ScaleInCooldown -eq 180 -and $tracking.DisableScaleIn -eq $false)
     }
     Test-Case 'Falha de permissao nao e tratada como recurso ausente' {
         $script:FakeHandler = { param($Arguments) throw 'An error occurred (AccessDeniedException)' }
@@ -287,6 +307,15 @@ try {
                     Write-Json $jsonPath $entry.data
                     $null = Invoke-Tool (Get-AwsExecutable) @('ecs', $entry.operation, '--cli-input-json', "file://$jsonPath", '--endpoint-url', "http://127.0.0.1:$port", '--region', 'us-east-1', '--no-sign-request', '--no-cli-pager', '--cli-connect-timeout', '2', '--cli-read-timeout', '2')
                 }
+            }
+        }
+        Test-Case 'AWS CLI valida JSON do Auto Scaling contra stub local, sem AWS' {
+            $config = Copy-Fixture
+            foreach ($entry in @(@{operation = 'register-scalable-target'; data = (New-ScalableTargetRequest $config @{deploymentId = 'test-deploy'} 1 3 -WithTags)},
+                                 @{operation = 'put-scaling-policy'; data = (New-ScalingPolicyRequest $config 60 60 180)})) {
+                $jsonPath = Join-Path $testRoot ($entry.operation + '.json')
+                Write-Json $jsonPath $entry.data
+                $null = Invoke-Tool (Get-AwsExecutable) @('application-autoscaling', $entry.operation, '--cli-input-json', "file://$jsonPath", '--endpoint-url', "http://127.0.0.1:$port", '--region', 'us-east-1', '--no-sign-request', '--no-cli-pager', '--cli-connect-timeout', '2', '--cli-read-timeout', '2')
             }
         }
         } finally { if (-not $stub.HasExited) { $stub.Kill($true); $stub.WaitForExit() }; $stub.Dispose() }

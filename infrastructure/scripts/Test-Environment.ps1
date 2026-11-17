@@ -24,7 +24,8 @@ if (-not $Offline) {
         @{name = 'CloudWatch Logs'; args = @('logs', 'describe-log-groups', '--limit', '1')},
         @{name = 'CloudWatch Metrics'; args = @('cloudwatch', 'list-metrics', '--namespace', 'AWS/ECS', '--no-paginate')},
         @{name = 'Rede'; args = @('ec2', 'describe-vpcs')},
-        @{name = 'ALB'; args = @('elbv2', 'describe-load-balancers', '--page-size', '1', '--no-paginate')}
+        @{name = 'ALB'; args = @('elbv2', 'describe-load-balancers', '--page-size', '1', '--no-paginate')},
+        @{name = 'Application Auto Scaling'; args = @('application-autoscaling', 'describe-scalable-targets', '--service-namespace', 'ecs', '--max-results', '1')}
     )
     if ($config.executionRoleArn) { $probes += @{name = 'Execution role IAM'; args = @('iam', 'get-role', '--role-name', ($config.executionRoleArn -split '/')[-1])} }
     foreach ($probe in $probes) {

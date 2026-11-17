@@ -176,6 +176,7 @@ function Assert-Owned {
         'ecs' { $tags = (Invoke-Aws $Config @('ecs', 'list-tags-for-resource', '--resource-arn', $Resource.arn)).tags }
         'logs' { $tagMap = (Invoke-Aws $Config @('logs', 'list-tags-for-resource', '--resource-arn', $Resource.arn)).tags; $tags = @($tagMap.Keys | ForEach-Object { @{key = $_; value = $tagMap[$_]} }) }
         'elbv2' { $tags = (Invoke-Aws $Config @('elbv2', 'describe-tags', '--resource-arns', $Resource.arn)).TagDescriptions[0].Tags }
+        'aas' { $tagMap = (Invoke-Aws $Config @('application-autoscaling', 'list-tags-for-resource', '--resource-arn', $Resource.arn)).Tags; $tags = @($tagMap.Keys | ForEach-Object { @{key = $_; value = $tagMap[$_]} }) }
         default { throw "Tipo de recurso desconhecido: $($Resource.kind)" }
     }
     $actual = @{}
@@ -186,6 +187,37 @@ function Assert-Owned {
     }
     foreach ($tag in (Get-ResourceTags $Config $State)) {
         if (-not $actual.ContainsKey($tag.key) -or $actual[$tag.key] -ne $tag.value) { throw "Propriedade nao comprovada para $($Resource.id): tag $($tag.key). Recurso preservado." }
+    }
+}
+
+function Get-ScalableResourceId { param($Config) return "service/$($Config.project)/$($Config.project)-api" }
+
+function Assert-AutoScalingParameters {
+    param([int]$MinTasks, [int]$MaxTasks, [double]$TargetCpu, [int]$ScaleOutCooldown, [int]$ScaleInCooldown)
+    # Limite do plano da equipe: no maximo tres tasks durante os testes.
+    if ($MinTasks -lt 1 -or $MaxTasks -gt 3 -or $MinTasks -gt $MaxTasks) { throw 'Auto Scaling: use 1 <= MinTasks <= MaxTasks <= 3 (limite do plano).' }
+    if ($TargetCpu -lt 10 -or $TargetCpu -gt 90) { throw 'Auto Scaling: TargetCpu deve ficar entre 10 e 90.' }
+    foreach ($cooldown in @($ScaleOutCooldown, $ScaleInCooldown)) { if ($cooldown -lt 0 -or $cooldown -gt 3600) { throw 'Auto Scaling: cooldowns entre 0 e 3600 s.' } }
+}
+
+function New-ScalableTargetRequest {
+    param($Config, $State, [int]$MinTasks, [int]$MaxTasks, [switch]$WithTags)
+    $request = [ordered]@{ServiceNamespace = 'ecs'; ResourceId = (Get-ScalableResourceId $Config); ScalableDimension = 'ecs:service:DesiredCount'; MinCapacity = $MinTasks; MaxCapacity = $MaxTasks}
+    # Tags so na criacao: comprovam a propriedade antes de alterar ou remover o scalable target.
+    if ($WithTags) { $tags = [ordered]@{}; foreach ($tag in (Get-ResourceTags $Config $State)) { $tags[$tag.key] = $tag.value }; $request.Tags = $tags }
+    return $request
+}
+
+function New-ScalingPolicyRequest {
+    param($Config, [double]$TargetCpu, [int]$ScaleOutCooldown, [int]$ScaleInCooldown)
+    return [ordered]@{
+        PolicyName = "$($Config.project)-cpu"; ServiceNamespace = 'ecs'; ResourceId = (Get-ScalableResourceId $Config); ScalableDimension = 'ecs:service:DesiredCount'
+        PolicyType = 'TargetTrackingScaling'
+        TargetTrackingScalingPolicyConfiguration = [ordered]@{
+            TargetValue = $TargetCpu
+            PredefinedMetricSpecification = @{PredefinedMetricType = 'ECSServiceAverageCPUUtilization'}
+            ScaleOutCooldown = $ScaleOutCooldown; ScaleInCooldown = $ScaleInCooldown; DisableScaleIn = $false
+        }
     }
 }
 

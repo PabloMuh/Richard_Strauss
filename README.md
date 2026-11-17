@@ -26,8 +26,9 @@ Copy-Item ./infrastructure/config.example.json ./infrastructure/config.local.jso
 - `infrastructure/scripts`: validação, renderização local, provisionamento, publicação, deploy, consulta, teste HTTP e limpeza.
 - `infrastructure/tests`: testes locais sem AWS, credenciais ou dependências de teste externas.
 - `app`: API, Dockerfile e testes da pessoa 1 (contexto de build da imagem).
+- `tests`: experimentos da pessoa 3 — script k6, orquestrador, análise, ambiente local e resultados ([README](tests/README.md), [plano de testes](tests/plano-de-testes.md)).
 - `docs`: viabilidade, integração, arquitetura, custos e impedimentos.
 
 Configuração local, inventário e evidências ficam ignorados pelo Git. Antes de compartilhar resultados, revise-os e copie somente o necessário para documentação versionada. Guarde uma cópia segura do inventário: a limpeza depende dele para comprovar a propriedade dos recursos.
 
-Auto Scaling e experimentos de falha pertencem à etapa de 13–19/11 com a pessoa 3. Esta entrega prepara o deploy e a validação de uma ou duas tasks até 12/11.
+Os experimentos de 13–19/11 (baseline, scale-out, scale-in e falha) estão preparados em [`tests/`](tests/README.md). O Auto Scaling é configurado por `infrastructure/scripts/Set-AutoScaling.ps1`. A execução na AWS depende do ALB e do orçamento da sessão (EXP-01 em [impedimentos](docs/impedimentos.md)).

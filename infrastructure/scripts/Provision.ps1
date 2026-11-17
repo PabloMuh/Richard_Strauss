@@ -97,6 +97,11 @@ if ($config.useAlb) {
         $arn = $tg.TargetGroups[0].TargetGroupArn
         Add-Resource $config $state 'targetGroup' 'elbv2' $arn $arn
     }
+    # Health check a cada 10 s (2 acertos ou 2 falhas) e drenagem de 30 s: com os padroes (30 s, 5 acertos,
+    # 300 s), uma task nova levaria 150 s para receber trafego e uma encerrada drenaria por 5 min, o que
+    # distorce os tempos de scale-out, scale-in e substituicao medidos nos experimentos.
+    $null = Invoke-Aws $config @('elbv2', 'modify-target-group', '--target-group-arn', $state.resources.targetGroup.arn, '--health-check-interval-seconds', '10', '--health-check-timeout-seconds', '5', '--healthy-threshold-count', '2', '--unhealthy-threshold-count', '2')
+    $null = Invoke-Aws $config @('elbv2', 'modify-target-group-attributes', '--target-group-arn', $state.resources.targetGroup.arn, '--attributes', 'Key=deregistration_delay.timeout_seconds,Value=30')
     $listeners = (Invoke-Aws $config @('elbv2', 'describe-listeners', '--load-balancer-arn', $state.resources.loadBalancer.arn)).Listeners
     $httpListeners = @($listeners | Where-Object { $_.Port -eq 80 })
     $found = if ($httpListeners.Count) { $httpListeners[0].ListenerArn } else { '' }

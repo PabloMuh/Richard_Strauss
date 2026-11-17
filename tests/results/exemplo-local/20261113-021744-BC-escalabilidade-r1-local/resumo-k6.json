@@ -1,0 +1,91 @@
+{
+  "cenario": "BC-escalabilidade",
+  "base_url": "http://lb",
+  "capacidade_rps": 1.749,
+  "iteracoes": null,
+  "escala_tempo": 0.1,
+  "timeout": "60s",
+  "plano": [
+    {
+      "fase": "aquecimento",
+      "inicio_s": 0,
+      "fim_s": 12,
+      "taxa_inicial_rps": 0.5166666666666667,
+      "taxa_final_rps": 0.5166666666666667,
+      "fracao_inicial": 0.3,
+      "fracao_final": 0.3
+    },
+    {
+      "fase": "subida-1",
+      "inicio_s": 12,
+      "fim_s": 18,
+      "taxa_inicial_rps": 0.5166666666666667,
+      "taxa_final_rps": 1.4833333333333334,
+      "fracao_inicial": 0.3,
+      "fracao_final": 0.85
+    },
+    {
+      "fase": "degrau-1",
+      "inicio_s": 18,
+      "fim_s": 54,
+      "taxa_inicial_rps": 1.4833333333333334,
+      "taxa_final_rps": 1.4833333333333334,
+      "fracao_inicial": 0.85,
+      "fracao_final": 0.85
+    },
+    {
+      "fase": "subida-2",
+      "inicio_s": 54,
+      "fim_s": 60,
+      "taxa_inicial_rps": 1.4833333333333334,
+      "taxa_final_rps": 2.6166666666666667,
+      "fracao_inicial": 0.85,
+      "fracao_final": 1.5
+    },
+    {
+      "fase": "degrau-2",
+      "inicio_s": 60,
+      "fim_s": 102,
+      "taxa_inicial_rps": 2.6166666666666667,
+      "taxa_final_rps": 2.6166666666666667,
+      "fracao_inicial": 1.5,
+      "fracao_final": 1.5
+    },
+    {
+      "fase": "descida",
+      "inicio_s": 102,
+      "fim_s": 108,
+      "taxa_inicial_rps": 2.6166666666666667,
+      "taxa_final_rps": 0.35,
+      "fracao_inicial": 1.5,
+      "fracao_final": 0.2
+    },
+    {
+      "fase": "baixa",
+      "inicio_s": 108,
+      "fim_s": 240,
+      "taxa_inicial_rps": 0.35,
+      "taxa_final_rps": 0.35,
+      "fracao_inicial": 0.2,
+      "fracao_final": 0.2
+    }
+  ],
+  "inicio_utc": "2026-11-13T02:17:45.075Z",
+  "fim_utc": "2026-11-13T02:21:42.781Z",
+  "duracao_s": 237.700559068,
+  "requisicoes": 242,
+  "vazao_media_rps": 1.0180876349170473,
+  "taxa_falhas": 0,
+  "taxa_checks": 1,
+  "iteracoes_descartadas": 0,
+  "vus_max": 14,
+  "latencia_ms": {
+    "p(90)": 360.5077788,
+    "p(95)": 398.68431019999997,
+    "p(99)": 543.7001398000001,
+    "max": 741.743883,
+    "avg": 298.5674499710744,
+    "min": 229.581143,
+    "med": 286.12620400000003
+  }
+}

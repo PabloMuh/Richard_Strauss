@@ -21,6 +21,7 @@ Use **permitido**, **bloqueado** ou **pendente** para cada capacidade. Guarde ev
 | CloudWatch Logs | Pendente | Criar grupo, definir retenção, consultar streams/eventos e excluir após exportação |
 | CloudWatch Metrics | Pendente | Consultar CPU/memória de serviço ECS e preservar timestamps/unidades |
 | ALB | Pendente | Permissões de criação/leitura/exclusão, duas AZs, tags, listener e target group IP; orçamento |
+| Application Auto Scaling | Pendente | Registrar scalable target com tags, criar política de target tracking e desregistrar; service-linked role do Auto Scaling para ECS; leitura de atividades e histórico de alarmes |
 | Limpeza | Pendente | Permissões de parar/deletar o serviço, ELB, SGs, cluster e dados próprios |
 | API/Dockerfile | Entregue (12/11) | Em [`app/`](../app/README.md); build `linux/amd64` e duas réplicas validados localmente ([validação local](validacao-local.md)); comportamento sob carga corrigido (API-02) |
 

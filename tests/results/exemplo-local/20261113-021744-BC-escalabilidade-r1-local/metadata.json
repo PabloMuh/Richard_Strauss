@@ -1,0 +1,30 @@
+{
+  "experimento": "BC-escalabilidade",
+  "objetivo": "B: scale-out com carga em degraus (85% e 150% da capacidade de uma task); C: scale-in após reduzir a carga para 20%",
+  "hipotese": "Em cada degrau a CPU passa de 60%, o alarme dispara e o serviço vai de 1 a 2 e de 2 a 3 tasks; sob a mesma carga, a latência cai com mais tasks. Com carga baixa, volta a 1 task após o alarme de scale-in (cerca de 15 min).",
+  "repeticao": 1,
+  "responsavel": "leonardo-lbp",
+  "inicio_utc": "2026-11-13T02:17:44.293Z",
+  "fim_utc": "2026-11-13T02:22:13.925Z",
+  "identificacao": {
+    "ambiente": "local",
+    "replicas": 3,
+    "observacao": "Ambiente Docker de tests/local; sem Auto Scaling nem ECS. Serve para validar o script e a análise."
+  },
+  "auto_scaling": null,
+  "k6": {
+    "cenario": "BC-escalabilidade",
+    "base_url": "http://localhost:8080",
+    "capacidade_rps": 1.749,
+    "iteracoes": null,
+    "escala_tempo": 0.1,
+    "executor": "grafana/k6:1.0.0",
+    "codigo_saida": 0
+  },
+  "coleta": {
+    "intervalo_s": 5,
+    "observacao_apos_k6_s": 30,
+    "aguardar_metricas_s": 0
+  },
+  "falha": null
+}

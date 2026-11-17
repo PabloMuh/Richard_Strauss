@@ -1,0 +1,3 @@
+timestamp_utc,decorrido_s,desejadas,em_execucao,pendentes,tasks_saudaveis,alvos_saudaveis,alvos_iniciando,alvos_drenando,alvos_nao_saudaveis,tasks
+2026-11-13T01:48:30.859Z,0.4,3,3,0,3,,,,,api-1:running:healthy;api-2:running:healthy;api-3:running:healthy
+2026-11-13T01:48:34.444Z,4,3,3,0,3,,,,,api-1:running:healthy;api-2:running:healthy;api-3:running:healthy

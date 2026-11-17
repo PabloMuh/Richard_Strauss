@@ -53,7 +53,8 @@ function Wait-ServiceStopped {
     throw 'Servico ainda esta encerrando. Inventario preservado; execute a limpeza novamente.'
 }
 
-$order = @('service', 'listener', 'loadBalancer', 'targetGroup', 'taskSecurityGroup', 'albSecurityGroup', 'cluster')
+# O Auto Scaling sai antes do servico: senao poderia voltar a aumentar as tasks durante a remocao.
+$order = @('scalableTarget', 'service', 'listener', 'loadBalancer', 'targetGroup', 'taskSecurityGroup', 'albSecurityGroup', 'cluster')
 if ($DeleteStoredData) { $order += @('repository', 'logGroup') }
 foreach ($key in $order) {
     if (-not $state.resources.ContainsKey($key)) { continue }
@@ -63,6 +64,7 @@ foreach ($key in $order) {
     if (-not $PSCmdlet.ShouldProcess($resource.id, "Remover recurso do projeto ($key)")) { continue }
     if ($present) {
         switch ($key) {
+            'scalableTarget' { $null = Invoke-Aws $config @('application-autoscaling', 'deregister-scalable-target', '--service-namespace', 'ecs', '--scalable-dimension', 'ecs:service:DesiredCount', '--resource-id', $resource.id) }
             'service' {
                 $null = Invoke-Aws $config @('ecs', 'update-service', '--cluster', $config.project, '--service', $resource.id, '--desired-count', '0')
                 Wait-ServiceStopped
@@ -83,6 +85,7 @@ foreach ($key in $order) {
         }
     }
     $state.resources.Remove($key)
+    if ($key -eq 'scalableTarget' -and $state.ContainsKey('autoScaling')) { $state.Remove('autoScaling') }
     Save-State $config $state
 }
 foreach ($arn in @($state.taskDefinitions)) {

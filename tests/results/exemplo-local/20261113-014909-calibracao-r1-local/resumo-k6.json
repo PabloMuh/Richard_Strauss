@@ -1,0 +1,28 @@
+{
+  "cenario": "calibracao",
+  "base_url": "http://lb",
+  "capacidade_rps": null,
+  "iteracoes": null,
+  "escala_tempo": 0.5,
+  "timeout": "60s",
+  "plano": [],
+  "inicio_utc": "2026-11-13T01:49:12.279Z",
+  "fim_utc": "2026-11-13T01:50:43.762Z",
+  "duracao_s": 91.462882716,
+  "requisicoes": 159,
+  "vazao_media_rps": 1.7384101099645906,
+  "taxa_falhas": 0,
+  "taxa_checks": 1,
+  "iteracoes_descartadas": 0,
+  "vus_max": 4,
+  "latencia_ms": {
+      "p(95)": 3889.1670154999997,
+      "p(99)": 6876.791060719995,
+      "max": 7604.381415,
+      "avg": 2286.811241113208,
+      "min": 967.997767,
+      "med": 1995.141784,
+      "p(90)": 3116.5088996000018
+    },
+  "capacidade_estimada_rps": 1.7384101099645906
+}
