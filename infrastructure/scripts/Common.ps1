@@ -104,7 +104,11 @@ function Invoke-Tool {
 }
 
 function Get-AwsExecutable {
-    foreach ($installed in @((Join-Path $env:LOCALAPPDATA 'Programs/Amazon/AWSCLIV2/aws.exe'), (Join-Path $env:USERPROFILE 'AppData/Local/Programs/Amazon/AWSCLIV2/aws.exe'), (Join-Path $env:ProgramFiles 'Amazon/AWSCLIV2/aws.exe'))) {
+    # Caminhos do instalador MSI (Windows). Em Linux/WSL/macOS essas variaveis nao existem e o aws vem do PATH.
+    $candidates = @(@($env:LOCALAPPDATA, 'Programs/Amazon/AWSCLIV2/aws.exe'), @($env:USERPROFILE, 'AppData/Local/Programs/Amazon/AWSCLIV2/aws.exe'), @($env:ProgramFiles, 'Amazon/AWSCLIV2/aws.exe'))
+    foreach ($candidate in $candidates) {
+        if ([string]::IsNullOrEmpty($candidate[0])) { continue }
+        $installed = Join-Path $candidate[0] $candidate[1]
         if (Test-Path -LiteralPath $installed) { return $installed }
     }
     $command = Get-Command aws -ErrorAction SilentlyContinue
