@@ -1,0 +1,32 @@
+{
+  "ScalingPolicies": [
+    {
+      "PolicyARN": "arn:aws:autoscaling:us-east-2:7795****9628:scalingPolicy:1a026789-12ee-4d8f-840e-273b7d31b1d5:resource/ecs/service/richard-strauss/richard-strauss-api:policyName/richard-strauss-cpu",
+      "PolicyName": "richard-strauss-cpu",
+      "ServiceNamespace": "ecs",
+      "ResourceId": "service/richard-strauss/richard-strauss-api",
+      "ScalableDimension": "ecs:service:DesiredCount",
+      "PolicyType": "TargetTrackingScaling",
+      "TargetTrackingScalingPolicyConfiguration": {
+        "TargetValue": 60.0,
+        "PredefinedMetricSpecification": {
+          "PredefinedMetricType": "ECSServiceAverageCPUUtilization"
+        },
+        "ScaleOutCooldown": 60,
+        "ScaleInCooldown": 180,
+        "DisableScaleIn": false
+      },
+      "Alarms": [
+        {
+          "AlarmName": "TargetTracking-service/richard-strauss/richard-strauss-api-AlarmHigh-cfb98adb-f7c8-4569-b21d-245e66b64ab8",
+          "AlarmARN": "arn:aws:cloudwatch:us-east-2:7795****9628:alarm:TargetTracking-service/richard-strauss/richard-strauss-api-AlarmHigh-cfb98adb-f7c8-4569-b21d-245e66b64ab8"
+        },
+        {
+          "AlarmName": "TargetTracking-service/richard-strauss/richard-strauss-api-AlarmLow-a0913dc9-31a9-4913-a9d2-165cc29d6d28",
+          "AlarmARN": "arn:aws:cloudwatch:us-east-2:7795****9628:alarm:TargetTracking-service/richard-strauss/richard-strauss-api-AlarmLow-a0913dc9-31a9-4913-a9d2-165cc29d6d28"
+        }
+      ],
+      "CreationTime": "2026-11-17T20:00:53.773-03:00"
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+[
+  {
+    "timestamp_utc": "2026-11-17T23:01:32.496Z",
+    "tipo": "k6_inicio",
+    "descricao": "k6 iniciado (BC-escalabilidade)"
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:01:50.324Z",
+    "tipo": "alarme",
+    "descricao": "Alarme de alta (scale-out): Alarm updated from INSUFFICIENT_DATA to OK",
+    "tipo_alarme": "alta",
+    "alarme": "TargetTracking-service/richard-strauss/richard-strauss-api-AlarmHigh-cfb98adb-f7c8-4569-b21d-245e66b64ab8",
+    "estado": "OK"
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:02:45.089Z",
+    "tipo": "alarme",
+    "descricao": "Alarme de baixa (scale-in): Alarm updated from INSUFFICIENT_DATA to ALARM",
+    "tipo_alarme": "baixa",
+    "alarme": "TargetTracking-service/richard-strauss/richard-strauss-api-AlarmLow-a0913dc9-31a9-4913-a9d2-165cc29d6d28",
+    "estado": "ALARM"
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:07:45.087Z",
+    "tipo": "alarme",
+    "descricao": "Alarme de baixa (scale-in): Alarm updated from ALARM to OK",
+    "tipo_alarme": "baixa",
+    "alarme": "TargetTracking-service/richard-strauss/richard-strauss-api-AlarmLow-a0913dc9-31a9-4913-a9d2-165cc29d6d28",
+    "estado": "OK"
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:10:50.326Z",
+    "tipo": "alarme",
+    "descricao": "Alarme de alta (scale-out): Alarm updated from OK to ALARM",
+    "tipo_alarme": "alta",
+    "alarme": "TargetTracking-service/richard-strauss/richard-strauss-api-AlarmHigh-cfb98adb-f7c8-4569-b21d-245e66b64ab8",
+    "estado": "ALARM"
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:10:50.490Z",
+    "tipo": "escalonamento",
+    "descricao": "Setting desired count to 2.",
+    "status": "Successful",
+    "fim_utc": "2026-11-17T23:11:58.490Z",
+    "causa": "monitor alarm TargetTracking-service/richard-strauss/richard-strauss-api-AlarmHigh-cfb98adb-f7c8-4569-b21d-245e66b64ab8 in state ALARM triggered policy richard-strauss-cpu"
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:10:55.134Z",
+    "tipo": "ecs",
+    "descricao": "(service richard-strauss-api) has started 1 tasks: (task 24fb3e4deba1470bbe0480e29d1fe4bc)."
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:11:24.091Z",
+    "tipo": "ecs",
+    "descricao": "(service richard-strauss-api) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-2:7795****9628:targetgroup/richard-strauss-api/80c6de7f6ffd80f5)"
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:12:02.124Z",
+    "tipo": "ecs",
+    "descricao": "(service richard-strauss-api) has reached a steady state."
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:13:50.494Z",
+    "tipo": "escalonamento",
+    "descricao": "Setting desired count to 3.",
+    "status": "Successful",
+    "fim_utc": "2026-11-17T23:14:57.524Z",
+    "causa": "monitor alarm TargetTracking-service/richard-strauss/richard-strauss-api-AlarmHigh-cfb98adb-f7c8-4569-b21d-245e66b64ab8 in state ALARM triggered policy richard-strauss-cpu"
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:13:53.286Z",
+    "tipo": "ecs",
+    "descricao": "(service richard-strauss-api) has started 1 tasks: (task dafbb3464774400295b1fc1f38890670)."
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:14:21.548Z",
+    "tipo": "ecs",
+    "descricao": "(service richard-strauss-api) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-2:7795****9628:targetgroup/richard-strauss-api/80c6de7f6ffd80f5)"
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:14:50.326Z",
+    "tipo": "alarme",
+    "descricao": "Alarme de alta (scale-out): Alarm updated from ALARM to OK",
+    "tipo_alarme": "alta",
+    "alarme": "TargetTracking-service/richard-strauss/richard-strauss-api-AlarmHigh-cfb98adb-f7c8-4569-b21d-245e66b64ab8",
+    "estado": "OK"
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:14:59.780Z",
+    "tipo": "ecs",
+    "descricao": "(service richard-strauss-api) has reached a steady state."
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:31:45.088Z",
+    "tipo": "alarme",
+    "descricao": "Alarme de baixa (scale-in): Alarm updated from OK to ALARM",
+    "tipo_alarme": "baixa",
+    "alarme": "TargetTracking-service/richard-strauss/richard-strauss-api-AlarmLow-a0913dc9-31a9-4913-a9d2-165cc29d6d28",
+    "estado": "ALARM"
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:37:45.235Z",
+    "tipo": "escalonamento",
+    "descricao": "Setting desired count to 2.",
+    "status": "Successful",
+    "fim_utc": "2026-11-17T23:38:19.090Z",
+    "causa": "monitor alarm TargetTracking-service/richard-strauss/richard-strauss-api-AlarmLow-a0913dc9-31a9-4913-a9d2-165cc29d6d28 in state ALARM triggered policy richard-strauss-cpu"
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:37:49.890Z",
+    "tipo": "ecs",
+    "descricao": "(service richard-strauss-api) has stopped 1 running tasks: (task 5dfa3b11c57345a39d286da496616b7a)."
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:37:59.795Z",
+    "tipo": "ecs",
+    "descricao": "(service richard-strauss-api) deregistered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-2:7795****9628:targetgroup/richard-strauss-api/80c6de7f6ffd80f5)"
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:37:59.799Z",
+    "tipo": "ecs",
+    "descricao": "(service richard-strauss-api, taskSet ecs-svc/0316170514152323679) has begun draining connections on 1 tasks."
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:37:59.877Z",
+    "tipo": "ecs",
+    "descricao": "(service richard-strauss-api) has reached a steady state."
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:41:45.265Z",
+    "tipo": "escalonamento",
+    "descricao": "Setting desired count to 1.",
+    "status": "Successful",
+    "fim_utc": "2026-11-17T23:42:18.063Z",
+    "causa": "monitor alarm TargetTracking-service/richard-strauss/richard-strauss-api-AlarmLow-a0913dc9-31a9-4913-a9d2-165cc29d6d28 in state ALARM triggered policy richard-strauss-cpu"
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:41:45.859Z",
+    "tipo": "ecs",
+    "descricao": "(service richard-strauss-api) has stopped 1 running tasks: (task 24fb3e4deba1470bbe0480e29d1fe4bc)."
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:41:55.482Z",
+    "tipo": "ecs",
+    "descricao": "(service richard-strauss-api) deregistered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-2:7795****9628:targetgroup/richard-strauss-api/80c6de7f6ffd80f5)"
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:41:55.486Z",
+    "tipo": "ecs",
+    "descricao": "(service richard-strauss-api, taskSet ecs-svc/0316170514152323679) has begun draining connections on 1 tasks."
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:41:55.560Z",
+    "tipo": "ecs",
+    "descricao": "(service richard-strauss-api) has reached a steady state."
+  },
+  {
+    "timestamp_utc": "2026-11-17T23:43:17.125Z",
+    "tipo": "k6_fim",
+    "descricao": "k6 terminou (código 0)"
+  }
+]

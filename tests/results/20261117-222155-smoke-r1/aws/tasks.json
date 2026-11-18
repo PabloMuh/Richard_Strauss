@@ -1,0 +1,190 @@
+[
+  {
+    "attachments": [
+      {
+        "id": "25ee1c0d-320d-4043-8398-2b97f2ba5298",
+        "type": "ElasticNetworkInterface",
+        "status": "ATTACHED",
+        "details": [
+          {
+            "name": "subnetId",
+            "value": "subnet-07fc2854d064b0285"
+          },
+          {
+            "name": "networkInterfaceId",
+            "value": "eni-0f368b404669057c3"
+          },
+          {
+            "name": "macAddress",
+            "value": "06:ff:ef:75:de:5b"
+          },
+          {
+            "name": "privateDnsName",
+            "value": "ip-172-31-19-111.us-east-2.compute.internal"
+          },
+          {
+            "name": "privateIPv4Address",
+            "value": "172.31.19.111"
+          }
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "name": "ecs.cpu-architecture",
+        "value": "x86_64"
+      }
+    ],
+    "availabilityZone": "us-east-2b",
+    "clusterArn": "arn:aws:ecs:us-east-2:7795****9628:cluster/richard-strauss",
+    "connectivity": "CONNECTED",
+    "connectivityAt": "2026-11-17T19:18:09.586-03:00",
+    "containers": [
+      {
+        "containerArn": "arn:aws:ecs:us-east-2:7795****9628:container/richard-strauss/446ef2ab351d4c8884d03fdea5101518/c0f3d996-26fa-4134-9e2e-918f43ca1c67",
+        "taskArn": "arn:aws:ecs:us-east-2:7795****9628:task/richard-strauss/446ef2ab351d4c8884d03fdea5101518",
+        "name": "api",
+        "image": "7795****9628.dkr.ecr.us-east-2.amazonaws.com/richard-strauss@sha256:69fd745d5bd8607a276d99c6e69cbf97f846afa2240c9287f3c5ecb8b167ea71",
+        "imageDigest": "sha256:69fd745d5bd8607a276d99c6e69cbf97f846afa2240c9287f3c5ecb8b167ea71",
+        "runtimeId": "446ef2ab351d4c8884d03fdea5101518-0946514567",
+        "lastStatus": "RUNNING",
+        "networkBindings": [],
+        "networkInterfaces": [
+          {
+            "attachmentId": "25ee1c0d-320d-4043-8398-2b97f2ba5298",
+            "privateIpv4Address": "172.31.19.111"
+          }
+        ],
+        "healthStatus": "HEALTHY",
+        "cpu": "0"
+      }
+    ],
+    "cpu": "256",
+    "createdAt": "2026-11-17T19:18:05.911-03:00",
+    "desiredStatus": "RUNNING",
+    "enableExecuteCommand": false,
+    "group": "service:richard-strauss-api",
+    "healthStatus": "HEALTHY",
+    "lastStatus": "RUNNING",
+    "launchType": "FARGATE",
+    "memory": "512",
+    "overrides": {
+      "containerOverrides": [
+        {
+          "name": "api"
+        }
+      ],
+      "inferenceAcceleratorOverrides": []
+    },
+    "platformVersion": "1.4.0",
+    "platformFamily": "Linux",
+    "pullStartedAt": "2026-11-17T19:18:17.251-03:00",
+    "pullStoppedAt": "2026-11-17T19:18:20.735-03:00",
+    "startedAt": "2026-11-17T19:18:32.81-03:00",
+    "startedBy": "ecs-svc/2901316704708330266",
+    "tags": [],
+    "taskArn": "arn:aws:ecs:us-east-2:7795****9628:task/richard-strauss/446ef2ab351d4c8884d03fdea5101518",
+    "taskDefinitionArn": "arn:aws:ecs:us-east-2:7795****9628:task-definition/richard-strauss-api:2",
+    "version": 4,
+    "ephemeralStorage": {
+      "sizeInGiB": 20
+    },
+    "fargateEphemeralStorage": {
+      "sizeInGiB": 20
+    }
+  },
+  {
+    "attachments": [
+      {
+        "id": "e36601cb-4eea-4114-a036-7f01a5cba04e",
+        "type": "ElasticNetworkInterface",
+        "status": "ATTACHED",
+        "details": [
+          {
+            "name": "subnetId",
+            "value": "subnet-0e476b522a0cfe139"
+          },
+          {
+            "name": "networkInterfaceId",
+            "value": "eni-0d1b245d2bbc4425e"
+          },
+          {
+            "name": "macAddress",
+            "value": "02:ff:fb:fc:68:e9"
+          },
+          {
+            "name": "privateDnsName",
+            "value": "ip-172-31-1-79.us-east-2.compute.internal"
+          },
+          {
+            "name": "privateIPv4Address",
+            "value": "172.31.1.79"
+          }
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "name": "ecs.cpu-architecture",
+        "value": "x86_64"
+      }
+    ],
+    "availabilityZone": "us-east-2a",
+    "clusterArn": "arn:aws:ecs:us-east-2:7795****9628:cluster/richard-strauss",
+    "connectivity": "CONNECTED",
+    "connectivityAt": "2026-11-17T19:18:08.691-03:00",
+    "containers": [
+      {
+        "containerArn": "arn:aws:ecs:us-east-2:7795****9628:container/richard-strauss/6c471c822df04494b4d224b67d4ea0b5/90808b37-c5d7-422c-bfe8-059c9f3d5ede",
+        "taskArn": "arn:aws:ecs:us-east-2:7795****9628:task/richard-strauss/6c471c822df04494b4d224b67d4ea0b5",
+        "name": "api",
+        "image": "7795****9628.dkr.ecr.us-east-2.amazonaws.com/richard-strauss@sha256:69fd745d5bd8607a276d99c6e69cbf97f846afa2240c9287f3c5ecb8b167ea71",
+        "imageDigest": "sha256:69fd745d5bd8607a276d99c6e69cbf97f846afa2240c9287f3c5ecb8b167ea71",
+        "runtimeId": "6c471c822df04494b4d224b67d4ea0b5-0946514567",
+        "lastStatus": "RUNNING",
+        "networkBindings": [],
+        "networkInterfaces": [
+          {
+            "attachmentId": "e36601cb-4eea-4114-a036-7f01a5cba04e",
+            "privateIpv4Address": "172.31.1.79"
+          }
+        ],
+        "healthStatus": "HEALTHY",
+        "cpu": "0"
+      }
+    ],
+    "cpu": "256",
+    "createdAt": "2026-11-17T19:18:05.911-03:00",
+    "desiredStatus": "RUNNING",
+    "enableExecuteCommand": false,
+    "group": "service:richard-strauss-api",
+    "healthStatus": "HEALTHY",
+    "lastStatus": "RUNNING",
+    "launchType": "FARGATE",
+    "memory": "512",
+    "overrides": {
+      "containerOverrides": [
+        {
+          "name": "api"
+        }
+      ],
+      "inferenceAcceleratorOverrides": []
+    },
+    "platformVersion": "1.4.0",
+    "platformFamily": "Linux",
+    "pullStartedAt": "2026-11-17T19:18:16.489-03:00",
+    "pullStoppedAt": "2026-11-17T19:18:20.201-03:00",
+    "startedAt": "2026-11-17T19:18:29.692-03:00",
+    "startedBy": "ecs-svc/2901316704708330266",
+    "tags": [],
+    "taskArn": "arn:aws:ecs:us-east-2:7795****9628:task/richard-strauss/6c471c822df04494b4d224b67d4ea0b5",
+    "taskDefinitionArn": "arn:aws:ecs:us-east-2:7795****9628:task-definition/richard-strauss-api:2",
+    "version": 4,
+    "ephemeralStorage": {
+      "sizeInGiB": 20
+    },
+    "fargateEphemeralStorage": {
+      "sizeInGiB": 20
+    }
+  }
+]

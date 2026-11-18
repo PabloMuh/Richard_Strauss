@@ -1,0 +1,91 @@
+{
+  "cenario": "BC-escalabilidade",
+  "base_url": "http://richard-strauss-alb-987147931.us-east-2.elb.amazonaws.com",
+  "capacidade_rps": 1.5,
+  "iteracoes": null,
+  "escala_tempo": 1,
+  "timeout": "60s",
+  "plano": [
+    {
+      "fase": "aquecimento",
+      "inicio_s": 0,
+      "fim_s": 120,
+      "taxa_inicial_rps": 0.45,
+      "taxa_final_rps": 0.45,
+      "fracao_inicial": 0.3,
+      "fracao_final": 0.3
+    },
+    {
+      "fase": "subida-1",
+      "inicio_s": 120,
+      "fim_s": 180,
+      "taxa_inicial_rps": 0.45,
+      "taxa_final_rps": 1.2833333333333334,
+      "fracao_inicial": 0.3,
+      "fracao_final": 0.85
+    },
+    {
+      "fase": "degrau-1",
+      "inicio_s": 180,
+      "fim_s": 540,
+      "taxa_inicial_rps": 1.2833333333333334,
+      "taxa_final_rps": 1.2833333333333334,
+      "fracao_inicial": 0.85,
+      "fracao_final": 0.85
+    },
+    {
+      "fase": "subida-2",
+      "inicio_s": 540,
+      "fim_s": 600,
+      "taxa_inicial_rps": 1.2833333333333334,
+      "taxa_final_rps": 2.25,
+      "fracao_inicial": 0.85,
+      "fracao_final": 1.5
+    },
+    {
+      "fase": "degrau-2",
+      "inicio_s": 600,
+      "fim_s": 1020,
+      "taxa_inicial_rps": 2.25,
+      "taxa_final_rps": 2.25,
+      "fracao_inicial": 1.5,
+      "fracao_final": 1.5
+    },
+    {
+      "fase": "descida",
+      "inicio_s": 1020,
+      "fim_s": 1080,
+      "taxa_inicial_rps": 2.25,
+      "taxa_final_rps": 0.3,
+      "fracao_inicial": 1.5,
+      "fracao_final": 0.2
+    },
+    {
+      "fase": "baixa",
+      "inicio_s": 1080,
+      "fim_s": 2400,
+      "taxa_inicial_rps": 0.3,
+      "taxa_final_rps": 0.3,
+      "fracao_inicial": 0.2,
+      "fracao_final": 0.2
+    }
+  ],
+  "inicio_utc": "2026-11-17T23:01:34.225Z",
+  "fim_utc": "2026-11-17T23:43:12.387Z",
+  "duracao_s": 2498.158675529,
+  "requisicoes": 2091,
+  "vazao_media_rps": 0.8370164875764821,
+  "taxa_falhas": 0,
+  "taxa_checks": 1,
+  "iteracoes_descartadas": 0,
+  "vus_max": 12,
+  "latencia_ms": {
+    "p(90)": 921.77912,
+    "p(95)": 1299.8326385,
+    "p(99)": 2070.2565057999996,
+    "max": 3014.050218,
+    "avg": 772.3791926250601,
+    "min": 560.887897,
+    "med": 692.351549
+  }
+}

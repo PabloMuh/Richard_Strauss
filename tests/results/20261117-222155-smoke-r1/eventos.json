@@ -1,0 +1,57 @@
+[
+  {
+    "timestamp_utc": "2026-11-17T22:17:56.549Z",
+    "tipo": "ecs",
+    "descricao": "(service richard-strauss-api) has started 1 tasks: (task 3fc5bd8bd27f49578bf8f5fd0fe7c1bc)."
+  },
+  {
+    "timestamp_utc": "2026-11-17T22:18:05.994Z",
+    "tipo": "ecs",
+    "descricao": "(service richard-strauss-api) has started 2 tasks: (task 446ef2ab351d4c8884d03fdea5101518) (task 6c471c822df04494b4d224b67d4ea0b5)."
+  },
+  {
+    "timestamp_utc": "2026-11-17T22:18:15.498Z",
+    "tipo": "ecs",
+    "descricao": "(service richard-strauss-api) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-2:7795****9628:targetgroup/richard-strauss-api/80c6de7f6ffd80f5)"
+  },
+  {
+    "timestamp_utc": "2026-11-17T22:18:26.149Z",
+    "tipo": "ecs",
+    "descricao": "(service richard-strauss-api) registered 2 targets in (target-group arn:aws:elasticloadbalancing:us-east-2:7795****9628:targetgroup/richard-strauss-api/80c6de7f6ffd80f5)"
+  },
+  {
+    "timestamp_utc": "2026-11-17T22:19:17.340Z",
+    "tipo": "ecs",
+    "descricao": "(service richard-strauss-api) has stopped 2 running tasks: (task 3fc5bd8bd27f49578bf8f5fd0fe7c1bc) (task 4b0b9dd188504543bbaaa344a0b3b796)."
+  },
+  {
+    "timestamp_utc": "2026-11-17T22:19:26.642Z",
+    "tipo": "ecs",
+    "descricao": "(service richard-strauss-api) deregistered 2 targets in (target-group arn:aws:elasticloadbalancing:us-east-2:7795****9628:targetgroup/richard-strauss-api/80c6de7f6ffd80f5)"
+  },
+  {
+    "timestamp_utc": "2026-11-17T22:19:26.646Z",
+    "tipo": "ecs",
+    "descricao": "(service richard-strauss-api, taskSet ecs-svc/1783859276478023507) has begun draining connections on 2 tasks."
+  },
+  {
+    "timestamp_utc": "2026-11-17T22:20:19.424Z",
+    "tipo": "ecs",
+    "descricao": "(service richard-strauss-api) (deployment ecs-svc/2901316704708330266) deployment completed."
+  },
+  {
+    "timestamp_utc": "2026-11-17T22:20:19.425Z",
+    "tipo": "ecs",
+    "descricao": "(service richard-strauss-api) has reached a steady state."
+  },
+  {
+    "timestamp_utc": "2026-11-17T22:21:55.363Z",
+    "tipo": "k6_inicio",
+    "descricao": "k6 iniciado (smoke)"
+  },
+  {
+    "timestamp_utc": "2026-11-17T22:22:12.565Z",
+    "tipo": "k6_fim",
+    "descricao": "k6 terminou (código 0)"
+  }
+]

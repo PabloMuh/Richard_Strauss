@@ -1,0 +1,39 @@
+{
+  "pasta": "20261117-222155-smoke-r1",
+  "experimento": "smoke",
+  "repeticao": 1,
+  "ambiente": "aws",
+  "inicio_utc": "2026-11-17T22:22:07.936Z",
+  "fim_utc": "2026-11-17T22:22:11.148Z",
+  "duracao_s": 3.2,
+  "k6": {
+    "capacidade_rps": null,
+    "iteracoes": null,
+    "escala_tempo": 1,
+    "iteracoes_descartadas": 0,
+    "vus_max": 1,
+    "taxa_checks": 1,
+    "capacidade_estimada_rps": null
+  },
+  "geral": {
+    "requisicoes": 3,
+    "erros": 0,
+    "taxa_erros_pct": 0.0,
+    "vazao_rps": 0.934,
+    "latencia_p50_ms": 656.9,
+    "latencia_p95_ms": 738.4,
+    "latencia_p99_ms": 738.4,
+    "latencia_max_ms": 738.4
+  },
+  "fases": [],
+  "instancias": {
+    "6c471c822df04494b4d224b67d4ea0b5": 2,
+    "446ef2ab351d4c8884d03fdea5101518": 1
+  },
+  "recursos": {
+    "cpu_media_pct": null,
+    "cpu_maxima_pct": null,
+    "memoria_media_pct": null,
+    "observacao": "média dos datapoints de 1 min do serviço (média entre as tasks)"
+  }
+}

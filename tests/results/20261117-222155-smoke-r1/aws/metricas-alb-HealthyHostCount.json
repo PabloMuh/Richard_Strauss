@@ -1,0 +1,41 @@
+{
+  "Label": "HealthyHostCount",
+  "Datapoints": [
+    {
+      "Timestamp": "2026-11-17T19:19:00-03:00",
+      "Minimum": 2.0,
+      "Maximum": 2.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T19:20:00-03:00",
+      "Minimum": 2.0,
+      "Maximum": 2.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T19:16:00-03:00",
+      "Minimum": 1.0,
+      "Maximum": 1.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T19:21:00-03:00",
+      "Minimum": 2.0,
+      "Maximum": 2.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T19:17:00-03:00",
+      "Minimum": 1.0,
+      "Maximum": 1.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T19:18:00-03:00",
+      "Minimum": 4.0,
+      "Maximum": 4.0,
+      "Unit": "Count"
+    }
+  ]
+}
