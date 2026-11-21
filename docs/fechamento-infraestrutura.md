@@ -46,9 +46,9 @@ Em 21/11, as consultas na conta `6300****4417` retornaram zero clusters ECS, zer
 
 O registro de 17/11 estimou cerca de **US$ 0,07 por hora** com ALB e duas tasks. É um valor de planejamento. O custo da sessão depende do tempo de vida dos recursos, do número de tasks e IPv4 públicos, do uso de LCU, dos logs e do armazenamento de imagens. Os horários do k6 cobrem a janela medida, enquanto o ALB pode permanecer ativo antes e depois dessa janela. [Registro da sessão](https://github.com/PabloMuh/Richard_Strauss/blob/629f0a7/docs/impedimentos.md) · [Preços do ALB](https://aws.amazon.com/elasticloadbalancing/pricing/) · [Preços de IPv4](https://aws.amazon.com/vpc/pricing/)
 
-Para fechar o registro de 17/11, faltam duas evidências na conta `7795****9628`:
+Para fechar o registro de 17/11, a pessoa 1 ou outro integrante com acesso à conta `7795****9628` precisa fornecer estas duas evidências:
 
-- Consulta ao Billing com o período, os serviços e os créditos aplicados. O saldo da conta do teste de 12/11 não mede esta sessão.
-- Inventário final ou consultas que confirmem a ausência das tasks, do ALB e da política de escala da sessão. Registre o destino das imagens e dos logs.
+- [ ] **Billing da sessão.** Registrar o intervalo consultado, o custo por serviço e os créditos aplicados. Se o Billing agregar outros usos no mesmo período, indicar essa limitação.
+- [ ] **Inventário final da sessão.** Registrar a data da verificação, a ausência de tasks ativas, ALB e alvo do Auto Scaling do projeto, e quais imagens do ECR e grupos de logs foram mantidos.
 
 [Como conferir a cobrança na AWS](https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/view-billing-dashboard.html)
