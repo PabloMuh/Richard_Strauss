@@ -20,7 +20,7 @@ O Auto Scaling dos experimentos B e C (`Set-AutoScaling.ps1`) mantém de 1 a 3 t
 
 ## Estimativa antes de provisionar
 
-Não há valor preenchido porque **região, créditos, janela e limite ainda não foram definidos**. Na região escolhida, estime e registre em USD:
+Os testes usaram `us-east-2`. O [fechamento de infraestrutura](fechamento-infraestrutura.md) registra as estimativas das duas sessões e as evidências disponíveis. Para uma nova sessão, estime e registre em USD:
 
 | Componente | Quantidade a considerar |
 |---|---|
