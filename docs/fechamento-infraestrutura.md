@@ -42,6 +42,8 @@ O resumo automático de B/C reaproveitou a primeira transição do alarme e a pr
 
 ## Custos e confirmação pendente
 
+Em 21/11, as consultas na conta `6300****4417` retornaram zero clusters ECS, zero ALBs do projeto e nenhum alvo cadastrado no Auto Scaling do serviço. O repositório ECR e o grupo de logs permaneceram. O Free Plan estava ativo com saldo de US$ 100. O saldo é um registro da conta e não discrimina o custo da sessão.
+
 O registro de 17/11 estimou cerca de **US$ 0,07 por hora** com ALB e duas tasks. É um valor de planejamento. O custo da sessão depende do tempo de vida dos recursos, do número de tasks e IPv4 públicos, do uso de LCU, dos logs e do armazenamento de imagens. Os horários do k6 cobrem a janela medida, enquanto o ALB pode permanecer ativo antes e depois dessa janela. [Registro da sessão](https://github.com/PabloMuh/Richard_Strauss/blob/629f0a7/docs/impedimentos.md) · [Preços do ALB](https://aws.amazon.com/elasticloadbalancing/pricing/) · [Preços de IPv4](https://aws.amazon.com/vpc/pricing/)
 
 Para fechar o registro de 17/11, faltam duas evidências na conta `7795****9628`:
