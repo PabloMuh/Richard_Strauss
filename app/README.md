@@ -41,6 +41,7 @@ Nenhuma é obrigatória; não há segredos.
 | `WORK_DEFAULT_ITERATIONS` | `200000` | Iterações quando `?iterations` não é informado |
 | `WORK_MAX_ITERATIONS` | `5000000` | Limite superior aceito |
 | `WORK_CONCURRENCY` | `1` | Cálculos de `/work` executados ao mesmo tempo; os demais aguardam na fila. Com 0,25 vCPU, manter `1` |
+| `KEEP_ALIVE_TIMEOUT` | `75` | Segundos que o Uvicorn mantém conexões ociosas; deve ser maior que o idle timeout do ALB (60 s), senão o ALB devolve 502 esporádicos |
 | `ECS_CONTAINER_METADATA_URI_V4` | injetada pelo ECS | Task ARN, cluster e AZ em `/instance` |
 
 ## Estrutura
