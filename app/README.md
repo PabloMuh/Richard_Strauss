@@ -9,10 +9,10 @@ Segue [docs/contrato-api.md](../docs/contrato-api.md). Respostas sempre `applica
 | Método | Rota | Descrição | 200 OK (exemplo) |
 |---|---|---|---|
 | GET | `/health` | Health check do ECS/target group. Barato, sem dependências. | `{"status":"ok"}` |
-| GET | `/instance` | Identifica a réplica. `instance_id` = ID da task no ECS (hostname fora dele), estável durante a vida do container. | `{"instance_id":"a1b2c3...","hostname":"ip-10-0-1-23","pid":1,"version":"3f9c2ab","started_at":"...","uptime_s":12.3,"ecs":{"task_arn":"...","task_id":"a1b2c3...","cluster":"...","family":"...","revision":"4","availability_zone":"us-east-1a"}}` |
+| GET | `/instance` | Identifica a réplica. `instance_id` = ID da task no ECS (hostname fora dele), estável durante a vida do container. | `{"instance_id":"a1b2c3...","hostname":"ip-10-0-1-23","pid":1,"version":"3f9c2ab","started_at":"...","uptime_s":12.3,"ecs":{"task_arn":"...","task_id":"a1b2c3...","cluster":"...","family":"...","revision":"4","availability_zone":"us-east-2a"}}` |
 | GET | `/work?iterations=N` | Trabalho **CPU-bound limitado**: N hashes SHA-256 encadeados. Custo linear em N; `digest` determinístico prova que o trabalho foi feito. No máximo `WORK_CONCURRENCY` cálculos simultâneos por container; os demais pedidos aguardam na fila. | `{"instance_id":"...","iterations":200000,"digest":"a43f7d79...","duration_ms":63.2}` |
 
-`iterations` é opcional (padrão `WORK_DEFAULT_ITERATIONS` = 200000, ~60–75 ms) e deve estar em `[1, WORK_MAX_ITERATIONS]`.
+`iterations` é opcional (padrão `WORK_DEFAULT_ITERATIONS` = 200000: ~60–75 ms local, ~520–560 ms no Fargate com 0,25 vCPU) e deve estar em `[1, WORK_MAX_ITERATIONS]`.
 
 Erros (sempre JSON):
 
@@ -26,7 +26,17 @@ Erros (sempre JSON):
 | 404 | `not_found` | rota inexistente |
 | 500 | `internal_error` | erro não tratado (logado com stack trace) |
 
-Custo de referência (local, 1 núcleo): ~0,35 ms por 1.000 iterações. Num container limitado a 0,25 vCPU (simulação local do Fargate), o padrão de 200000 iterações levou ~0,45 s. Recalibrar na vCPU do Fargate (256 CPU units) antes dos experimentos.
+Custo de referência:
+
+| Ambiente | Por 1.000 iterações | Padrão (200000) | Capacidade de 1 task |
+|---|---|---|---|
+| Local, 1 núcleo | ~0,35 ms | ~70 ms | — |
+| Local, container limitado a 0,25 vCPU | — | ~0,45 s | — |
+| **Fargate, 0,25 vCPU (17/11)** | **~2,7 ms** | **520–560 ms** | **1,50 req/s** (calibração, `WORK_CONCURRENCY=1`) |
+
+## Versão usada nos testes na AWS
+
+Os experimentos A, B/C e D de 17/11 usaram a imagem **`api-62f1e8e`**, com digest `sha256:922b1b43fc74cfb588c4da07e8f410a74c2dc4541744008fc68bd6db31633a15`, fixada na task definition `richard-strauss-api:3`. O smoke e a calibração usaram `api-189bf27`, que difere só no keep-alive. Versões, custo no Fargate e o erro 502 corrigido estão em [docs/relatorio-aplicacao.md](docs/relatorio-aplicacao.md#execução-na-aws-17112026).
 
 ## Variáveis de ambiente
 
@@ -129,6 +139,8 @@ Mostra as respostas distribuídas entre os IDs das tasks.
   - motivo: com 0,25 vCPU, cálculos em paralelo não aumentam a vazão e, disputando a GIL, atrasavam `/health` além do timeout do health check (impedimento API-02);
   - efeito: sob carga, a latência de `/work` cresce com a fila, e é esse o sinal que o scale-out deve reduzir.
 - **Logs**: uma linha JSON por requisição em stdout (sem buffer: `PYTHONUNBUFFERED=1`); `/health` não é logado para não poluir o CloudWatch.
+
+- **Keep-alive maior que o idle timeout do ALB**: `KEEP_ALIVE_TIMEOUT` = 75 s (o padrão do Uvicorn, 5 s, causou um 502 gerado pelo ALB no primeiro baseline na AWS; corrigido em `62f1e8e`).
 
 ## Problemas comuns
 
