@@ -32,7 +32,12 @@ A imagem Docker parte de `python:3.12-slim`, instala dependências com versões 
 
 Ver `app/README.md`, seção "Reprodução".
 
-<!-- TODO: preencher após publicação/experimentos -->
-- URI da imagem utilizada nos testes: `<IMAGE_URI>` (digest `<sha256>`)
-- Calibração de `/work` na vCPU do Fargate: `<ms por 1.000 iterações>`
-- Erros de aplicação observados durante os experimentos e correções: `<...>`
+## Execução na AWS (17/11/2026)
+
+- Imagem utilizada: `<conta>.dkr.ecr.us-east-2.amazonaws.com/richard-strauss:api-189bf27`, digest `sha256:69fd745d5bd8607a276d99c6e69cbf97f846afa2240c9287f3c5ecb8b167ea71`, construída do commit `189bf27` (tag imutável no ECR).
+- Duas tasks Fargate (0,25 vCPU, 512 MiB) atrás do ALB responderam com `instance_id` distintos (IDs das tasks lidos dos metadados ECS v4), em zonas diferentes, com distribuição 15/15 em 30 requisições.
+- Calibração de `/work` no Fargate: `iterations=200000` em 520–560 ms (~2,7 ms por 1.000 iterações), cerca de 8× o custo local.
+- Logs JSON por requisição visíveis no CloudWatch Logs, um stream por task.
+- Nenhum erro de aplicação na implantação e no smoke test. Detalhes: [docs/deploy-aws-20261117.md](../../docs/deploy-aws-20261117.md).
+
+<!-- TODO: completar com erros de aplicação observados nos experimentos A–D, se houver -->

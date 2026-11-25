@@ -5,9 +5,9 @@ O primeiro deploy em Fargate foi validado em 12/11/2026 com uma task em Ohio. Em
 | Sessão | Evidência e estado |
 |---|---|
 | 12/11 · conta `6300****4417` | Uma task saudável, três rotas com HTTP 200 e logs no CloudWatch. O serviço, o cluster e o grupo de segurança foram removidos ao fim do teste. A imagem `api-f8458a6` e o grupo de logs foram preservados. A estimativa bruta de US$ 0,10 e o limite operacional local de US$ 1 constam do registro da sessão. |
-| 17/11 · conta `7795****9628` | O registro mostra as revisões 1 e 2 saudáveis e duas réplicas atendendo por um mesmo ALB. Os experimentos A, B/C e D registraram a revisão 3. O custo faturado e o desligamento após essa sessão ainda precisam de confirmação na conta experimental. |
+| 17/11 · conta `7795****9628` | As revisões 1 e 2 estabilizaram com uma e duas tasks, respectivamente. Os experimentos A, B/C e D usaram a revisão 3. O inventário de 24/11 registrou o encerramento dos recursos de execução e custo de cerca de US$ 0,17, coberto por créditos. [Custos e inventário final](#custos-e-inventário-final) |
 
-[Registro de deploy e redeploy de 17/11](https://github.com/PabloMuh/Richard_Strauss/blob/629f0a7/docs/deploy-aws-20261117.md) · [Evidências experimentais](https://github.com/PabloMuh/Richard_Strauss/tree/629f0a7/tests/results)
+[Registro de deploy e redeploy de 17/11](deploy-aws-20261117.md) · [Evidências experimentais](https://github.com/PabloMuh/Richard_Strauss/tree/629f0a7/tests/results)
 
 ## Configuração efetivamente usada em 17/11
 
@@ -40,15 +40,26 @@ O resumo automático de B/C reaproveitou a primeira transição do alarme e a pr
 
 [Roteiro da infraestrutura](../infrastructure/README.md) · [Roteiro dos experimentos](../tests/README.md)
 
-## Custos e confirmação pendente
+## Custos e inventário final
 
-Em 21/11, as consultas na conta `6300****4417` retornaram zero clusters ECS, zero ALBs do projeto e nenhum alvo cadastrado no Auto Scaling do serviço. O repositório ECR e o grupo de logs permaneceram. O Free Plan estava ativo com saldo de US$ 100. O saldo é um registro da conta e não discrimina o custo da sessão.
+### Deploy de 12/11
 
-O registro de 17/11 estimou cerca de **US$ 0,07 por hora** com ALB e duas tasks. É um valor de planejamento. O custo da sessão depende do tempo de vida dos recursos, do número de tasks e IPv4 públicos, do uso de LCU, dos logs e do armazenamento de imagens. Os horários do k6 cobrem a janela medida, enquanto o ALB pode permanecer ativo antes e depois dessa janela. [Registro da sessão](https://github.com/PabloMuh/Richard_Strauss/blob/629f0a7/docs/impedimentos.md) · [Preços do ALB](https://aws.amazon.com/elasticloadbalancing/pricing/) · [Preços de IPv4](https://aws.amazon.com/vpc/pricing/)
+Em 21/11, a consulta na conta `6300****4417` encontrou o repositório ECR e o grupo de logs preservados. Cluster ECS, ALB e alvo do Auto Scaling do projeto estavam ausentes. O Free Plan estava ativo com saldo de US$ 100. O custo de US$ 0,10 do primeiro deploy é uma estimativa da sessão.
 
-Para fechar o registro de 17/11, a pessoa 1 ou outro integrante com acesso à conta `7795****9628` precisa fornecer estas duas evidências:
+### Sessão experimental de 17/11
 
-- [ ] **Billing da sessão.** Registrar o intervalo consultado, o custo por serviço e os créditos aplicados. Se o Billing agregar outros usos no mesmo período, indicar essa limitação.
-- [ ] **Inventário final da sessão.** Registrar a data da verificação, a ausência de tasks ativas, ALB e alvo do Auto Scaling do projeto, e quais imagens do ECR e grupos de logs foram mantidos.
+Em **24/11/2026 às 21h46 BRT** (25/11 às 00h46 UTC), a pessoa 1 consultou a conta `7795****9628` em `us-east-2`. O inventário registra a ausência do cluster, serviço e tasks do projeto, do ALB e seus listeners e target group, dos alvos ECS no Auto Scaling, de IPv4 públicos associados e dos grupos de segurança do projeto.
 
-[Como conferir a cobrança na AWS](https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/view-billing-dashboard.html)
+Permaneceram as imagens `api-189bf27` e `api-62f1e8e` no ECR, o grupo `/ecs/richard-strauss` com retenção de sete dias e a role `ecsTaskExecutionRole`, criada manualmente. A consulta confirma o estado em 24/11. O horário exato da remoção e o estado das revisões da task definition ficaram fora do levantamento.
+
+O Cost Explorer da conta informou os valores abaixo na consulta diária de **16 a 24/11**.
+
+| Componente do projeto | Custo bruto (US$) |
+|---|---:|
+| Elastic Load Balancing | 0,0676 |
+| ECS/Fargate | 0,0528 |
+| VPC (IPv4 público) | 0,0470 |
+| ECR (armazenamento no intervalo consultado) | 0,0012 |
+| **Total** | **0,1686** |
+
+O inventário informa **US$ 0,00 líquidos após créditos** e saldo de **US$ 99,83** no Free Plan na data da consulta. A estimativa de cerca de US$ 0,07 por hora com ALB e duas tasks serviu ao planejamento. Os dados brutos do Cost Explorer ficaram com a pessoa 1. [Inventário e custos da pessoa 1](https://github.com/PabloMuh/Richard_Strauss/blob/7c9cc0ab3388607521dea7d4a67c4050b4c32c79/docs/inventario-custos-20261124.md)

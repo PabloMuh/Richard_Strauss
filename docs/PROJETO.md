@@ -3,7 +3,7 @@
 **Disciplina:** Sistemas Distribuídos · **Tema 7:** Amazon ECS · **Equipe:** 4 integrantes · **Entrega final:** 01/12/2026
 **Situação deste documento:** 14/11/2026, com base no histórico Git de todas as branches (`git log --all`).
 
-> Este documento resume o projeto, as tecnologias e a contribuição de cada integrante. Os números citados vêm dos arquivos do repositório indicados em cada seção. **Até 14/11/2026 nenhum recurso foi criado na AWS**: todas as medições são locais (Docker com limites equivalentes aos do Fargate) e não substituem os experimentos na nuvem.
+> Este documento resume o projeto, as tecnologias e a contribuição de cada integrante no planejamento de 14/11. As medições da seção 7 são locais. Os deploys de 12/11 e 17/11, os resultados obtidos no Fargate e o encerramento na AWS estão no [fechamento de infraestrutura](fechamento-infraestrutura.md).
 
 ## 1. O que o projeto faz
 
@@ -143,7 +143,9 @@ Ambiente `tests/local` em 13/11/2026: 3 réplicas Docker com 0,25 vCPU atrás de
 
 Fonte: `tests/results/exemplo-local/tabela-experimental.md` (branch `pessoa3/experimentos`).
 
-## 8. Situação e próximos passos
+## 8. Pendências registradas em 14/11
+
+Para acompanhar o estado atual após a execução na AWS, consulte o [registro de impedimentos](impedimentos.md).
 
 | ID | Impedimento | Estado em 14/11 |
 |---|---|---|

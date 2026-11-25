@@ -22,6 +22,7 @@ class Settings:
     work_default_iterations: int
     work_max_iterations: int
     work_concurrency: int
+    keep_alive_s: int
     ecs_metadata_uri: str | None
 
 
@@ -34,10 +35,15 @@ def load_settings() -> Settings:
         work_default_iterations=_int_env("WORK_DEFAULT_ITERATIONS", 200_000),
         work_max_iterations=_int_env("WORK_MAX_ITERATIONS", 5_000_000),
         work_concurrency=_int_env("WORK_CONCURRENCY", 1),
+        # Maior que o idle timeout do ALB (60 s): senão o ALB reutiliza uma conexão já fechada
+        # pelo servidor e devolve 502 sem que a requisição chegue à aplicação.
+        keep_alive_s=_int_env("KEEP_ALIVE_TIMEOUT", 75),
         ecs_metadata_uri=os.getenv("ECS_CONTAINER_METADATA_URI_V4") or None,
     )
     if s.work_default_iterations < 1 or s.work_max_iterations < s.work_default_iterations:
         raise ValueError("Requer 1 <= WORK_DEFAULT_ITERATIONS <= WORK_MAX_ITERATIONS")
     if s.work_concurrency < 1:
         raise ValueError("Requer WORK_CONCURRENCY >= 1")
+    if s.keep_alive_s < 1:
+        raise ValueError("Requer KEEP_ALIVE_TIMEOUT >= 1")
     return s

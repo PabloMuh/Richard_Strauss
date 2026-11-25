@@ -20,7 +20,9 @@ O Auto Scaling dos experimentos B e C (`Set-AutoScaling.ps1`) mantém de 1 a 3 t
 
 ## Estimativa antes de provisionar
 
-Os testes usaram `us-east-2`. O [fechamento de infraestrutura](fechamento-infraestrutura.md) registra as estimativas das duas sessões e as evidências disponíveis. Para uma nova sessão, estime e registre em USD:
+Os testes usaram `us-east-2`. O fechamento registra a estimativa do primeiro deploy, os custos observados no Cost Explorer para a sessão de 17/11 e os recursos preservados. [Custos e inventário final](fechamento-infraestrutura.md#custos-e-inventário-final)
+
+Para uma nova sessão, registre a estimativa em dólares com os componentes da tabela.
 
 | Componente | Quantidade a considerar |
 |---|---|
