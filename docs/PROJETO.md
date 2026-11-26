@@ -1,9 +1,11 @@
 # Orquestração de containers com Amazon ECS — visão geral do projeto
 
 **Disciplina:** Sistemas Distribuídos · **Tema 7:** Amazon ECS · **Equipe:** 4 integrantes · **Entrega final:** 01/12/2026
-**Situação deste documento:** 14/11/2026, com base no histórico Git de todas as branches (`git log --all`).
+**Situação deste documento:** 25/11/2026, com base no histórico Git de todas as branches (`git log --all`).
 
-> Este documento resume o projeto, as tecnologias e a contribuição de cada integrante no planejamento de 14/11. As medições da seção 7 são locais. Os deploys de 12/11 e 17/11, os resultados obtidos no Fargate e o encerramento na AWS estão no [fechamento de infraestrutura](fechamento-infraestrutura.md).
+> Este documento resume o projeto, as tecnologias, a contribuição de cada integrante e os resultados dos experimentos na AWS (17/11/2026, `us-east-2`, uma repetição por cenário, revisados em 25/11). Os números vêm dos arquivos indicados em cada seção.
+>
+> **Entregáveis da documentação:** [relatório técnico](relatorio-tecnico.pdf) · slides (deck de 12 slides, exportável para PPTX/PDF) · gerador do PDF: `python docs/gerar_pdfs.py`.
 
 ## 1. O que o projeto faz
 
@@ -42,7 +44,7 @@ Fontes: [arquitetura-custos.md](arquitetura-custos.md), [infrastructure/template
 | Camada | Tecnologia | Uso |
 |---|---|---|
 | Aplicação | Python 3.12, FastAPI 0.115.6, Uvicorn 0.34.0, AnyIO | API HTTP assíncrona |
-| Testes da aplicação | pytest 8.3.4, httpx 0.28.1 | 11 testes automatizados |
+| Testes da aplicação | pytest 8.3.4, httpx 0.28.1 | 12 testes automatizados |
 | Container | Docker, imagem `python:3.12-slim` (~55 MB), usuário não-root | Empacotamento `linux/amd64` |
 | Registro de imagens | Amazon ECR | Imagem com tag fixa e digest |
 | Orquestração | Amazon ECS com Fargate, `awsvpc` | Service, task definition, tasks |
@@ -57,7 +59,7 @@ Fontes: [arquitetura-custos.md](arquitetura-custos.md), [infrastructure/template
 
 ## 4. Contribuição de cada integrante
 
-A atribuição segue o plano da equipe (versão 1.0, 28/10/2026) e foi conferida nos commits. Os commits da Pessoa 3 estão na branch `origin/pessoa3/experimentos`, ainda **sem merge** em `main` em 14/11.
+A atribuição segue o plano da equipe (versão 1.0, 28/10/2026) e foi conferida nos commits. Todas as branches citadas foram mescladas em `main` até 25/11 (PRs #1 a #8).
 
 ### Pessoa 1 — Aplicação, Docker e imagem (`LandriAlencars`)
 
@@ -72,6 +74,13 @@ Commit `f8458a6` (12/11): API, Dockerfile e testes.
 - Evidência de duas instâncias locais com IDs distintos: [app/docs/evidencias/duas-instancias.txt](../app/docs/evidencias/duas-instancias.txt).
 - Workflow de CI `.github/workflows/app.yml` (pytest e build da imagem).
 
+Depois da integração:
+
+- **`fbbdcca` (17/11)**: primeira implantação com ALB na conta experimental (`us-east-2`), com 1 e 2 tasks; correção do `Common.ps1` para achar o AWS CLI no Linux; calibração do `/work` no Fargate (~2,7 ms por 1 000 iterações). Registro: [deploy-aws-20261117.md](deploy-aws-20261117.md).
+- **`62f1e8e` (17/11)**: keep-alive do Uvicorn de 5 s para 75 s (`KEEP_ALIVE_TIMEOUT`), corrigindo um HTTP 502 do ALB no primeiro baseline.
+- **`629f0a7` (17/11)**: execução dos experimentos A, B/C e D na AWS. O resumo inicial foi gerado com ferramenta de IA e marcado como pendente de revisão; a Pessoa 3 o revisou em 25/11.
+- **`7c9cc0a` e `05e5b02` (24/11)**: inventário final e custo da sessão ([inventario-custos-20261124.md](inventario-custos-20261124.md)) e seção da aplicação com os dados da AWS.
+
 Detalhes: [app/README.md](../app/README.md) e [app/docs/relatorio-aplicacao.md](../app/docs/relatorio-aplicacao.md).
 
 ### Pessoa 2 — Infraestrutura AWS e implantação (`PabloMuh`)
@@ -83,6 +92,7 @@ Commit `551ed20` (08/11): preparação da infraestrutura. Commit `7d825ab` (12/1
 - **Controles de segurança e custo**: os scripts exigem conta conferida, orçamento e janela registrados; marcam os recursos com tags de propriedade e só removem o que comprovadamente criaram; não criam roles IAM, VPC nem NAT Gateway; não versionam credenciais.
 - **Testes offline** (`infrastructure/tests/Test-Offline.ps1`) executados no GitHub Actions em Windows, sem acesso à AWS.
 - **Documentação**: [checklist-aws.md](checklist-aws.md), [arquitetura-custos.md](arquitetura-custos.md), [contrato-api.md](contrato-api.md), [impedimentos.md](impedimentos.md) e o [roteiro da infraestrutura](../infrastructure/README.md).
+- **`a681447`, `f52c6e1`, `9d99024` (21/11) e `eeb85fc`, `5821e2c`, `796162d` (25/11)**: primeiro deploy de 12/11 (uma task, conta `6300****4417`), revisão dos eventos do ECS e do Auto Scaling de 17/11, custos e inventário final em [fechamento-infraestrutura.md](fechamento-infraestrutura.md).
 
 ### Pessoa 3 — Auto Scaling, geração de carga e testes (`leonardo-lbp`)
 
@@ -97,12 +107,12 @@ Além dos experimentos, a Pessoa 3 fez as correções de integração que desblo
   - `tests/analysis/analisar.py`: indicadores por fase, tempos de scale-out, scale-in e recuperação, gráficos e tabela experimental consolidada.
   - `tests/local/`: 3 réplicas com 0,25 vCPU e 512 MiB atrás de um nginx, para validar as ferramentas sem AWS.
   - `tests/plano-de-testes.md`: hipóteses, cargas, métricas, critérios e ameaças à validade.
+- **`c8ce104` e `9f349ef` (25/11)**: revisão dos resultados da AWS contra os dados brutos. A análise passou a medir cada degrau pela própria decisão do Auto Scaling (2→3 em **30 s**, não 210 s), a CPU média só com minutos inteiros (A: 48,7%, não 37,7%) e a corrigir o ritmo do k6; conclusões em cada pasta e [RESUMO-AWS-20261117.md](../tests/results/RESUMO-AWS-20261117.md).
 
-### Pessoa 4 — Observabilidade, pesquisa e documentação
+### Pessoa 4 — Observabilidade, pesquisa e documentação (`Matheus`)
 
-- Este documento, o relatório técnico em PDF ([relatorio-tecnico.pdf](relatorio-tecnico.pdf)) e a apresentação de slides.
+- Este documento, o [relatório técnico](relatorio-tecnico.pdf), e os slides; o PDF é gerado por [gerar_pdfs.py](gerar_pdfs.py).
 - Rastreabilidade: cada número citado indica o arquivo de origem; resultados locais são separados dos resultados na AWS.
-- Pendente (até 23/11): validar logs e métricas no CloudWatch com a Pessoa 2, organizar os dados dos experimentos na AWS e produzir os gráficos finais.
 
 ## 5. Decisão técnica relevante: o impedimento API-02
 
@@ -118,7 +128,7 @@ Com 0,25 vCPU, vários cálculos de `/work` em paralelo disputavam a GIL do Pyth
 
 ## 6. Plano de experimentos
 
-As cargas são frações de **C**, a vazão máxima de uma task, medida na calibração do mesmo dia (localmente, C ≈ 1,86 req/s; **no Fargate, C ainda precisa ser medido**).
+As cargas são frações de **C**, a vazão máxima de uma task, medida na calibração do mesmo dia: **C = 1,50 req/s no Fargate** (localmente, C ≈ 1,86 req/s).
 
 | Experimento | Tasks | Carga | Mede |
 |---|---|---|---|
@@ -127,11 +137,32 @@ As cargas são frações de **C**, a vazão máxima de uma task, medida na calib
 | C · Scale-in | 3 → 1 | 0,2 C por 22 min + 5 min de observação | Queda da carga → redução das tasks |
 | D · Falha | 2, sem Auto Scaling | 0,8 C por 10 min; `stop-task` aos 3 min | Tempo de recuperação e erros na janela da falha |
 
-Os degraus de B ficam abaixo da capacidade das tasks existentes, para que o experimento meça o Auto Scaling e não uma fila crescente. Detalhes: `tests/plano-de-testes.md` (branch `pessoa3/experimentos`).
+Os degraus de B ficam abaixo da capacidade das tasks existentes, para que o experimento meça o Auto Scaling e não uma fila crescente. Detalhes: [tests/plano-de-testes.md](../tests/plano-de-testes.md).
 
-## 7. Resultados disponíveis: validação local das ferramentas
+## 7. Resultados na AWS (17/11/2026)
 
-Ambiente `tests/local` em 13/11/2026: 3 réplicas Docker com 0,25 vCPU atrás de nginx, **sem ECS, ALB nem Auto Scaling**, tempos comprimidos e 1 repetição por cenário. Servem para validar o k6, o orquestrador e a análise, **não** como evidência dos experimentos.
+Região `us-east-2`, imagem `api-62f1e8e` (task definition rev. 3), ALB e Auto Scaling de 1 a 3 tasks, uma repetição por cenário. Fontes: [RESUMO-AWS-20261117.md](../tests/results/RESUMO-AWS-20261117.md) e [tabela-experimental.md](../tests/results/tabela-experimental.md).
+
+| Experimento | Requisições | Erros | p50 / p95 | Resultado principal |
+|---|---|---|---|---|
+| Calibração | 283 | 0% | 2487 / 3829 ms (fila cheia) | **C = 1,50 req/s por task**, CPU a 100% |
+| A · Baseline | 225 | 0% | 660 / 1014 ms | 1 task a ~0,48 C, CPU de 48,7% |
+| B · Scale-out | 2091 (B+C) | 0% | 692 / 1301 ms | 1→2 e 2→3 em **35 s e 30 s** da decisão do Auto Scaling até a task saudável no ALB; **433 s** da carga acima do alvo até a 2ª task |
+| C · Scale-in | (mesma execução) | 0% | — | 3→2 e 2→1 em **1108 s e 1348 s** após a queda da carga (~22 min), uma task por vez |
+| D · Falha | 720 | 0% | 690 / 1106 ms | **68 s** até 2 tasks saudáveis; capacidade reduzida por ~31 s; **0 erros** nas 119 requisições da janela da falha |
+
+- **Scale-out:** o ECS leva ~30–35 s para criar e registrar uma task; a reação completa é dominada pelo alarme (3 datapoints de 1 min acima de 60%).
+- **Scale-in:** o alarme de baixa exige 15 datapoints abaixo de 54%, e a política retira uma task por vez com cooldown de 180 s.
+- **Mesma carga, mais tasks:** com 1,5 C, passar de 2 para 3 tasks reduziu o p95 de 1392 para 1074 ms (−23%); com carga baixa, o p50 não muda.
+- **Falha:** o `stop-task` é ordenado (o ECS tira o alvo do ALB e drena as conexões), e a task restante tinha folga; queda abrupta não foi testada.
+- **Cauda periódica:** 4% a 10% das requisições passaram de 1 s, concentradas num ciclo de 30 s que coincide com o health check do container (causa provável, não testada isoladamente).
+- **Erro corrigido:** o primeiro baseline teve 1 HTTP 502 do ALB em 225 requisições (keep-alive do Uvicorn de 5 s, menor que os 60 s do ALB). Depois da correção, foram 3036 requisições sem erro.
+
+**Custos:** US$ 0,1686 brutos na sessão experimental (ELB 0,0676; Fargate 0,0528; IPv4 0,0470; ECR 0,0012), cobertos por créditos; saldo de US$ 99,83. Em 24/11, cluster, tasks, ALB, Auto Scaling, IPs e security groups já não existiam; ECR e logs foram mantidos. Fonte: [inventario-custos-20261124.md](inventario-custos-20261124.md).
+
+### Validação local das ferramentas (13/11/2026)
+
+Ambiente `tests/local`: 3 réplicas Docker com 0,25 vCPU atrás de nginx, **sem ECS, ALB nem Auto Scaling**, tempos comprimidos e 1 repetição por cenário. Validou o k6, o orquestrador e a análise antes da AWS; **não** é evidência dos experimentos.
 
 | Execução | Vazão (req/s) | p95 (ms) | Erros | Observação |
 |---|---|---|---|---|
@@ -141,21 +172,18 @@ Ambiente `tests/local` em 13/11/2026: 3 réplicas Docker com 0,25 vCPU atrás de
 | B/C · Escalabilidade | 1,02 | 398,7 | 0% | 3 réplicas fixas |
 | D · Falha | 1,38 | 479,2 | 0,8% | Recuperação em 35 s, dos quais 20 s são atraso simulado; 2 erros em 98 requisições na janela da falha |
 
-Fonte: `tests/results/exemplo-local/tabela-experimental.md` (branch `pessoa3/experimentos`).
+Fonte: [tests/results/exemplo-local/tabela-experimental.md](../tests/results/exemplo-local/tabela-experimental.md).
 
-## 8. Pendências registradas em 14/11
+## 8. Situação em 25/11 e limitações
 
-Para acompanhar o estado atual após a execução na AWS, consulte o [registro de impedimentos](impedimentos.md).
-
-| ID | Impedimento | Estado em 14/11 |
+| ID | Impedimento | Estado |
 |---|---|---|
-| AWS-01 | Conta do projeto a identificar e validar | Aberto |
-| CUSTO-01 | Limite de gastos e janela a acordar | Aberto |
-| EXP-01 | ALB e Application Auto Scaling autorizados, ~3 h de sessão | Aberto |
-| API-01 | API e Dockerfile não recebidos | Resolvido em 12/11 |
-| API-02 | `/health` falhava sob carga | Resolvido em 12/11 |
+| AWS-01 | Conta, região e permissões | Resolvido: deploys em 12/11 e 17/11 |
+| API-01 / API-02 | API entregue; `/health` sob carga | Resolvidos em 12/11 |
+| CUSTO-01 | Custos e encerramento da sessão | Resolvido em 25/11 |
+| EXP-01 | Experimentos A, B, C e D | Executados em 17/11 e revisados em 25/11; falta decidir sobre as repetições 2 e 3 |
 
-Até o marco M4 (19/11): validar a conta, provisionar, publicar a imagem, calibrar C no Fargate e executar A, B/C e D (3 repetições, se o orçamento permitir). Depois: gráficos finais, relatório com números da nuvem, custos reais e limpeza dos recursos (`Remove-Infrastructure.ps1`).
+Limitações: uma repetição por cenário (sem média nem desvio); gerador de carga numa máquina doméstica, com a latência incluindo a rede até `us-east-2`; só falha ordenada (`stop-task`). Fonte: [impedimentos.md](impedimentos.md).
 
 ## 9. Como reproduzir
 
@@ -175,7 +203,7 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
 ./infrastructure/tests/Test-Offline.ps1
 ```
 
-O roteiro completo da AWS está em [infrastructure/README.md](../infrastructure/README.md); o dos experimentos, em `tests/README.md`.
+O roteiro completo da AWS está em [infrastructure/README.md](../infrastructure/README.md); o dos experimentos, em [tests/README.md](../tests/README.md).
 
 ## 10. Referências
 
