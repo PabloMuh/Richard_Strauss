@@ -31,7 +31,16 @@ Gerado por `tests/analysis/analisar.py` a partir dos arquivos desta pasta. Inter
 |---|---|---|
 | — | — | — |
 
-média dos datapoints de 1 min do serviço (média entre as tasks).
+médias dos datapoints de 1 min do serviço (média entre as tasks) inteiramente dentro da janela do k6; a máxima considera também os minutos das bordas.
+
+## Cauda de latência por task
+
+Requisições acima de 1000 ms por task e quantas começam na mesma faixa de 5 s de um ciclo de 30 s (intervalo do health check do container). Sem causa periódica, a faixa mais densa reuniria cerca de 16.7% das lentas.
+
+| Task | Requisições | Lentas | Lentas (%) | Lentas na faixa mais densa | Na faixa (%) | Início da faixa no ciclo (s) |
+|---|---|---|---|---|---|---|
+| 446ef2ab351d4c8884d03fdea5101518 | 1 | 0 | 0 | 0 | — | — |
+| 6c471c822df04494b4d224b67d4ea0b5 | 2 | 0 | 0 | 0 | — | — |
 
 ## Linha do tempo
 

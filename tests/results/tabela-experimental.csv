@@ -1,6 +1,6 @@
-pasta,experimento,ambiente,repeticao,inicio_utc,vazao_rps,p95_ms,erros_pct,cpu_media_pct,tasks_max,scale_out_1o_degrau_s,scale_in_s,scale_out_2o_degrau_s,recuperacao_s,erros_falha
-20261117-222155-smoke-r1,smoke,aws,1,2026-11-17T22:22:07.936Z,0.934,738.4,0.0,,,,,,,
-20261117-223019-calibracao-r1,calibracao,aws,1,2026-11-17T22:30:21.306Z,1.491,3829.2,0.0,71.5,,,,,,
-20261117-225146-A-baseline-r1,A-baseline,aws,1,2026-11-17T22:51:46.890Z,0.718,1014.4,0.0,37.7,,,,,,
-20261117-230132-BC-escalabilidade-r1,BC-escalabilidade,aws,1,2026-11-17T23:01:34.225Z,0.837,1300.6,0.0,31.3,3,35.0,1150.0,210.0,,
-20261117-235404-D-falha-r1,D-falha,aws,1,2026-11-17T23:54:05.940Z,1.152,1106.3,0.0,37.7,,,,,68.0,0
+pasta,experimento,ambiente,repeticao,inicio_utc,vazao_rps,p95_ms,erros_pct,cpu_media_pct,tasks_max,carga_ate_pronta_1o_degrau_s,scale_out_1o_degrau_s,scale_out_2o_degrau_s,scale_in_s,recuperacao_s,erros_falha
+20261117-222155-smoke-r1,smoke,aws,1,2026-11-17T22:22:07.936Z,0.934,738.4,0.0,,,,,,,,
+20261117-223019-calibracao-r1,calibracao,aws,1,2026-11-17T22:30:21.306Z,1.491,3829.2,0.0,100.0,,,,,,,
+20261117-225146-A-baseline-r1,A-baseline,aws,1,2026-11-17T22:51:46.890Z,0.718,1014.4,0.0,48.7,,,,,,,
+20261117-230132-BC-escalabilidade-r1,BC-escalabilidade,aws,1,2026-11-17T23:01:34.225Z,0.837,1300.6,0.0,32.4,3,433.0,35.0,30.0,1108.0,,
+20261117-235404-D-falha-r1,D-falha,aws,1,2026-11-17T23:54:05.940Z,1.152,1106.3,0.0,39.8,,,,,,68.0,0

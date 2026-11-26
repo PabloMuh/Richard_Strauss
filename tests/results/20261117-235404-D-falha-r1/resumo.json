@@ -23,21 +23,24 @@
     "latencia_p50_ms": 690.5,
     "latencia_p95_ms": 1106.3,
     "latencia_p99_ms": 2067.6,
-    "latencia_max_ms": 2782.3
+    "latencia_max_ms": 2782.3,
+    "lentas_pct": 5.8
   },
   "fases": [
     {
       "fase": "constante",
-      "duracao_s": 600,
+      "duracao_s": 624.9,
       "carga_oferecida_rps": 1.2,
       "requisicoes": 720,
       "erros": 0,
       "taxa_erros_pct": 0.0,
-      "vazao_rps": 1.2,
+      "vazao_rps": 1.152,
       "latencia_p50_ms": 690.5,
       "latencia_p95_ms": 1106.3,
       "latencia_p99_ms": 2067.6,
       "latencia_max_ms": 2782.3,
+      "lentas_pct": 5.8,
+      "cpu_media_pct": 39.8,
       "instancias": {
         "dafbb3464774400295b1fc1f38890670": 379,
         "09a50126dad74b90a260f6f7308f2772": 127,
@@ -51,10 +54,52 @@
     "c6767d66ff724c3e8a9a6f74849e5130": 214
   },
   "recursos": {
-    "cpu_media_pct": 37.7,
+    "cpu_media_pct": 39.8,
     "cpu_maxima_pct": 76.1,
     "memoria_media_pct": 6.9,
-    "observacao": "média dos datapoints de 1 min do serviço (média entre as tasks)"
+    "observacao": "médias dos datapoints de 1 min do serviço (média entre as tasks) inteiramente dentro da janela do k6; a máxima considera também os minutos das bordas"
+  },
+  "cauda_por_instancia": {
+    "limite_ms": 1000.0,
+    "periodo_s": 30.0,
+    "faixa_s": 5.0,
+    "referencia_sem_periodicidade_pct": 16.7,
+    "instancias": [
+      {
+        "instancia": "09a50126dad74b90a260f6f7308f2772",
+        "requisicoes": 127,
+        "lentas": 8,
+        "lentas_pct": 6.3,
+        "lentas_na_faixa": 5,
+        "lentas_na_faixa_pct": 62.5,
+        "faixa_inicio_s": 10.6
+      },
+      {
+        "instancia": "c6767d66ff724c3e8a9a6f74849e5130",
+        "requisicoes": 214,
+        "lentas": 12,
+        "lentas_pct": 5.6,
+        "lentas_na_faixa": 9,
+        "lentas_na_faixa_pct": 75.0,
+        "faixa_inicio_s": 2.5
+      },
+      {
+        "instancia": "dafbb3464774400295b1fc1f38890670",
+        "requisicoes": 379,
+        "lentas": 22,
+        "lentas_pct": 5.8,
+        "lentas_na_faixa": 16,
+        "lentas_na_faixa_pct": 72.7,
+        "faixa_inicio_s": 8.8
+      }
+    ]
+  },
+  "ritmo_k6": {
+    "fator_tempo": 1.0418,
+    "deslocamento_s": 0.43,
+    "residuo_max_s": 0.8,
+    "carga_efetiva_pct": 96.0,
+    "observacao": "início real das requisições = início do k6 + deslocamento + fator × horário previsto no plano"
   },
   "mesma_carga_por_tasks": [
     {
@@ -71,19 +116,21 @@
           "latencia_p50_ms": 706.7,
           "latencia_p95_ms": 1709.8,
           "latencia_p99_ms": 2099.7,
-          "latencia_max_ms": 2099.7
+          "latencia_max_ms": 2099.7,
+          "lentas_pct": 13.9
         },
         {
           "tasks_saudaveis": 2,
-          "duracao_s": 568.6,
-          "requisicoes": 655,
+          "duracao_s": 593.5,
+          "requisicoes": 684,
           "erros": 0,
           "taxa_erros_pct": 0.0,
-          "vazao_rps": 1.152,
-          "latencia_p50_ms": 691.1,
-          "latencia_p95_ms": 1084.3,
+          "vazao_rps": 1.153,
+          "latencia_p50_ms": 689.2,
+          "latencia_p95_ms": 1082.4,
           "latencia_p99_ms": 2067.6,
-          "latencia_max_ms": 2782.3
+          "latencia_max_ms": 2782.3,
+          "lentas_pct": 5.4
         }
       ]
     }
@@ -95,6 +142,7 @@
     "queda_observada_utc": "2026-11-17T23:57:47.510Z",
     "substituta_vista_utc": "2026-11-17T23:57:47.510Z",
     "recuperada_utc": "2026-11-17T23:58:18.880Z",
+    "tempo_ate_queda_s": 37.0,
     "tempo_ate_substituta_s": 37.0,
     "tempo_recuperacao_s": 68.0,
     "erros_na_janela": 0,
@@ -107,7 +155,8 @@
       "latencia_p50_ms": 711.9,
       "latencia_p95_ms": 1311.1,
       "latencia_p99_ms": 2140.0,
-      "latencia_max_ms": 2140.0
+      "latencia_max_ms": 2140.0,
+      "lentas_pct": 7.2
     },
     "durante": {
       "requisicoes": 79,
@@ -117,7 +166,8 @@
       "latencia_p50_ms": 701.8,
       "latencia_p95_ms": 1659.4,
       "latencia_p99_ms": 2099.7,
-      "latencia_max_ms": 2099.7
+      "latencia_max_ms": 2099.7,
+      "lentas_pct": 10.1
     },
     "depois": {
       "requisicoes": 395,
@@ -127,7 +177,8 @@
       "latencia_p50_ms": 682.1,
       "latencia_p95_ms": 1084.3,
       "latencia_p99_ms": 1981.9,
-      "latencia_max_ms": 2176.1
+      "latencia_max_ms": 2176.1,
+      "lentas_pct": 5.3
     },
     "resolucao_s": 10
   }

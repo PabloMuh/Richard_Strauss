@@ -11,9 +11,10 @@
       "erros_pct": 0.0,
       "cpu_media_pct": null,
       "tasks_max": null,
+      "carga_ate_pronta_1o_degrau_s": null,
       "scale_out_1o_degrau_s": null,
-      "scale_in_s": null,
       "scale_out_2o_degrau_s": null,
+      "scale_in_s": null,
       "recuperacao_s": null,
       "erros_falha": null
     },
@@ -26,11 +27,12 @@
       "vazao_rps": 1.491,
       "p95_ms": 3829.2,
       "erros_pct": 0.0,
-      "cpu_media_pct": 71.5,
+      "cpu_media_pct": 100.0,
       "tasks_max": null,
+      "carga_ate_pronta_1o_degrau_s": null,
       "scale_out_1o_degrau_s": null,
-      "scale_in_s": null,
       "scale_out_2o_degrau_s": null,
+      "scale_in_s": null,
       "recuperacao_s": null,
       "erros_falha": null
     },
@@ -43,11 +45,12 @@
       "vazao_rps": 0.718,
       "p95_ms": 1014.4,
       "erros_pct": 0.0,
-      "cpu_media_pct": 37.7,
+      "cpu_media_pct": 48.7,
       "tasks_max": null,
+      "carga_ate_pronta_1o_degrau_s": null,
       "scale_out_1o_degrau_s": null,
-      "scale_in_s": null,
       "scale_out_2o_degrau_s": null,
+      "scale_in_s": null,
       "recuperacao_s": null,
       "erros_falha": null
     },
@@ -60,11 +63,12 @@
       "vazao_rps": 0.837,
       "p95_ms": 1300.6,
       "erros_pct": 0.0,
-      "cpu_media_pct": 31.3,
+      "cpu_media_pct": 32.4,
       "tasks_max": 3,
+      "carga_ate_pronta_1o_degrau_s": 433.0,
       "scale_out_1o_degrau_s": 35.0,
-      "scale_in_s": 1150.0,
-      "scale_out_2o_degrau_s": 210.0,
+      "scale_out_2o_degrau_s": 30.0,
+      "scale_in_s": 1108.0,
       "recuperacao_s": null,
       "erros_falha": null
     },
@@ -77,11 +81,12 @@
       "vazao_rps": 1.152,
       "p95_ms": 1106.3,
       "erros_pct": 0.0,
-      "cpu_media_pct": 37.7,
+      "cpu_media_pct": 39.8,
       "tasks_max": null,
+      "carga_ate_pronta_1o_degrau_s": null,
       "scale_out_1o_degrau_s": null,
-      "scale_in_s": null,
       "scale_out_2o_degrau_s": null,
+      "scale_in_s": null,
       "recuperacao_s": 68.0,
       "erros_falha": 0
     }
@@ -107,11 +112,16 @@
         "n": 1
       },
       "cpu_media_pct": {
-        "media": 37.7,
+        "media": 48.7,
         "desvio": null,
         "n": 1
       },
       "tasks_max": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "carga_ate_pronta_1o_degrau_s": {
         "media": null,
         "desvio": null,
         "n": 0
@@ -121,12 +131,12 @@
         "desvio": null,
         "n": 0
       },
-      "scale_in_s": {
+      "scale_out_2o_degrau_s": {
         "media": null,
         "desvio": null,
         "n": 0
       },
-      "scale_out_2o_degrau_s": {
+      "scale_in_s": {
         "media": null,
         "desvio": null,
         "n": 0
@@ -162,7 +172,7 @@
         "n": 1
       },
       "cpu_media_pct": {
-        "media": 31.3,
+        "media": 32.4,
         "desvio": null,
         "n": 1
       },
@@ -171,18 +181,23 @@
         "desvio": null,
         "n": 1
       },
+      "carga_ate_pronta_1o_degrau_s": {
+        "media": 433.0,
+        "desvio": null,
+        "n": 1
+      },
       "scale_out_1o_degrau_s": {
         "media": 35.0,
         "desvio": null,
         "n": 1
       },
-      "scale_in_s": {
-        "media": 1150.0,
+      "scale_out_2o_degrau_s": {
+        "media": 30.0,
         "desvio": null,
         "n": 1
       },
-      "scale_out_2o_degrau_s": {
-        "media": 210.0,
+      "scale_in_s": {
+        "media": 1108.0,
         "desvio": null,
         "n": 1
       },
@@ -217,11 +232,16 @@
         "n": 1
       },
       "cpu_media_pct": {
-        "media": 37.7,
+        "media": 39.8,
         "desvio": null,
         "n": 1
       },
       "tasks_max": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "carga_ate_pronta_1o_degrau_s": {
         "media": null,
         "desvio": null,
         "n": 0
@@ -231,12 +251,12 @@
         "desvio": null,
         "n": 0
       },
-      "scale_in_s": {
+      "scale_out_2o_degrau_s": {
         "media": null,
         "desvio": null,
         "n": 0
       },
-      "scale_out_2o_degrau_s": {
+      "scale_in_s": {
         "media": null,
         "desvio": null,
         "n": 0
@@ -272,11 +292,16 @@
         "n": 1
       },
       "cpu_media_pct": {
-        "media": 71.5,
+        "media": 100.0,
         "desvio": null,
         "n": 1
       },
       "tasks_max": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "carga_ate_pronta_1o_degrau_s": {
         "media": null,
         "desvio": null,
         "n": 0
@@ -286,12 +311,12 @@
         "desvio": null,
         "n": 0
       },
-      "scale_in_s": {
+      "scale_out_2o_degrau_s": {
         "media": null,
         "desvio": null,
         "n": 0
       },
-      "scale_out_2o_degrau_s": {
+      "scale_in_s": {
         "media": null,
         "desvio": null,
         "n": 0
@@ -336,17 +361,22 @@
         "desvio": null,
         "n": 0
       },
+      "carga_ate_pronta_1o_degrau_s": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
       "scale_out_1o_degrau_s": {
         "media": null,
         "desvio": null,
         "n": 0
       },
-      "scale_in_s": {
+      "scale_out_2o_degrau_s": {
         "media": null,
         "desvio": null,
         "n": 0
       },
-      "scale_out_2o_degrau_s": {
+      "scale_in_s": {
         "media": null,
         "desvio": null,
         "n": 0
@@ -371,13 +401,24 @@
       "carga_oferecida_rps": 0.75,
       "tasks_saudaveis": 1,
       "execucoes": 1,
+      "requisicoes": 225,
       "vazao_rps": {
         "media": 0.72,
         "desvio": null,
         "n": 1
       },
+      "p50_ms": {
+        "media": 660.1,
+        "desvio": null,
+        "n": 1
+      },
       "p95_ms": {
-        "media": 1038.2,
+        "media": 1014.4,
+        "desvio": null,
+        "n": 1
+      },
+      "lentas_pct": {
+        "media": 5.8,
         "desvio": null,
         "n": 1
       },
@@ -394,13 +435,58 @@
       "carga_oferecida_rps": 0.45,
       "tasks_saudaveis": 1,
       "execucoes": 1,
+      "requisicoes": 51,
       "vazao_rps": {
         "media": 0.42,
         "desvio": null,
         "n": 1
       },
+      "p50_ms": {
+        "media": 691.5,
+        "desvio": null,
+        "n": 1
+      },
       "p95_ms": {
         "media": 809.8,
+        "desvio": null,
+        "n": 1
+      },
+      "lentas_pct": {
+        "media": 2.0,
+        "desvio": null,
+        "n": 1
+      },
+      "erros_pct": {
+        "media": 0.0,
+        "desvio": null,
+        "n": 1
+      }
+    },
+    {
+      "experimento": "BC-escalabilidade",
+      "ambiente": "aws",
+      "fase": "baixa",
+      "carga_oferecida_rps": 0.3,
+      "tasks_saudaveis": 1,
+      "execucoes": 1,
+      "requisicoes": 24,
+      "vazao_rps": {
+        "media": 0.3,
+        "desvio": null,
+        "n": 1
+      },
+      "p50_ms": {
+        "media": 673.9,
+        "desvio": null,
+        "n": 1
+      },
+      "p95_ms": {
+        "media": 724.1,
+        "desvio": null,
+        "n": 1
+      },
+      "lentas_pct": {
+        "media": 4.2,
         "desvio": null,
         "n": 1
       },
@@ -417,13 +503,24 @@
       "carga_oferecida_rps": 0.3,
       "tasks_saudaveis": 2,
       "execucoes": 1,
+      "requisicoes": 68,
       "vazao_rps": {
         "media": 0.29,
         "desvio": null,
         "n": 1
       },
+      "p50_ms": {
+        "media": 684.2,
+        "desvio": null,
+        "n": 1
+      },
       "p95_ms": {
         "media": 750.7,
+        "desvio": null,
+        "n": 1
+      },
+      "lentas_pct": {
+        "media": 1.5,
         "desvio": null,
         "n": 1
       },
@@ -440,13 +537,24 @@
       "carga_oferecida_rps": 0.3,
       "tasks_saudaveis": 3,
       "execucoes": 1,
+      "requisicoes": 345,
       "vazao_rps": {
         "media": 0.31,
         "desvio": null,
         "n": 1
       },
+      "p50_ms": {
+        "media": 689.8,
+        "desvio": null,
+        "n": 1
+      },
       "p95_ms": {
         "media": 1163.3,
+        "desvio": null,
+        "n": 1
+      },
+      "lentas_pct": {
+        "media": 6.4,
         "desvio": null,
         "n": 1
       },
@@ -463,13 +571,24 @@
       "carga_oferecida_rps": 1.283,
       "tasks_saudaveis": 1,
       "execucoes": 1,
+      "requisicoes": 442,
       "vazao_rps": {
         "media": 1.23,
         "desvio": null,
         "n": 1
       },
+      "p50_ms": {
+        "media": 700.2,
+        "desvio": null,
+        "n": 1
+      },
       "p95_ms": {
         "media": 1476.0,
+        "desvio": null,
+        "n": 1
+      },
+      "lentas_pct": {
+        "media": 13.1,
         "desvio": null,
         "n": 1
       },
@@ -486,13 +605,24 @@
       "carga_oferecida_rps": 2.25,
       "tasks_saudaveis": 2,
       "execucoes": 1,
+      "requisicoes": 353,
       "vazao_rps": {
         "media": 2.12,
         "desvio": null,
         "n": 1
       },
+      "p50_ms": {
+        "media": 727.7,
+        "desvio": null,
+        "n": 1
+      },
       "p95_ms": {
         "media": 1391.8,
+        "desvio": null,
+        "n": 1
+      },
+      "lentas_pct": {
+        "media": 9.6,
         "desvio": null,
         "n": 1
       },
@@ -509,13 +639,24 @@
       "carga_oferecida_rps": 2.25,
       "tasks_saudaveis": 3,
       "execucoes": 1,
+      "requisicoes": 550,
       "vazao_rps": {
         "media": 2.17,
         "desvio": null,
         "n": 1
       },
+      "p50_ms": {
+        "media": 678.7,
+        "desvio": null,
+        "n": 1
+      },
       "p95_ms": {
         "media": 1074.2,
+        "desvio": null,
+        "n": 1
+      },
+      "lentas_pct": {
+        "media": 6.0,
         "desvio": null,
         "n": 1
       },
@@ -532,13 +673,24 @@
       "carga_oferecida_rps": 1.2,
       "tasks_saudaveis": 1,
       "execucoes": 1,
+      "requisicoes": 36,
       "vazao_rps": {
         "media": 1.15,
         "desvio": null,
         "n": 1
       },
+      "p50_ms": {
+        "media": 706.7,
+        "desvio": null,
+        "n": 1
+      },
       "p95_ms": {
         "media": 1709.8,
+        "desvio": null,
+        "n": 1
+      },
+      "lentas_pct": {
+        "media": 13.9,
         "desvio": null,
         "n": 1
       },
@@ -555,13 +707,24 @@
       "carga_oferecida_rps": 1.2,
       "tasks_saudaveis": 2,
       "execucoes": 1,
+      "requisicoes": 684,
       "vazao_rps": {
         "media": 1.15,
         "desvio": null,
         "n": 1
       },
+      "p50_ms": {
+        "media": 689.2,
+        "desvio": null,
+        "n": 1
+      },
       "p95_ms": {
-        "media": 1084.3,
+        "media": 1082.4,
+        "desvio": null,
+        "n": 1
+      },
+      "lentas_pct": {
+        "media": 5.4,
         "desvio": null,
         "n": 1
       },

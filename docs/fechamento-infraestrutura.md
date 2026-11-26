@@ -7,7 +7,7 @@ O primeiro deploy em Fargate foi validado em 12/11/2026 com uma task em Ohio. Em
 | 12/11 · conta `6300****4417` | Uma task saudável, três rotas com HTTP 200 e logs no CloudWatch. O serviço, o cluster e o grupo de segurança foram removidos ao fim do teste. A imagem `api-f8458a6` e o grupo de logs foram preservados. A estimativa bruta de US$ 0,10 e o limite operacional local de US$ 1 constam do registro da sessão. |
 | 17/11 · conta `7795****9628` | As revisões 1 e 2 estabilizaram com uma e duas tasks, respectivamente. Os experimentos A, B/C e D usaram a revisão 3. O inventário de 24/11 registrou o encerramento dos recursos de execução e custo de cerca de US$ 0,17, coberto por créditos. [Custos e inventário final](#custos-e-inventário-final) |
 
-[Registro de deploy e redeploy de 17/11](deploy-aws-20261117.md) · [Evidências experimentais](https://github.com/PabloMuh/Richard_Strauss/tree/629f0a7/tests/results)
+[Registro de deploy e redeploy de 17/11](deploy-aws-20261117.md) · [Evidências experimentais](../tests/results/RESUMO-AWS-20261117.md)
 
 ## Configuração efetivamente usada em 17/11
 
@@ -16,7 +16,7 @@ O primeiro deploy em Fargate foi validado em 12/11/2026 com uma task em Ohio. Em
 - Smoke e calibração usaram a tag `api-189bf27`. A, B/C e D usaram `api-62f1e8e` e a task definition `richard-strauss-api:3` fixada no digest `sha256:922b1b43fc74cfb588c4da07e8f410a74c2dc4541744008fc68bd6db31633a15`. Essa versão elevou o keep-alive do Uvicorn para 75 s.
 - A rodou com uma task fixa. Em B/C, a política `richard-strauss-cpu` usou target tracking da CPU média do serviço, alvo de 60%, mínimo de uma task, máximo de três e cooldowns de 60 s para aumento e 180 s para redução. D rodou com duas tasks fixas após desativar a política.
 
-[Metadados de B/C](https://github.com/PabloMuh/Richard_Strauss/blob/629f0a7/tests/results/20261117-230132-BC-escalabilidade-r1/metadata.json) · [Política exportada](https://github.com/PabloMuh/Richard_Strauss/blob/629f0a7/tests/results/20261117-230132-BC-escalabilidade-r1/aws/autoscaling-politicas.json)
+[Metadados de B/C](../tests/results/20261117-230132-BC-escalabilidade-r1/metadata.json) · [Política exportada](../tests/results/20261117-230132-BC-escalabilidade-r1/aws/autoscaling-politicas.json)
 
 ## Revisão dos eventos do ECS e do Auto Scaling
 
@@ -24,12 +24,12 @@ O primeiro deploy em Fargate foi validado em 12/11/2026 com uma task em Ohio. Em
 |---|---|
 | A · Baseline | Uma task e um alvo saudável ao longo da coleta. O k6 registrou 225 requisições, zero falhas e zero iterações descartadas na execução posterior à correção de keep-alive. |
 | B · Aumento de escala | O Application Auto Scaling registrou decisões bem-sucedidas para 2 e 3 tasks. Da decisão até a primeira amostra com a quantidade correspondente de alvos saudáveis no ALB, passaram cerca de **35 s no 1→2** (23:10:50 → 23:11:25 UTC) e **30 s no 2→3** (23:13:50 → 23:14:20 UTC). |
-| C · Redução de escala | O serviço voltou de 3 para 2 e depois para 1 task. A contagem desejada baixou cerca de **1.150 s** e **1.397 s** após o início da rampa de redução de carga, respectivamente. |
+| C · Redução de escala | O serviço voltou de 3 para 2 e depois para 1 task. As decisões do Auto Scaling vieram cerca de **1.108 s** e **1.348 s** após o início da redução de carga, respectivamente. O instante da redução foi corrigido pelo ritmo do gerador de carga, que ficou 42 s atrás do plano nesse ponto. |
 | D · Falha | Após o pedido de parada, uma task substituta apareceu na coleta em cerca de **37 s**. O ALB voltou a mostrar dois alvos saudáveis em **68 s**, e o k6 registrou zero erros nas 119 requisições da janela da falha. |
 
-O resumo automático de B/C reaproveitou a primeira transição do alarme e a primeira decisão ao calcular o segundo degrau. Assim, os **210 s** contam desde o primeiro alarme até a terceira task saudável. Para comparar as decisões individuais, use os **35 s e 30 s** obtidos das atividades do Auto Scaling e da primeira amostra saudável do ALB. A coleta tem resolução nominal de 10 s. Houve uma repetição por cenário, então os tempos descrevem esta sessão.
+A primeira versão do resumo automático de B/C reaproveitava a primeira transição do alarme e a primeira decisão ao calcular o segundo degrau, e por isso mostrava **210 s**. A pessoa 3 corrigiu a análise em 25/11: cada degrau agora é medido a partir da própria decisão do Auto Scaling, e o resumo regenerado mostra os mesmos **35 s e 30 s** desta revisão. [Resumo revisado dos experimentos](../tests/results/RESUMO-AWS-20261117.md). A coleta tem resolução nominal de 10 s. Houve uma repetição por cenário, então os tempos descrevem esta sessão.
 
-[Atividades do Auto Scaling](https://github.com/PabloMuh/Richard_Strauss/blob/629f0a7/tests/results/20261117-230132-BC-escalabilidade-r1/aws/autoscaling-atividades.json) · [Timeline B/C](https://github.com/PabloMuh/Richard_Strauss/blob/629f0a7/tests/results/20261117-230132-BC-escalabilidade-r1/timeline.csv) · [Evidência da falha](https://github.com/PabloMuh/Richard_Strauss/blob/629f0a7/tests/results/20261117-235404-D-falha-r1/resumo.md)
+[Atividades do Auto Scaling](../tests/results/20261117-230132-BC-escalabilidade-r1/aws/autoscaling-atividades.json) · [Timeline B/C](../tests/results/20261117-230132-BC-escalabilidade-r1/timeline.csv) · [Evidência da falha](../tests/results/20261117-235404-D-falha-r1/resumo.md)
 
 ## Reprodução e encerramento
 
@@ -62,4 +62,4 @@ O Cost Explorer da conta informou os valores abaixo na consulta diária de **16 
 | ECR (armazenamento no intervalo consultado) | 0,0012 |
 | **Total** | **0,1686** |
 
-O inventário informa **US$ 0,00 líquidos após créditos** e saldo de **US$ 99,83** no Free Plan na data da consulta. A estimativa de cerca de US$ 0,07 por hora com ALB e duas tasks serviu ao planejamento. Os dados brutos do Cost Explorer ficaram com a pessoa 1. [Inventário e custos da pessoa 1](https://github.com/PabloMuh/Richard_Strauss/blob/7c9cc0ab3388607521dea7d4a67c4050b4c32c79/docs/inventario-custos-20261124.md)
+O inventário informa **US$ 0,00 líquidos após créditos** e saldo de **US$ 99,83** no Free Plan na data da consulta. A estimativa de cerca de US$ 0,07 por hora com ALB e duas tasks serviu ao planejamento. Os dados brutos do Cost Explorer ficaram com a pessoa 1. [Inventário e custos da pessoa 1](inventario-custos-20261124.md)

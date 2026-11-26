@@ -23,21 +23,24 @@
     "latencia_p50_ms": 660.1,
     "latencia_p95_ms": 1014.4,
     "latencia_p99_ms": 2041.0,
-    "latencia_max_ms": 2081.4
+    "latencia_max_ms": 2081.4,
+    "lentas_pct": 5.8
   },
   "fases": [
     {
       "fase": "constante",
-      "duracao_s": 300,
+      "duracao_s": 313.5,
       "carga_oferecida_rps": 0.75,
       "requisicoes": 225,
       "erros": 0,
       "taxa_erros_pct": 0.0,
-      "vazao_rps": 0.75,
+      "vazao_rps": 0.718,
       "latencia_p50_ms": 660.1,
       "latencia_p95_ms": 1014.4,
       "latencia_p99_ms": 2041.0,
       "latencia_max_ms": 2081.4,
+      "lentas_pct": 5.8,
+      "cpu_media_pct": 48.7,
       "instancias": {
         "5dfa3b11c57345a39d286da496616b7a": 225
       }
@@ -47,10 +50,34 @@
     "5dfa3b11c57345a39d286da496616b7a": 225
   },
   "recursos": {
-    "cpu_media_pct": 37.7,
+    "cpu_media_pct": 48.7,
     "cpu_maxima_pct": 58.1,
     "memoria_media_pct": 7.0,
-    "observacao": "média dos datapoints de 1 min do serviço (média entre as tasks)"
+    "observacao": "médias dos datapoints de 1 min do serviço (média entre as tasks) inteiramente dentro da janela do k6; a máxima considera também os minutos das bordas"
+  },
+  "cauda_por_instancia": {
+    "limite_ms": 1000.0,
+    "periodo_s": 30.0,
+    "faixa_s": 5.0,
+    "referencia_sem_periodicidade_pct": 16.7,
+    "instancias": [
+      {
+        "instancia": "5dfa3b11c57345a39d286da496616b7a",
+        "requisicoes": 225,
+        "lentas": 13,
+        "lentas_pct": 5.8,
+        "lentas_na_faixa": 9,
+        "lentas_na_faixa_pct": 69.2,
+        "faixa_inicio_s": 26.9
+      }
+    ]
+  },
+  "ritmo_k6": {
+    "fator_tempo": 1.0396,
+    "deslocamento_s": 1.87,
+    "residuo_max_s": 0.7,
+    "carga_efetiva_pct": 96.2,
+    "observacao": "início real das requisições = início do k6 + deslocamento + fator × horário previsto no plano"
   },
   "mesma_carga_por_tasks": [
     {
@@ -59,15 +86,16 @@
       "grupos": [
         {
           "tasks_saudaveis": 1,
-          "duracao_s": 300.0,
-          "requisicoes": 215,
+          "duracao_s": 313.5,
+          "requisicoes": 225,
           "erros": 0,
           "taxa_erros_pct": 0.0,
-          "vazao_rps": 0.717,
+          "vazao_rps": 0.718,
           "latencia_p50_ms": 660.1,
-          "latencia_p95_ms": 1038.2,
+          "latencia_p95_ms": 1014.4,
           "latencia_p99_ms": 2041.0,
-          "latencia_max_ms": 2081.4
+          "latencia_max_ms": 2081.4,
+          "lentas_pct": 5.8
         }
       ]
     }

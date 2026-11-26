@@ -23,7 +23,8 @@
     "latencia_p50_ms": 656.9,
     "latencia_p95_ms": 738.4,
     "latencia_p99_ms": 738.4,
-    "latencia_max_ms": 738.4
+    "latencia_max_ms": 738.4,
+    "lentas_pct": 0.0
   },
   "fases": [],
   "instancias": {
@@ -34,6 +35,32 @@
     "cpu_media_pct": null,
     "cpu_maxima_pct": null,
     "memoria_media_pct": null,
-    "observacao": "média dos datapoints de 1 min do serviço (média entre as tasks)"
+    "observacao": "médias dos datapoints de 1 min do serviço (média entre as tasks) inteiramente dentro da janela do k6; a máxima considera também os minutos das bordas"
+  },
+  "cauda_por_instancia": {
+    "limite_ms": 1000.0,
+    "periodo_s": 30.0,
+    "faixa_s": 5.0,
+    "referencia_sem_periodicidade_pct": 16.7,
+    "instancias": [
+      {
+        "instancia": "446ef2ab351d4c8884d03fdea5101518",
+        "requisicoes": 1,
+        "lentas": 0,
+        "lentas_pct": 0.0,
+        "lentas_na_faixa": 0,
+        "lentas_na_faixa_pct": null,
+        "faixa_inicio_s": null
+      },
+      {
+        "instancia": "6c471c822df04494b4d224b67d4ea0b5",
+        "requisicoes": 2,
+        "lentas": 0,
+        "lentas_pct": 0.0,
+        "lentas_na_faixa": 0,
+        "lentas_na_faixa_pct": null,
+        "faixa_inicio_s": null
+      }
+    ]
   }
 }
