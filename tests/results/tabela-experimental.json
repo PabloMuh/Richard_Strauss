@@ -1,0 +1,738 @@
+{
+  "execucoes": [
+    {
+      "pasta": "20261117-222155-smoke-r1",
+      "experimento": "smoke",
+      "ambiente": "aws",
+      "repeticao": 1,
+      "inicio_utc": "2026-11-17T22:22:07.936Z",
+      "vazao_rps": 0.934,
+      "p95_ms": 738.4,
+      "erros_pct": 0.0,
+      "cpu_media_pct": null,
+      "tasks_max": null,
+      "carga_ate_pronta_1o_degrau_s": null,
+      "scale_out_1o_degrau_s": null,
+      "scale_out_2o_degrau_s": null,
+      "scale_in_s": null,
+      "recuperacao_s": null,
+      "erros_falha": null
+    },
+    {
+      "pasta": "20261117-223019-calibracao-r1",
+      "experimento": "calibracao",
+      "ambiente": "aws",
+      "repeticao": 1,
+      "inicio_utc": "2026-11-17T22:30:21.306Z",
+      "vazao_rps": 1.491,
+      "p95_ms": 3829.2,
+      "erros_pct": 0.0,
+      "cpu_media_pct": 100.0,
+      "tasks_max": null,
+      "carga_ate_pronta_1o_degrau_s": null,
+      "scale_out_1o_degrau_s": null,
+      "scale_out_2o_degrau_s": null,
+      "scale_in_s": null,
+      "recuperacao_s": null,
+      "erros_falha": null
+    },
+    {
+      "pasta": "20261117-225146-A-baseline-r1",
+      "experimento": "A-baseline",
+      "ambiente": "aws",
+      "repeticao": 1,
+      "inicio_utc": "2026-11-17T22:51:46.890Z",
+      "vazao_rps": 0.718,
+      "p95_ms": 1014.4,
+      "erros_pct": 0.0,
+      "cpu_media_pct": 48.7,
+      "tasks_max": null,
+      "carga_ate_pronta_1o_degrau_s": null,
+      "scale_out_1o_degrau_s": null,
+      "scale_out_2o_degrau_s": null,
+      "scale_in_s": null,
+      "recuperacao_s": null,
+      "erros_falha": null
+    },
+    {
+      "pasta": "20261117-230132-BC-escalabilidade-r1",
+      "experimento": "BC-escalabilidade",
+      "ambiente": "aws",
+      "repeticao": 1,
+      "inicio_utc": "2026-11-17T23:01:34.225Z",
+      "vazao_rps": 0.837,
+      "p95_ms": 1300.6,
+      "erros_pct": 0.0,
+      "cpu_media_pct": 32.4,
+      "tasks_max": 3,
+      "carga_ate_pronta_1o_degrau_s": 433.0,
+      "scale_out_1o_degrau_s": 35.0,
+      "scale_out_2o_degrau_s": 30.0,
+      "scale_in_s": 1108.0,
+      "recuperacao_s": null,
+      "erros_falha": null
+    },
+    {
+      "pasta": "20261117-235404-D-falha-r1",
+      "experimento": "D-falha",
+      "ambiente": "aws",
+      "repeticao": 1,
+      "inicio_utc": "2026-11-17T23:54:05.940Z",
+      "vazao_rps": 1.152,
+      "p95_ms": 1106.3,
+      "erros_pct": 0.0,
+      "cpu_media_pct": 39.8,
+      "tasks_max": null,
+      "carga_ate_pronta_1o_degrau_s": null,
+      "scale_out_1o_degrau_s": null,
+      "scale_out_2o_degrau_s": null,
+      "scale_in_s": null,
+      "recuperacao_s": 68.0,
+      "erros_falha": 0
+    }
+  ],
+  "agregados": [
+    {
+      "experimento": "A-baseline",
+      "ambiente": "aws",
+      "n": 1,
+      "vazao_rps": {
+        "media": 0.72,
+        "desvio": null,
+        "n": 1
+      },
+      "p95_ms": {
+        "media": 1014.4,
+        "desvio": null,
+        "n": 1
+      },
+      "erros_pct": {
+        "media": 0.0,
+        "desvio": null,
+        "n": 1
+      },
+      "cpu_media_pct": {
+        "media": 48.7,
+        "desvio": null,
+        "n": 1
+      },
+      "tasks_max": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "carga_ate_pronta_1o_degrau_s": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "scale_out_1o_degrau_s": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "scale_out_2o_degrau_s": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "scale_in_s": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "recuperacao_s": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "erros_falha": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      }
+    },
+    {
+      "experimento": "BC-escalabilidade",
+      "ambiente": "aws",
+      "n": 1,
+      "vazao_rps": {
+        "media": 0.84,
+        "desvio": null,
+        "n": 1
+      },
+      "p95_ms": {
+        "media": 1300.6,
+        "desvio": null,
+        "n": 1
+      },
+      "erros_pct": {
+        "media": 0.0,
+        "desvio": null,
+        "n": 1
+      },
+      "cpu_media_pct": {
+        "media": 32.4,
+        "desvio": null,
+        "n": 1
+      },
+      "tasks_max": {
+        "media": 3.0,
+        "desvio": null,
+        "n": 1
+      },
+      "carga_ate_pronta_1o_degrau_s": {
+        "media": 433.0,
+        "desvio": null,
+        "n": 1
+      },
+      "scale_out_1o_degrau_s": {
+        "media": 35.0,
+        "desvio": null,
+        "n": 1
+      },
+      "scale_out_2o_degrau_s": {
+        "media": 30.0,
+        "desvio": null,
+        "n": 1
+      },
+      "scale_in_s": {
+        "media": 1108.0,
+        "desvio": null,
+        "n": 1
+      },
+      "recuperacao_s": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "erros_falha": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      }
+    },
+    {
+      "experimento": "D-falha",
+      "ambiente": "aws",
+      "n": 1,
+      "vazao_rps": {
+        "media": 1.15,
+        "desvio": null,
+        "n": 1
+      },
+      "p95_ms": {
+        "media": 1106.3,
+        "desvio": null,
+        "n": 1
+      },
+      "erros_pct": {
+        "media": 0.0,
+        "desvio": null,
+        "n": 1
+      },
+      "cpu_media_pct": {
+        "media": 39.8,
+        "desvio": null,
+        "n": 1
+      },
+      "tasks_max": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "carga_ate_pronta_1o_degrau_s": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "scale_out_1o_degrau_s": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "scale_out_2o_degrau_s": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "scale_in_s": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "recuperacao_s": {
+        "media": 68.0,
+        "desvio": null,
+        "n": 1
+      },
+      "erros_falha": {
+        "media": 0.0,
+        "desvio": null,
+        "n": 1
+      }
+    },
+    {
+      "experimento": "calibracao",
+      "ambiente": "aws",
+      "n": 1,
+      "vazao_rps": {
+        "media": 1.49,
+        "desvio": null,
+        "n": 1
+      },
+      "p95_ms": {
+        "media": 3829.2,
+        "desvio": null,
+        "n": 1
+      },
+      "erros_pct": {
+        "media": 0.0,
+        "desvio": null,
+        "n": 1
+      },
+      "cpu_media_pct": {
+        "media": 100.0,
+        "desvio": null,
+        "n": 1
+      },
+      "tasks_max": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "carga_ate_pronta_1o_degrau_s": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "scale_out_1o_degrau_s": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "scale_out_2o_degrau_s": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "scale_in_s": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "recuperacao_s": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "erros_falha": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      }
+    },
+    {
+      "experimento": "smoke",
+      "ambiente": "aws",
+      "n": 1,
+      "vazao_rps": {
+        "media": 0.93,
+        "desvio": null,
+        "n": 1
+      },
+      "p95_ms": {
+        "media": 738.4,
+        "desvio": null,
+        "n": 1
+      },
+      "erros_pct": {
+        "media": 0.0,
+        "desvio": null,
+        "n": 1
+      },
+      "cpu_media_pct": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "tasks_max": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "carga_ate_pronta_1o_degrau_s": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "scale_out_1o_degrau_s": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "scale_out_2o_degrau_s": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "scale_in_s": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "recuperacao_s": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      },
+      "erros_falha": {
+        "media": null,
+        "desvio": null,
+        "n": 0
+      }
+    }
+  ],
+  "mesma_carga_por_tasks": [
+    {
+      "experimento": "A-baseline",
+      "ambiente": "aws",
+      "fase": "constante",
+      "carga_oferecida_rps": 0.75,
+      "tasks_saudaveis": 1,
+      "execucoes": 1,
+      "requisicoes": 225,
+      "vazao_rps": {
+        "media": 0.72,
+        "desvio": null,
+        "n": 1
+      },
+      "p50_ms": {
+        "media": 660.1,
+        "desvio": null,
+        "n": 1
+      },
+      "p95_ms": {
+        "media": 1014.4,
+        "desvio": null,
+        "n": 1
+      },
+      "lentas_pct": {
+        "media": 5.8,
+        "desvio": null,
+        "n": 1
+      },
+      "erros_pct": {
+        "media": 0.0,
+        "desvio": null,
+        "n": 1
+      }
+    },
+    {
+      "experimento": "BC-escalabilidade",
+      "ambiente": "aws",
+      "fase": "aquecimento",
+      "carga_oferecida_rps": 0.45,
+      "tasks_saudaveis": 1,
+      "execucoes": 1,
+      "requisicoes": 51,
+      "vazao_rps": {
+        "media": 0.42,
+        "desvio": null,
+        "n": 1
+      },
+      "p50_ms": {
+        "media": 691.5,
+        "desvio": null,
+        "n": 1
+      },
+      "p95_ms": {
+        "media": 809.8,
+        "desvio": null,
+        "n": 1
+      },
+      "lentas_pct": {
+        "media": 2.0,
+        "desvio": null,
+        "n": 1
+      },
+      "erros_pct": {
+        "media": 0.0,
+        "desvio": null,
+        "n": 1
+      }
+    },
+    {
+      "experimento": "BC-escalabilidade",
+      "ambiente": "aws",
+      "fase": "baixa",
+      "carga_oferecida_rps": 0.3,
+      "tasks_saudaveis": 1,
+      "execucoes": 1,
+      "requisicoes": 24,
+      "vazao_rps": {
+        "media": 0.3,
+        "desvio": null,
+        "n": 1
+      },
+      "p50_ms": {
+        "media": 673.9,
+        "desvio": null,
+        "n": 1
+      },
+      "p95_ms": {
+        "media": 724.1,
+        "desvio": null,
+        "n": 1
+      },
+      "lentas_pct": {
+        "media": 4.2,
+        "desvio": null,
+        "n": 1
+      },
+      "erros_pct": {
+        "media": 0.0,
+        "desvio": null,
+        "n": 1
+      }
+    },
+    {
+      "experimento": "BC-escalabilidade",
+      "ambiente": "aws",
+      "fase": "baixa",
+      "carga_oferecida_rps": 0.3,
+      "tasks_saudaveis": 2,
+      "execucoes": 1,
+      "requisicoes": 68,
+      "vazao_rps": {
+        "media": 0.29,
+        "desvio": null,
+        "n": 1
+      },
+      "p50_ms": {
+        "media": 684.2,
+        "desvio": null,
+        "n": 1
+      },
+      "p95_ms": {
+        "media": 750.7,
+        "desvio": null,
+        "n": 1
+      },
+      "lentas_pct": {
+        "media": 1.5,
+        "desvio": null,
+        "n": 1
+      },
+      "erros_pct": {
+        "media": 0.0,
+        "desvio": null,
+        "n": 1
+      }
+    },
+    {
+      "experimento": "BC-escalabilidade",
+      "ambiente": "aws",
+      "fase": "baixa",
+      "carga_oferecida_rps": 0.3,
+      "tasks_saudaveis": 3,
+      "execucoes": 1,
+      "requisicoes": 345,
+      "vazao_rps": {
+        "media": 0.31,
+        "desvio": null,
+        "n": 1
+      },
+      "p50_ms": {
+        "media": 689.8,
+        "desvio": null,
+        "n": 1
+      },
+      "p95_ms": {
+        "media": 1163.3,
+        "desvio": null,
+        "n": 1
+      },
+      "lentas_pct": {
+        "media": 6.4,
+        "desvio": null,
+        "n": 1
+      },
+      "erros_pct": {
+        "media": 0.0,
+        "desvio": null,
+        "n": 1
+      }
+    },
+    {
+      "experimento": "BC-escalabilidade",
+      "ambiente": "aws",
+      "fase": "degrau-1",
+      "carga_oferecida_rps": 1.283,
+      "tasks_saudaveis": 1,
+      "execucoes": 1,
+      "requisicoes": 442,
+      "vazao_rps": {
+        "media": 1.23,
+        "desvio": null,
+        "n": 1
+      },
+      "p50_ms": {
+        "media": 700.2,
+        "desvio": null,
+        "n": 1
+      },
+      "p95_ms": {
+        "media": 1476.0,
+        "desvio": null,
+        "n": 1
+      },
+      "lentas_pct": {
+        "media": 13.1,
+        "desvio": null,
+        "n": 1
+      },
+      "erros_pct": {
+        "media": 0.0,
+        "desvio": null,
+        "n": 1
+      }
+    },
+    {
+      "experimento": "BC-escalabilidade",
+      "ambiente": "aws",
+      "fase": "degrau-2",
+      "carga_oferecida_rps": 2.25,
+      "tasks_saudaveis": 2,
+      "execucoes": 1,
+      "requisicoes": 353,
+      "vazao_rps": {
+        "media": 2.12,
+        "desvio": null,
+        "n": 1
+      },
+      "p50_ms": {
+        "media": 727.7,
+        "desvio": null,
+        "n": 1
+      },
+      "p95_ms": {
+        "media": 1391.8,
+        "desvio": null,
+        "n": 1
+      },
+      "lentas_pct": {
+        "media": 9.6,
+        "desvio": null,
+        "n": 1
+      },
+      "erros_pct": {
+        "media": 0.0,
+        "desvio": null,
+        "n": 1
+      }
+    },
+    {
+      "experimento": "BC-escalabilidade",
+      "ambiente": "aws",
+      "fase": "degrau-2",
+      "carga_oferecida_rps": 2.25,
+      "tasks_saudaveis": 3,
+      "execucoes": 1,
+      "requisicoes": 550,
+      "vazao_rps": {
+        "media": 2.17,
+        "desvio": null,
+        "n": 1
+      },
+      "p50_ms": {
+        "media": 678.7,
+        "desvio": null,
+        "n": 1
+      },
+      "p95_ms": {
+        "media": 1074.2,
+        "desvio": null,
+        "n": 1
+      },
+      "lentas_pct": {
+        "media": 6.0,
+        "desvio": null,
+        "n": 1
+      },
+      "erros_pct": {
+        "media": 0.0,
+        "desvio": null,
+        "n": 1
+      }
+    },
+    {
+      "experimento": "D-falha",
+      "ambiente": "aws",
+      "fase": "constante",
+      "carga_oferecida_rps": 1.2,
+      "tasks_saudaveis": 1,
+      "execucoes": 1,
+      "requisicoes": 36,
+      "vazao_rps": {
+        "media": 1.15,
+        "desvio": null,
+        "n": 1
+      },
+      "p50_ms": {
+        "media": 706.7,
+        "desvio": null,
+        "n": 1
+      },
+      "p95_ms": {
+        "media": 1709.8,
+        "desvio": null,
+        "n": 1
+      },
+      "lentas_pct": {
+        "media": 13.9,
+        "desvio": null,
+        "n": 1
+      },
+      "erros_pct": {
+        "media": 0.0,
+        "desvio": null,
+        "n": 1
+      }
+    },
+    {
+      "experimento": "D-falha",
+      "ambiente": "aws",
+      "fase": "constante",
+      "carga_oferecida_rps": 1.2,
+      "tasks_saudaveis": 2,
+      "execucoes": 1,
+      "requisicoes": 684,
+      "vazao_rps": {
+        "media": 1.15,
+        "desvio": null,
+        "n": 1
+      },
+      "p50_ms": {
+        "media": 689.2,
+        "desvio": null,
+        "n": 1
+      },
+      "p95_ms": {
+        "media": 1082.4,
+        "desvio": null,
+        "n": 1
+      },
+      "lentas_pct": {
+        "media": 5.4,
+        "desvio": null,
+        "n": 1
+      },
+      "erros_pct": {
+        "media": 0.0,
+        "desvio": null,
+        "n": 1
+      }
+    }
+  ]
+}

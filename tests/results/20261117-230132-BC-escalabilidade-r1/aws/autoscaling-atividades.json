@@ -1,0 +1,50 @@
+[
+  {
+    "ActivityId": "22daf6d5-c92d-4cad-9d3c-d4230b42b7d8",
+    "ServiceNamespace": "ecs",
+    "ResourceId": "service/richard-strauss/richard-strauss-api",
+    "ScalableDimension": "ecs:service:DesiredCount",
+    "Description": "Setting desired count to 1.",
+    "Cause": "monitor alarm TargetTracking-service/richard-strauss/richard-strauss-api-AlarmLow-a0913dc9-31a9-4913-a9d2-165cc29d6d28 in state ALARM triggered policy richard-strauss-cpu",
+    "StartTime": "2026-11-17T20:41:45.265-03:00",
+    "EndTime": "2026-11-17T20:42:18.063-03:00",
+    "StatusCode": "Successful",
+    "StatusMessage": "Successfully set desired count to 1. Change successfully fulfilled by ecs."
+  },
+  {
+    "ActivityId": "688871dd-2a78-4e63-8040-875996fc90ab",
+    "ServiceNamespace": "ecs",
+    "ResourceId": "service/richard-strauss/richard-strauss-api",
+    "ScalableDimension": "ecs:service:DesiredCount",
+    "Description": "Setting desired count to 2.",
+    "Cause": "monitor alarm TargetTracking-service/richard-strauss/richard-strauss-api-AlarmLow-a0913dc9-31a9-4913-a9d2-165cc29d6d28 in state ALARM triggered policy richard-strauss-cpu",
+    "StartTime": "2026-11-17T20:37:45.235-03:00",
+    "EndTime": "2026-11-17T20:38:19.09-03:00",
+    "StatusCode": "Successful",
+    "StatusMessage": "Successfully set desired count to 2. Change successfully fulfilled by ecs."
+  },
+  {
+    "ActivityId": "5bcabd08-0f69-4c69-8dc3-1ed329aea2f5",
+    "ServiceNamespace": "ecs",
+    "ResourceId": "service/richard-strauss/richard-strauss-api",
+    "ScalableDimension": "ecs:service:DesiredCount",
+    "Description": "Setting desired count to 3.",
+    "Cause": "monitor alarm TargetTracking-service/richard-strauss/richard-strauss-api-AlarmHigh-cfb98adb-f7c8-4569-b21d-245e66b64ab8 in state ALARM triggered policy richard-strauss-cpu",
+    "StartTime": "2026-11-17T20:13:50.494-03:00",
+    "EndTime": "2026-11-17T20:14:57.524-03:00",
+    "StatusCode": "Successful",
+    "StatusMessage": "Successfully set desired count to 3. Change successfully fulfilled by ecs."
+  },
+  {
+    "ActivityId": "ba27cec8-6fca-4757-8d7e-fb3da67603c3",
+    "ServiceNamespace": "ecs",
+    "ResourceId": "service/richard-strauss/richard-strauss-api",
+    "ScalableDimension": "ecs:service:DesiredCount",
+    "Description": "Setting desired count to 2.",
+    "Cause": "monitor alarm TargetTracking-service/richard-strauss/richard-strauss-api-AlarmHigh-cfb98adb-f7c8-4569-b21d-245e66b64ab8 in state ALARM triggered policy richard-strauss-cpu",
+    "StartTime": "2026-11-17T20:10:50.49-03:00",
+    "EndTime": "2026-11-17T20:11:58.49-03:00",
+    "StatusCode": "Successful",
+    "StatusMessage": "Successfully set desired count to 2. Change successfully fulfilled by ecs."
+  }
+]

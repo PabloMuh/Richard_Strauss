@@ -1,0 +1,105 @@
+{
+  "pasta": "20261117-223742-A-baseline-r1",
+  "experimento": "A-baseline",
+  "repeticao": 1,
+  "ambiente": "aws",
+  "inicio_utc": "2026-11-17T22:37:43.579Z",
+  "fim_utc": "2026-11-17T22:42:56.004Z",
+  "duracao_s": 312.4,
+  "k6": {
+    "capacidade_rps": 1.5,
+    "iteracoes": null,
+    "escala_tempo": 1,
+    "iteracoes_descartadas": 0,
+    "vus_max": 5,
+    "taxa_checks": 0.9955555555555555,
+    "capacidade_estimada_rps": null
+  },
+  "geral": {
+    "requisicoes": 225,
+    "erros": 1,
+    "taxa_erros_pct": 0.444,
+    "vazao_rps": 0.717,
+    "latencia_p50_ms": 695.7,
+    "latencia_p95_ms": 942.0,
+    "latencia_p99_ms": 2026.9,
+    "latencia_max_ms": 2097.6,
+    "lentas_pct": 4.5
+  },
+  "fases": [
+    {
+      "fase": "constante",
+      "duracao_s": 312.4,
+      "carga_oferecida_rps": 0.75,
+      "requisicoes": 225,
+      "erros": 1,
+      "taxa_erros_pct": 0.444,
+      "vazao_rps": 0.717,
+      "latencia_p50_ms": 695.7,
+      "latencia_p95_ms": 942.0,
+      "latencia_p99_ms": 2026.9,
+      "latencia_max_ms": 2097.6,
+      "lentas_pct": 4.5,
+      "cpu_media_pct": 49.1,
+      "instancias": {
+        "6c471c822df04494b4d224b67d4ea0b5": 224,
+        "balanceador": 1
+      }
+    }
+  ],
+  "instancias": {
+    "6c471c822df04494b4d224b67d4ea0b5": 224,
+    "balanceador": 1
+  },
+  "recursos": {
+    "cpu_media_pct": 49.1,
+    "cpu_maxima_pct": 59.4,
+    "memoria_media_pct": 7.0,
+    "observacao": "médias dos datapoints de 1 min do serviço (média entre as tasks) inteiramente dentro da janela do k6; a máxima considera também os minutos das bordas"
+  },
+  "cauda_por_instancia": {
+    "limite_ms": 1000.0,
+    "periodo_s": 30.0,
+    "faixa_s": 5.0,
+    "referencia_sem_periodicidade_pct": 16.7,
+    "instancias": [
+      {
+        "instancia": "6c471c822df04494b4d224b67d4ea0b5",
+        "requisicoes": 224,
+        "lentas": 10,
+        "lentas_pct": 4.5,
+        "lentas_na_faixa": 8,
+        "lentas_na_faixa_pct": 80.0,
+        "faixa_inicio_s": 21.3
+      }
+    ]
+  },
+  "ritmo_k6": {
+    "fator_tempo": 1.0405,
+    "deslocamento_s": 1.63,
+    "residuo_max_s": 0.77,
+    "carga_efetiva_pct": 96.1,
+    "observacao": "início real das requisições = início do k6 + deslocamento + fator × horário previsto no plano"
+  },
+  "mesma_carga_por_tasks": [
+    {
+      "fase": "constante",
+      "carga_oferecida_rps": 0.75,
+      "grupos": [
+        {
+          "tasks_saudaveis": 1,
+          "duracao_s": 312.4,
+          "requisicoes": 225,
+          "erros": 1,
+          "taxa_erros_pct": 0.444,
+          "vazao_rps": 0.717,
+          "latencia_p50_ms": 695.7,
+          "latencia_p95_ms": 942.0,
+          "latencia_p99_ms": 2026.9,
+          "latencia_max_ms": 2097.6,
+          "lentas_pct": 4.5
+        }
+      ]
+    }
+  ]
+}

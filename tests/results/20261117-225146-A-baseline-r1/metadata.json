@@ -1,0 +1,39 @@
+{
+  "experimento": "A-baseline",
+  "objetivo": "Linha de base: 1 task, carga constante de 50% da capacidade, sem Auto Scaling",
+  "hipotese": "Vazão igual à oferecida, latência estável, CPU próxima de 50% e nenhum erro.",
+  "repeticao": 1,
+  "responsavel": "Pessoa 1",
+  "inicio_utc": "2026-11-17T22:51:46.054Z",
+  "fim_utc": "2026-11-17T22:57:05.755Z",
+  "identificacao": {
+    "ambiente": "aws",
+    "regiao": "us-east-2",
+    "conta": "7795****9628",
+    "cluster": "richard-strauss",
+    "servico": "richard-strauss-api",
+    "imagem": {
+      "tag": "api-62f1e8e",
+      "digest": "sha256:922b1b43fc74cfb588c4da07e8f410a74c2dc4541744008fc68bd6db31633a15"
+    },
+    "task_definition": "arn:aws:ecs:us-east-2:7795****9628:task-definition/richard-strauss-api:3",
+    "alb": true,
+    "precondicoes_ignoradas": []
+  },
+  "auto_scaling": null,
+  "k6": {
+    "cenario": "A-baseline",
+    "base_url": "http://richard-strauss-alb-987147931.us-east-2.elb.amazonaws.com",
+    "capacidade_rps": 1.5,
+    "iteracoes": null,
+    "escala_tempo": 1.0,
+    "executor": "grafana/k6:1.0.0",
+    "codigo_saida": 0
+  },
+  "coleta": {
+    "intervalo_s": 10,
+    "observacao_apos_k6_s": 0,
+    "aguardar_metricas_s": 180
+  },
+  "falha": null
+}

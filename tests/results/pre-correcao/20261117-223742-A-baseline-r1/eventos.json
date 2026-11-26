@@ -1,0 +1,12 @@
+[
+  {
+    "timestamp_utc": "2026-11-17T22:37:42.686Z",
+    "tipo": "k6_inicio",
+    "descricao": "k6 iniciado (A-baseline)"
+  },
+  {
+    "timestamp_utc": "2026-11-17T22:43:03.392Z",
+    "tipo": "k6_fim",
+    "descricao": "k6 terminou (código 0)"
+  }
+]

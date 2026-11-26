@@ -32,6 +32,12 @@ from urllib.parse import parse_qsl
 
 BALDE_S = 10  # resolução das séries temporais (s)
 ALVO_CPU_PADRAO = 60.0
+LENTA_MS = 1000.0  # requisição "lenta": acima de 1 s, quase o dobro do /work isolado no Fargate (~0,55-0,7 s)
+# Intervalo do health check do container (infrastructure/templates/task-definition.json): cada execução
+# inicia um interpretador Python dentro da task, que disputa a 0,25 vCPU com o /work.
+PERIODO_HEALTH_CHECK_S = 30.0
+FAIXA_CICLO_S = 5.0
+RE_DESEJADAS = re.compile(r"desired count to (\d+)", re.IGNORECASE)
 
 
 @dataclass
@@ -42,6 +48,7 @@ class Requisicao:
     status: int
     fase: str
     nome: str
+    instancia: str = ""  # task que respondeu (vazio se a resposta não identificou a instância)
 
 
 # ----------------------------------------------------------------------------- leitura
@@ -94,7 +101,27 @@ def ler_k6(caminho: Path) -> tuple[list[Requisicao], list[tuple[float, str, str]
                 instancias.append((t, extras.get("instancia", "?"), extras.get("fase", "")))
     requisicoes.sort(key=lambda r: r.t)
     instancias.sort()
+    ligar_instancias(requisicoes, instancias)
     return requisicoes, instancias
+
+
+def ligar_instancias(requisicoes: list[Requisicao], instancias: list[tuple[float, str, str]], tolerancia_s: float = 0.005) -> None:
+    """Liga cada resposta por instância à requisição /work que a gerou.
+
+    O k6 grava `respostas_por_instancia` logo depois da requisição: no mesmo milissegundo ou, quando cruza a
+    fronteira, 1 ms depois. Uma resposta com mais de uma requisição candidata na mesma fase fica sem ligação.
+    """
+    por_fase: dict[str, list[Requisicao]] = defaultdict(list)
+    for r in requisicoes:
+        if r.nome == "work":
+            por_fase[r.fase].append(r)  # já ordenadas por t
+    tempos = {fase: [r.t for r in lista] for fase, lista in por_fase.items()}
+    for t, instancia, fase in instancias:
+        lista = por_fase.get(fase, [])
+        i = bisect.bisect_right(tempos.get(fase, []), t + 1e-6)
+        candidatas = [r for r in lista[max(0, i - 3):i] if 0 <= t - r.t <= tolerancia_s + 1e-6 and not r.instancia]
+        if len(candidatas) == 1:
+            candidatas[0].instancia = instancia
 
 
 def ler_timeline(caminho: Path) -> list[dict]:
@@ -154,6 +181,8 @@ def estatisticas(reqs: list[Requisicao], duracao_s: float | None) -> dict:
         "latencia_p95_ms": arred(percentil(duracoes, 95), 1),
         "latencia_p99_ms": arred(percentil(duracoes, 99), 1),
         "latencia_max_ms": arred(max(duracoes), 1) if duracoes else None,
+        # Quando a fração acima de 1 s fica perto de 5%, o p95 cai na cauda ou fora dela por poucas requisições.
+        "lentas_pct": arred(100 * sum(1 for d in duracoes if d > LENTA_MS) / len(duracoes), 1) if duracoes else None,
     }
 
 
@@ -198,18 +227,75 @@ def mudancas_desejadas(timeline: list[dict]) -> list[dict]:
     return mudancas
 
 
-def momento_taxa(plano: list[dict], fracao_alvo: float, inicio: float) -> float | None:
-    """Primeiro instante em que a taxa oferecida (fração da capacidade de 1 task) atinge fracao_alvo."""
+def momento_taxa(plano: list[dict], fracao_alvo: float, relogio) -> float | None:
+    """Primeiro instante (epoch) em que a taxa oferecida (fração da capacidade de 1 task) atinge fracao_alvo.
+
+    `relogio` converte um instante do plano (s desde o início do k6) em epoch; ver ritmo_do_k6.
+    """
     for fase in plano:
         de, ate = fase["fracao_inicial"], fase["fracao_final"]
         if de >= fracao_alvo:
-            return inicio + fase["inicio_s"]
+            return relogio(fase["inicio_s"])
         if de < fracao_alvo <= ate:
-            return inicio + fase["inicio_s"] + (fracao_alvo - de) / (ate - de) * (fase["fim_s"] - fase["inicio_s"])
+            return relogio(fase["inicio_s"] + (fracao_alvo - de) / (ate - de) * (fase["fim_s"] - fase["inicio_s"]))
     return None
 
 
-def mesma_carga_por_tasks(plano, reqs, timeline, inicio) -> list[dict]:
+def horario_planejado(plano: list[dict], n: int) -> float | None:
+    """Instante do plano (s) em que o k6 inicia a n-ésima iteração (n = 0, 1, ...), com a taxa variando linearmente em cada fase."""
+    acumulado = 0.0
+    for i, fase in enumerate(plano):
+        duracao = fase["fim_s"] - fase["inicio_s"]
+        r0, r1 = fase["taxa_inicial_rps"], fase["taxa_final_rps"]
+        total = (r0 + r1) / 2 * duracao
+        if n < acumulado + total or i == len(plano) - 1:
+            c = n - acumulado  # iterações dentro da fase: r0*u + (r1 - r0)/(2*duracao)*u^2 = c
+            a = (r1 - r0) / (2 * duracao) if duracao else 0.0
+            if abs(a) < 1e-12:
+                return fase["inicio_s"] + c / r0 if r0 > 0 else None
+            return fase["inicio_s"] + (-r0 + math.sqrt(max(0.0, r0 * r0 + 4 * a * c))) / (2 * a)
+        acumulado += total
+    return None
+
+
+def ritmo_do_k6(plano: list[dict], reqs: list[Requisicao], inicio: float, descartadas) -> dict | None:
+    """Compara o início real de cada requisição /work com o horário previsto no plano para aquela iteração.
+
+    O k6 agenda as iterações pelo próprio relógio; se ele anda mais devagar que o relógio real (o dos timestamps
+    do CSV, da AWS e da coleta), o plano inteiro se estica: fator > 1 significa carga efetiva = planejada / fator
+    e fases que começam mais tarde. A reta ajustada (mínimos quadrados) converte instantes do plano em epoch.
+    Só vale se cada requisição corresponde a uma iteração do plano: nenhuma descartada e o total igual ao planejado.
+    """
+    if not plano or descartadas not in (0, None) or len(reqs) < 10:
+        return None
+    planejadas = sum((f["taxa_inicial_rps"] + f["taxa_final_rps"]) / 2 * (f["fim_s"] - f["inicio_s"]) for f in plano)
+    if abs(len(reqs) - planejadas) > max(2.0, 0.005 * planejadas):
+        return None
+    inicios = sorted(r.t - r.duracao_ms / 1000 - inicio for r in reqs)
+    previstos = [horario_planejado(plano, i) for i in range(len(inicios))]
+    if any(p is None for p in previstos):
+        return None
+    mx, my = statistics.fmean(previstos), statistics.fmean(inicios)
+    variancia = sum((x - mx) ** 2 for x in previstos)
+    if variancia <= 0:
+        return None
+    fator = sum((x - mx) * (y - my) for x, y in zip(previstos, inicios)) / variancia
+    deslocamento = my - fator * mx
+    residuo = max(abs(y - (deslocamento + fator * x)) for x, y in zip(previstos, inicios))
+    return {"fator_tempo": arred(fator, 4), "deslocamento_s": arred(deslocamento, 2), "residuo_max_s": arred(residuo, 2),
+            "carga_efetiva_pct": arred(100 / fator, 1),
+            "observacao": "início real das requisições = início do k6 + deslocamento + fator × horário previsto no plano"}
+
+
+def fim_da_fase(plano: list[dict], fase: dict, duracao_real: float | None) -> float:
+    """Fim da fase em s desde o início do k6. A última fase vai até o fim real do k6: as fases das requisições
+    seguem o relógio real, e quando o k6 anda mais devagar que o plano a última fase recebe as requisições finais."""
+    if fase is plano[-1] and duracao_real:
+        return max(fase["fim_s"], duracao_real)
+    return fase["fim_s"]
+
+
+def mesma_carga_por_tasks(plano, reqs, timeline, inicio, duracao_real: float | None = None) -> list[dict]:
     """Em cada fase de carga constante, separa as requisições pelo número de tasks saudáveis no momento."""
     if not timeline:
         return []
@@ -218,7 +304,7 @@ def mesma_carga_por_tasks(plano, reqs, timeline, inicio) -> list[dict]:
     for fase in plano:
         if fase["fracao_inicial"] != fase["fracao_final"]:
             continue
-        ini, fim = inicio + fase["inicio_s"], inicio + fase["fim_s"]
+        ini, fim = inicio + fase["inicio_s"], inicio + fim_da_fase(plano, fase, duracao_real)
         duracao: dict[int, float] = defaultdict(float)
         for i, linha in enumerate(timeline):
             a = max(linha["t"], ini)
@@ -227,7 +313,7 @@ def mesma_carga_por_tasks(plano, reqs, timeline, inicio) -> list[dict]:
                 duracao[linha["saudaveis"]] += b - a
         grupos: dict[int, list[Requisicao]] = defaultdict(list)
         for r in reqs:
-            if r.fase == fase["fase"] and ini <= r.t < fim:
+            if r.fase == fase["fase"] and ini <= r.t <= fim:
                 k = bisect.bisect_right(tempos, r.t) - 1
                 if k >= 0 and timeline[k]["saudaveis"] is not None:
                     grupos[timeline[k]["saudaveis"]].append(r)
@@ -239,40 +325,78 @@ def mesma_carga_por_tasks(plano, reqs, timeline, inicio) -> list[dict]:
     return resultado
 
 
-def indicadores_escala(timeline, eventos, plano, inicio, reqs, alvo_cpu, intervalo_coleta) -> dict:
+def alvo_da_decisao(evento: dict) -> int | None:
+    """Número de tasks pedido numa atividade do Auto Scaling ("Setting desired count to N.")."""
+    achado = RE_DESEJADAS.search(evento.get("descricao") or "")
+    return int(achado.group(1)) if achado else None
+
+
+def decisao_do_degrau(escalonamentos: list[dict], mudanca: dict, depois: float, tolerancia: float) -> dict | None:
+    """Atividade do Auto Scaling que levou as desejadas ao valor da mudança observada na timeline.
+
+    É a última atividade que pediu `mudanca["para"]` tasks depois da mudança anterior. Cada amostra da
+    timeline é marcada no início do ciclo de coleta e o estado é lido nos segundos seguintes, por isso a
+    decisão pode ter horário até um intervalo de coleta depois da amostra que já mostra o novo valor.
+    """
+    candidatas = [e for e in escalonamentos
+                  if depois < e["t"] <= mudanca["t"] + tolerancia and alvo_da_decisao(e) in (None, mudanca["para"])]
+    return candidatas[-1] if candidatas else None
+
+
+def indicadores_escala(timeline, eventos, plano, inicio, reqs, alvo_cpu, intervalo_coleta, ritmo: dict | None = None) -> dict:
     mudancas = mudancas_desejadas(timeline)
     alarmes_alta = eventos_do_tipo(eventos, "alarme", tipo_alarme="alta", estado="ALARM")
     alarmes_baixa = eventos_do_tipo(eventos, "alarme", tipo_alarme="baixa", estado="ALARM")
     escalonamentos = eventos_do_tipo(eventos, "escalonamento")
-    t_carga = momento_taxa(plano, alvo_cpu / 100, inicio)
-    fase_inicio = {f["fase"]: inicio + f["inicio_s"] for f in plano}
+    # Instantes do plano no relógio real: corrigidos pelo ritmo medido do k6 quando ele existe.
+    if ritmo:
+        relogio = lambda s: inicio + ritmo["deslocamento_s"] + ritmo["fator_tempo"] * s
+    else:
+        relogio = lambda s: inicio + s
+    t_carga = momento_taxa(plano, alvo_cpu / 100, relogio)
+    fase_inicio = {f["fase"]: relogio(f["inicio_s"]) for f in plano}
     t_reducao = fase_inicio.get("descida", fase_inicio.get("baixa"))
+    tolerancia = float(intervalo_coleta or BALDE_S)
 
     degraus_out, degraus_in = [], []
+    mudanca_anterior = -math.inf
+    decisao_anterior = {True: -math.inf, False: -math.inf}  # última decisão de scale-out (True) e de scale-in (False)
     for m in mudancas:
-        antes = [a for a in (alarmes_alta if m["para"] > m["de"] else alarmes_baixa) if a["t"] <= m["t"]]
+        subida = m["para"] > m["de"]
+        decisao = decisao_do_degrau(escalonamentos, m, mudanca_anterior, tolerancia)
+        t_decisao = decisao["t"] if decisao else None
+        referencia = t_decisao if t_decisao is not None else m["t"]
+        antes = [a for a in (alarmes_alta if subida else alarmes_baixa) if a["t"] <= referencia]
         alarme = antes[-1]["t"] if antes else None
-        atividade = next((e["t"] for e in escalonamentos if e["t"] <= m["t"] and (alarme is None or e["t"] >= alarme)), None)
-        if m["para"] > m["de"]:
+        # Com o alarme ainda em ALARM, a política pede outra task após o cooldown sem nova transição do alarme.
+        # Nesse caso o alarme é o do degrau anterior e o tempo do degrau conta a partir da própria decisão.
+        alarme_continuo = alarme is not None and alarme <= decisao_anterior[subida]
+        if subida:
             pronta = primeira(timeline, lambda l, alvo=m["para"]: (l["saudaveis"] or 0) >= alvo, depois=m["t"])
             # Carga que leva as tasks existentes acima da CPU-alvo: alvo × tasks antes do degrau (frações de C).
-            t_carga_degrau = momento_taxa(plano, alvo_cpu / 100 * m["de"], inicio)
+            t_carga_degrau = momento_taxa(plano, alvo_cpu / 100 * m["de"], relogio)
             degraus_out.append({
                 "de": m["de"], "para": m["para"],
                 "carga_acima_do_alvo_utc": iso(t_carga_degrau),
-                "alarme_utc": iso(alarme), "decisao_utc": iso(atividade), "desejadas_observadas_utc": iso(m["t"]),
+                "alarme_utc": iso(alarme), "alarme_continuo": alarme_continuo,
+                "decisao_utc": iso(t_decisao), "desejadas_observadas_utc": iso(m["t"]),
                 "task_pronta_utc": iso(pronta["t"]) if pronta else None,
-                "alarme_ate_pronta_s": arred(pronta["t"] - alarme, 0) if pronta and alarme else None,
-                "decisao_ate_pronta_s": arred(pronta["t"] - (atividade or m["t"]), 0) if pronta else None,
+                "alarme_ate_pronta_s": arred(pronta["t"] - alarme, 0) if pronta and alarme and not alarme_continuo else None,
+                "decisao_ate_pronta_s": arred(pronta["t"] - referencia, 0) if pronta else None,
                 "carga_acima_do_alvo_ate_pronta_s": arred(pronta["t"] - t_carga_degrau, 0) if pronta and t_carga_degrau else None,
             })
         else:
             degraus_in.append({
                 "de": m["de"], "para": m["para"],
-                "alarme_utc": iso(alarme), "decisao_utc": iso(atividade), "desejadas_observadas_utc": iso(m["t"]),
-                "reducao_carga_ate_scale_in_s": arred(m["t"] - t_reducao, 0) if t_reducao else None,
-                "alarme_ate_scale_in_s": arred(m["t"] - alarme, 0) if alarme else None,
+                "alarme_utc": iso(alarme), "alarme_continuo": alarme_continuo,
+                "decisao_utc": iso(t_decisao), "desejadas_observadas_utc": iso(m["t"]),
+                # Medidos a partir da decisão (horário exato da atividade); sem ela, da amostra que mostrou a redução.
+                "reducao_carga_ate_scale_in_s": arred(referencia - t_reducao, 0) if t_reducao else None,
+                "alarme_ate_scale_in_s": arred(referencia - alarme, 0) if alarme and not alarme_continuo else None,
             })
+        mudanca_anterior = m["t"]
+        if t_decisao is not None:
+            decisao_anterior[subida] = t_decisao
 
     return {
         "carga_acima_do_alvo_utc": iso(t_carga),
@@ -307,6 +431,8 @@ def indicadores_falha(timeline, eventos, reqs, intervalo_coleta) -> dict:
         "queda_observada_utc": iso(queda["t"]) if queda else None,
         "substituta_vista_utc": iso(t_nova),
         "recuperada_utc": iso(recuperada["t"]) if recuperada else None,
+        # O stop-task não tira a task do ALB na hora: até a queda, a task parada ainda pode atender.
+        "tempo_ate_queda_s": arred(queda["t"] - t_stop, 0) if queda else None,
         "tempo_ate_substituta_s": arred(t_nova - t_stop, 0) if t_nova else None,
         "tempo_recuperacao_s": arred(recuperada["t"] - t_stop, 0) if recuperada else None,
         "erros_na_janela": sum(1 for r in janela if r.falhou),
@@ -319,6 +445,38 @@ def indicadores_falha(timeline, eventos, reqs, intervalo_coleta) -> dict:
     }
 
 
+def cauda_por_instancia(reqs: list[Requisicao], limite_ms: float = LENTA_MS, periodo_s: float = PERIODO_HEALTH_CHECK_S,
+                        faixa_s: float = FAIXA_CICLO_S) -> dict:
+    """Requisições lentas de cada task e quantas começam na mesma faixa de um ciclo de `periodo_s`.
+
+    Uma tarefa periódica do container que disputa a CPU com o /work (por exemplo, o health check a cada
+    30 s) atrasa as requisições que começam sempre na mesma posição do ciclo daquela task. Sem uma causa
+    periódica, a fração na faixa mais densa ficaria perto de faixa_s / periodo_s (um pouco acima disso,
+    porque a faixa escolhida é a mais densa).
+    """
+    grupos: dict[str, list[Requisicao]] = defaultdict(list)
+    for r in reqs:
+        if r.instancia and not r.falhou:
+            grupos[r.instancia].append(r)
+    linhas = []
+    for instancia, grupo in sorted(grupos.items()):
+        lentas = [r for r in grupo if r.duracao_ms > limite_ms]
+        posicoes = [(r.t - r.duracao_ms / 1000) % periodo_s for r in lentas]  # início da requisição no ciclo
+        na_faixa, inicio_faixa = 0, None
+        for p in sorted(posicoes):
+            n = sum(1 for q in posicoes if (q - p) % periodo_s < faixa_s)
+            if n > na_faixa:
+                na_faixa, inicio_faixa = n, p
+        linhas.append({
+            "instancia": instancia, "requisicoes": len(grupo), "lentas": len(lentas),
+            "lentas_pct": arred(100 * len(lentas) / len(grupo), 1),
+            "lentas_na_faixa": na_faixa, "lentas_na_faixa_pct": arred(100 * na_faixa / len(lentas), 1) if lentas else None,
+            "faixa_inicio_s": arred(inicio_faixa, 1),
+        })
+    return {"limite_ms": limite_ms, "periodo_s": periodo_s, "faixa_s": faixa_s,
+            "referencia_sem_periodicidade_pct": arred(100 * faixa_s / periodo_s, 1), "instancias": linhas}
+
+
 def iso(t: float | None) -> str | None:
     return None if t is None else datetime.fromtimestamp(t, timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
@@ -326,6 +484,15 @@ def iso(t: float | None) -> str | None:
 def janela_cloudwatch(pontos: list[dict], inicio: float, fim: float, chave: str) -> list[float]:
     # Datapoints de 1 min marcados pelo início do período: inclui os que cobrem a janela do k6.
     return [p[chave] for p in pontos if chave in p and inicio - 60 < p["t"] < fim]
+
+
+def minutos_completos(pontos: list[dict], inicio: float, fim: float, chave: str) -> list[float]:
+    # Só os períodos de 1 min inteiros dentro da janela: os das bordas misturam carga e repouso e puxam a média para baixo.
+    return [p[chave] for p in pontos if chave in p and p["t"] >= inicio and p["t"] + 60 <= fim]
+
+
+def media(valores: list[float], casas: int = 1) -> float | None:
+    return arred(statistics.fmean(valores), casas) if valores else None
 
 
 def analisar(pasta: Path) -> dict:
@@ -353,35 +520,41 @@ def analisar(pasta: Path) -> dict:
         "fases": [],
         "instancias": dict(Counter(i for _, i, _ in instancias)),
     }
+    cpu = ler_metrica(pasta / "aws" / "metricas-ecs-CPUUtilization.json")
+    memoria = ler_metrica(pasta / "aws" / "metricas-ecs-MemoryUtilization.json")
     for fase in plano:
         da_fase = [r for r in trabalho if r.fase == fase["fase"]]
-        dur = fase["fim_s"] - fase["inicio_s"]
+        fim_fase = fim_da_fase(plano, fase, duracao)
+        dur = arred(fim_fase - fase["inicio_s"], 1)
         resultado["fases"].append({
             "fase": fase["fase"], "duracao_s": dur,
             "carga_oferecida_rps": arred((fase["taxa_inicial_rps"] + fase["taxa_final_rps"]) / 2, 3),
             **estatisticas(da_fase, dur),
+            "cpu_media_pct": media(minutos_completos(cpu, inicio + fase["inicio_s"], inicio + fim_fase, "Average")) if inicio else None,
             "instancias": dict(Counter(i for _, i, f in instancias if f == fase["fase"])),
         })
 
-    cpu = ler_metrica(pasta / "aws" / "metricas-ecs-CPUUtilization.json")
-    memoria = ler_metrica(pasta / "aws" / "metricas-ecs-MemoryUtilization.json")
     if inicio and fim and (cpu or memoria):
-        media_cpu = janela_cloudwatch(cpu, inicio, fim, "Average")
         max_cpu = janela_cloudwatch(cpu, inicio, fim, "Maximum")
-        media_mem = janela_cloudwatch(memoria, inicio, fim, "Average")
         resultado["recursos"] = {
-            "cpu_media_pct": arred(statistics.fmean(media_cpu), 1) if media_cpu else None,
+            "cpu_media_pct": media(minutos_completos(cpu, inicio, fim, "Average")),
             "cpu_maxima_pct": arred(max(max_cpu), 1) if max_cpu else None,
-            "memoria_media_pct": arred(statistics.fmean(media_mem), 1) if media_mem else None,
-            "observacao": "média dos datapoints de 1 min do serviço (média entre as tasks)",
+            "memoria_media_pct": media(minutos_completos(memoria, inicio, fim, "Average")),
+            "observacao": "médias dos datapoints de 1 min do serviço (média entre as tasks) inteiramente dentro da janela do k6; "
+                          "a máxima considera também os minutos das bordas",
         }
+    if any(r.instancia for r in trabalho):
+        resultado["cauda_por_instancia"] = cauda_por_instancia(trabalho)
+    ritmo = ritmo_do_k6(plano, trabalho, inicio, resumo_k6.get("iteracoes_descartadas")) if inicio else None
+    if ritmo:
+        resultado["ritmo_k6"] = ritmo
 
     intervalo = (metadata.get("coleta") or {}).get("intervalo_s")
     alvo_cpu = float((metadata.get("auto_scaling") or {}).get("targetCpu") or ALVO_CPU_PADRAO)
     if inicio and timeline and plano:
-        resultado["mesma_carga_por_tasks"] = mesma_carga_por_tasks(plano, trabalho, timeline, inicio)
+        resultado["mesma_carga_por_tasks"] = mesma_carga_por_tasks(plano, trabalho, timeline, inicio, duracao)
     if experimento == "BC-escalabilidade" and inicio:
-        resultado["escalabilidade"] = indicadores_escala(timeline, eventos, plano, inicio, trabalho, alvo_cpu, intervalo)
+        resultado["escalabilidade"] = indicadores_escala(timeline, eventos, plano, inicio, trabalho, alvo_cpu, intervalo, ritmo)
     if experimento == "D-falha":
         resultado["falha"] = indicadores_falha(timeline, eventos, trabalho, intervalo)
     if experimento == "calibracao" and inicio and trabalho:
@@ -442,42 +615,68 @@ def resumo_markdown(r: dict, metadata: dict, eventos: list[dict]) -> str:
             r["geral"]["requisicoes"], r["geral"]["taxa_erros_pct"], r["geral"]["vazao_rps"], r["geral"]["latencia_p50_ms"],
             r["geral"]["latencia_p95_ms"], r["geral"]["latencia_p99_ms"], r["k6"].get("iteracoes_descartadas")]]),
     ]
+    if r.get("ritmo_k6"):
+        k = r["ritmo_k6"]
+        partes += ["", f"**Ritmo do k6:** as iterações do plano começaram em início + {fmt(k['deslocamento_s'])} s + {fmt(k['fator_tempo'])} × horário previsto "
+                       f"(resíduo máximo de {fmt(k['residuo_max_s'])} s). A carga efetiva foi {fmt(k['carga_efetiva_pct'])}% da planejada e as fases "
+                       "terminaram mais tarde no relógio real. As colunas \"Planejada\" mostram o plano; os instantes derivados dele "
+                       "(carga acima do alvo, redução da carga) já estão corrigidos pelo ritmo. As fases das requisições seguem o relógio real, "
+                       "por isso o começo de cada fase ainda recebe a taxa da fase anterior."]
     if r["fases"]:
         partes += ["", "## Por fase", "", tabela(
-            ["Fase", "Duração (s)", "Oferecida (req/s)", "Vazão (req/s)", "Erros (%)", "p50 (ms)", "p95 (ms)", "Respostas por instância"],
+            ["Fase", "Duração (s)", "Planejada (req/s)", "Vazão (req/s)", "Erros (%)", "p50 (ms)", "p95 (ms)", "> 1 s (%)", "CPU média (%)", "Respostas por instância"],
             [[f["fase"], f["duracao_s"], f["carga_oferecida_rps"], f["vazao_rps"], f["taxa_erros_pct"], f["latencia_p50_ms"], f["latencia_p95_ms"],
-              ", ".join(f"{k}: {v}" for k, v in sorted(f["instancias"].items()))] for f in r["fases"]])]
+              f.get("lentas_pct"), f.get("cpu_media_pct"), ", ".join(f"{k}: {v}" for k, v in sorted(f["instancias"].items()))] for f in r["fases"]]),
+            "", "CPU média da fase: datapoints de 1 min do CloudWatch inteiramente dentro da fase (— quando a fase não contém um minuto inteiro)."]
     if r.get("recursos"):
         rec = r["recursos"]
         partes += ["", "## CPU e memória (CloudWatch)", "", tabela(["CPU média (%)", "CPU máxima (%)", "Memória média (%)"],
                                                                  [[rec["cpu_media_pct"], rec["cpu_maxima_pct"], rec["memoria_media_pct"]]]), "", rec["observacao"] + "."]
     if r.get("escalabilidade"):
         e = r["escalabilidade"]
+        alarme = lambda d: f"{d['alarme_utc']} (contínuo)" if d.get("alarme_continuo") else d["alarme_utc"]
         partes += ["", "## Scale-out (B)", "",
                    f"Máximo de tasks: {fmt(e['tasks_maximo'])}; final: {fmt(e['tasks_final'])}. \"Carga acima do alvo\" é o momento em que a carga oferecida "
-                   "passa da CPU-alvo para as tasks existentes antes do degrau.", "",
-                   tabela(["Degrau", "Carga acima do alvo", "Alarme", "Decisão", "Task pronta", "Alarme→pronta (s)", "Decisão→pronta (s)", "Carga→pronta (s)"],
-                          [[f"{d['de']}→{d['para']}", d["carga_acima_do_alvo_utc"], d["alarme_utc"], d["decisao_utc"], d["task_pronta_utc"], d["alarme_ate_pronta_s"],
-                            d["decisao_ate_pronta_s"], d["carga_acima_do_alvo_ate_pronta_s"]] for d in e["scale_out"]] or [["sem scale-out observado"] + [None] * 7]),
+                   "passa da CPU-alvo para as tasks existentes antes do degrau. \"Decisão\" é a atividade do Auto Scaling que pediu o número de tasks do degrau; "
+                   "o tempo de cada degrau é medido a partir dela.", "",
+                   tabela(["Degrau", "Carga acima do alvo", "Alarme", "Decisão", "Task pronta", "Carga→pronta (s)", "Alarme→pronta (s)", "Decisão→pronta (s)"],
+                          [[f"{d['de']}→{d['para']}", d["carga_acima_do_alvo_utc"], alarme(d), d["decisao_utc"], d["task_pronta_utc"],
+                            d["carga_acima_do_alvo_ate_pronta_s"], d["alarme_ate_pronta_s"], d["decisao_ate_pronta_s"]] for d in e["scale_out"]]
+                          or [["sem scale-out observado"] + [None] * 7]),
                    "", "## Scale-in (C)", "", f"Carga reduzida em {fmt(e['reducao_da_carga_utc'])}.", "",
-                   tabela(["Degrau", "Alarme", "Decisão", "Desejadas reduzidas", "Redução da carga→scale-in (s)", "Alarme→scale-in (s)"],
-                          [[f"{d['de']}→{d['para']}", d["alarme_utc"], d["decisao_utc"], d["desejadas_observadas_utc"], d["reducao_carga_ate_scale_in_s"],
+                   tabela(["Degrau", "Alarme", "Decisão", "Desejadas reduzidas", "Redução da carga→decisão (s)", "Alarme→decisão (s)"],
+                          [[f"{d['de']}→{d['para']}", alarme(d), d["decisao_utc"], d["desejadas_observadas_utc"], d["reducao_carga_ate_scale_in_s"],
                             d["alarme_ate_scale_in_s"]] for d in e["scale_in"]] or [["sem scale-in observado"] + [None] * 5])]
+        if any(d.get("alarme_continuo") for d in e["scale_out"] + e["scale_in"]):
+            partes += ["", "(contínuo): o alarme permaneceu em ALARM desde o degrau anterior e a política pediu outra task sem nova transição. "
+                           "Nesses degraus o tempo desde o alarme não é mostrado, porque somaria o degrau anterior."]
         partes += ["", f"Tempos medidos a partir do estado amostrado a cada {fmt(e['resolucao_s'])} s (resolução da medição)."]
     if r.get("mesma_carga_por_tasks"):
         linhas = [[g["fase"], g["carga_oferecida_rps"], n["tasks_saudaveis"], n["duracao_s"], n["requisicoes"], n["vazao_rps"], n["taxa_erros_pct"],
-                   n["latencia_p50_ms"], n["latencia_p95_ms"]] for g in r["mesma_carga_por_tasks"] for n in g["grupos"]]
+                   n["latencia_p50_ms"], n["latencia_p95_ms"], n.get("lentas_pct")] for g in r["mesma_carga_por_tasks"] for n in g["grupos"]]
         partes += ["", "## Mesma carga, número de tasks diferente", "",
                    "Em cada fase de carga constante, as requisições são separadas pelo número de tasks saudáveis no momento em que terminaram. "
                    "É a comparação entre uma e várias tasks sob a mesma carga oferecida.", "",
-                   tabela(["Fase", "Oferecida (req/s)", "Tasks saudáveis", "Tempo (s)", "Requisições", "Vazão (req/s)", "Erros (%)", "p50 (ms)", "p95 (ms)"], linhas)]
+                   tabela(["Fase", "Planejada (req/s)", "Tasks saudáveis", "Tempo (s)", "Requisições", "Vazão (req/s)", "Erros (%)", "p50 (ms)", "p95 (ms)",
+                           "> 1 s (%)"], linhas),
+                   "", "Quando a coluna \"> 1 s\" fica perto de 5%, poucas requisições decidem se o p95 cai na cauda; em grupos pequenos, compare também o p50."]
+    if r.get("cauda_por_instancia"):
+        c = r["cauda_por_instancia"]
+        partes += ["", "## Cauda de latência por task", "",
+                   f"Requisições acima de {fmt(c['limite_ms'])} ms por task e quantas começam na mesma faixa de {fmt(c['faixa_s'])} s de um ciclo de "
+                   f"{fmt(c['periodo_s'])} s (intervalo do health check do container). Sem causa periódica, a faixa mais densa reuniria cerca de "
+                   f"{fmt(c['referencia_sem_periodicidade_pct'])}% das lentas.", "",
+                   tabela(["Task", "Requisições", "Lentas", "Lentas (%)", "Lentas na faixa mais densa", "Na faixa (%)", "Início da faixa no ciclo (s)"],
+                          [[i["instancia"], i["requisicoes"], i["lentas"], i["lentas_pct"], i["lentas_na_faixa"], i["lentas_na_faixa_pct"], i["faixa_inicio_s"]]
+                           for i in c["instancias"]])]
     if r.get("falha"):
         f = r["falha"]
         if "parada_utc" in f:
             partes += ["", "## Falha (D)", "", tabela(["Indicador", "Valor"], [
-                ["Task encerrada", f["tarefa_encerrada"]], ["Parada", f["parada_utc"]], ["Queda observada", f["queda_observada_utc"]],
+                ["Task encerrada", f["tarefa_encerrada"]], ["Parada", f["parada_utc"]], ["Queda observada (alvos saudáveis abaixo de antes)", f["queda_observada_utc"]],
                 ["Substituta vista", f["substituta_vista_utc"]], ["Recuperada (saudáveis como antes)", f["recuperada_utc"]],
-                ["Tempo até a substituta (s)", f["tempo_ate_substituta_s"]], ["Tempo de recuperação (s)", f["tempo_recuperacao_s"]],
+                ["Tempo até a queda (s)", f.get("tempo_ate_queda_s")], ["Tempo até a substituta (s)", f["tempo_ate_substituta_s"]],
+                ["Tempo de recuperação (s)", f["tempo_recuperacao_s"]],
                 ["Erros na janela da falha", f"{f['erros_na_janela']} de {f['requisicoes_na_janela']}"]]),
                 "", tabela(["Período", "Vazão (req/s)", "Erros (%)", "p50 (ms)", "p95 (ms)"],
                            [[nome, f[k]["vazao_rps"], f[k]["taxa_erros_pct"], f[k]["latencia_p50_ms"], f[k]["latencia_p95_ms"]]
@@ -621,17 +820,37 @@ def gerar_graficos(pasta, reqs, instancias, timeline, eventos, plano, cpu, memor
 
 # ----------------------------------------------------------------------------- consolidação
 
+def _degrau(r: dict, lista: str, indice: int, campo: str):
+    degraus = (r.get("escalabilidade") or {}).get(lista, [])
+    return degraus[indice].get(campo) if len(degraus) > indice else None
+
+
 INDICADORES = [
     ("vazao_rps", lambda r: r["geral"]["vazao_rps"]),
     ("p95_ms", lambda r: r["geral"]["latencia_p95_ms"]),
     ("erros_pct", lambda r: r["geral"]["taxa_erros_pct"]),
     ("cpu_media_pct", lambda r: (r.get("recursos") or {}).get("cpu_media_pct")),
     ("tasks_max", lambda r: (r.get("escalabilidade") or {}).get("tasks_maximo")),
-    ("scale_out_1o_degrau_s", lambda r: next((d["alarme_ate_pronta_s"] for d in (r.get("escalabilidade") or {}).get("scale_out", [])), None)),
-    ("scale_in_s", lambda r: next((d["reducao_carga_ate_scale_in_s"] for d in (r.get("escalabilidade") or {}).get("scale_in", [])), None)),
-    ("scale_out_2o_degrau_s", lambda r: next((d["alarme_ate_pronta_s"] for d in (r.get("escalabilidade") or {}).get("scale_out", [])[1:]), None)),
+    ("carga_ate_pronta_1o_degrau_s", lambda r: _degrau(r, "scale_out", 0, "carga_acima_do_alvo_ate_pronta_s")),
+    ("scale_out_1o_degrau_s", lambda r: _degrau(r, "scale_out", 0, "decisao_ate_pronta_s")),
+    ("scale_out_2o_degrau_s", lambda r: _degrau(r, "scale_out", 1, "decisao_ate_pronta_s")),
+    ("scale_in_s", lambda r: _degrau(r, "scale_in", 0, "reducao_carga_ate_scale_in_s")),
     ("recuperacao_s", lambda r: (r.get("falha") or {}).get("tempo_recuperacao_s")),
     ("erros_falha", lambda r: (r.get("falha") or {}).get("erros_na_janela")),
+]
+
+LEGENDA = [
+    ("vazao_rps", "requisições /work bem-sucedidas por segundo na janela do k6"),
+    ("p95_ms", "percentil 95 da latência do /work (posto mais próximo; o resumo do k6 interpola e pode diferir em alguns ms)"),
+    ("erros_pct", "requisições /work com falha (status inesperado ou timeout)"),
+    ("cpu_media_pct", "CPU média do serviço nos minutos inteiros da janela do k6 (CloudWatch, 1 min)"),
+    ("tasks_max", "maior número de tasks desejadas"),
+    ("carga_ate_pronta_1o_degrau_s", "da carga oferecida passar da CPU-alvo com 1 task até a 2ª task saudável no ALB (reação completa: métrica, alarme e ECS)"),
+    ("scale_out_1o_degrau_s", "da decisão do Auto Scaling (1→2) até a nova task saudável no ALB"),
+    ("scale_out_2o_degrau_s", "da decisão do Auto Scaling (2→3) até a nova task saudável no ALB; não conta desde o 1º alarme, que fica em ALARM entre os degraus"),
+    ("scale_in_s", "do início da redução da carga até a primeira decisão de scale-in"),
+    ("recuperacao_s", "D: do pedido de parada até o ALB voltar ao número de alvos saudáveis anterior"),
+    ("erros_falha", "D: erros do k6 na janela da falha"),
 ]
 
 
@@ -665,7 +884,9 @@ def consolidar(raiz: Path) -> dict:
             linha[nome] = media_desvio([i[nome] for i in itens])
         agregados.append(linha)
     mesma_carga = [{"experimento": k[0], "ambiente": k[1], "fase": k[2], "carga_oferecida_rps": k[3], "tasks_saudaveis": k[4], "execucoes": len(v),
-                    "vazao_rps": media_desvio([x["vazao_rps"] for x in v]), "p95_ms": media_desvio([x["latencia_p95_ms"] for x in v]),
+                    "requisicoes": sum(x["requisicoes"] for x in v),
+                    "vazao_rps": media_desvio([x["vazao_rps"] for x in v]), "p50_ms": media_desvio([x["latencia_p50_ms"] for x in v]),
+                    "p95_ms": media_desvio([x["latencia_p95_ms"] for x in v]), "lentas_pct": media_desvio([x.get("lentas_pct") for x in v]),
                     "erros_pct": media_desvio([x["taxa_erros_pct"] for x in v])}
                    for k, v in sorted(por_tasks.items(), key=lambda kv: tuple(str(x) for x in kv[0]))]
     resultado = {"execucoes": execucoes, "agregados": agregados, "mesma_carga_por_tasks": mesma_carga}
@@ -678,11 +899,14 @@ def consolidar(raiz: Path) -> dict:
     md = ["# Tabela experimental", "", "Gerada por `tests/analysis/analisar.py consolidar`. Média ± desvio-padrão (n = execuções com o indicador).", "",
           tabela(["Experimento", "Ambiente", "Execuções"] + nomes,
                  [[a["experimento"], a["ambiente"], a["n"]] + [fmt_md(a[n]) for n in nomes] for a in agregados]),
+          "", "Indicadores:", ""] + [f"- `{nome}`: {texto}." for nome, texto in LEGENDA] + [
           "", "## Mesma carga, número de tasks diferente", "",
-          "Requisições de cada fase de carga constante separadas pelo número de tasks saudáveis no momento (média entre execuções).", "",
-          tabela(["Experimento", "Ambiente", "Fase", "Oferecida (req/s)", "Tasks saudáveis", "Execuções", "Vazão (req/s)", "p95 (ms)", "Erros (%)"],
-                 [[m["experimento"], m["ambiente"], m["fase"], m["carga_oferecida_rps"], m["tasks_saudaveis"], m["execucoes"],
-                   fmt_md(m["vazao_rps"]), fmt_md(m["p95_ms"]), fmt_md(m["erros_pct"])] for m in mesma_carga]),
+          "Requisições de cada fase de carga constante separadas pelo número de tasks saudáveis no momento (média entre execuções). "
+          "`> 1 s` é a fração de requisições acima de 1 s: perto de 5%, o p95 muda de patamar por poucas requisições, e o p50 é a comparação mais estável.", "",
+          tabela(["Experimento", "Ambiente", "Fase", "Planejada (req/s)", "Tasks saudáveis", "Execuções", "Requisições", "Vazão (req/s)", "p50 (ms)", "p95 (ms)",
+                  "> 1 s (%)", "Erros (%)"],
+                 [[m["experimento"], m["ambiente"], m["fase"], m["carga_oferecida_rps"], m["tasks_saudaveis"], m["execucoes"], m["requisicoes"],
+                   fmt_md(m["vazao_rps"]), fmt_md(m["p50_ms"]), fmt_md(m["p95_ms"]), fmt_md(m["lentas_pct"]), fmt_md(m["erros_pct"])] for m in mesma_carga]),
           "", "## Execuções", "",
           tabela(["Pasta", "Experimento", "Rep."] + nomes, [[e["pasta"], e["experimento"], e["repeticao"]] + [e[n] for n in nomes] for e in execucoes])]
     (raiz / "tabela-experimental.md").write_text("\n".join(md) + "\n", encoding="utf-8")

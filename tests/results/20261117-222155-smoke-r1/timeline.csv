@@ -1,0 +1,3 @@
+timestamp_utc,decorrido_s,desejadas,em_execucao,pendentes,tasks_saudaveis,alvos_saudaveis,alvos_iniciando,alvos_drenando,alvos_nao_saudaveis,tasks
+2026-11-17T22:21:55.368Z,0.1,2,2,0,2,2,0,0,0,446ef2ab351d4c8884d03fdea5101518:RUNNING:HEALTHY;6c471c822df04494b4d224b67d4ea0b5:RUNNING:HEALTHY
+2026-11-17T22:22:05.370Z,10.1,2,2,0,2,2,0,0,0,446ef2ab351d4c8884d03fdea5101518:RUNNING:HEALTHY;6c471c822df04494b4d224b67d4ea0b5:RUNNING:HEALTHY

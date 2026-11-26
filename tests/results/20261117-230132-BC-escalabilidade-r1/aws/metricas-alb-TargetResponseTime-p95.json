@@ -1,0 +1,320 @@
+{
+  "Label": "TargetResponseTime",
+  "Datapoints": [
+    {
+      "Timestamp": "2026-11-17T20:30:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.5939891026130768
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:13:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 1.0241136890844451
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:31:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 1.1070370244518333
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T19:56:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.740650024863956
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:14:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.8667841720414474
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:32:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 1.1024769910082142
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T19:57:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.524527
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:15:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 1.0119850241403996
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:33:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.7579107990912958
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:16:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.868162155471905
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:34:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.6016424923429755
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:17:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.8176321361510458
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:35:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.6917968288660511
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:18:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 1.0488088481701516
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:36:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.6855143435889789
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:01:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.5959477126151741
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:19:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.7507183049104892
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:37:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 1.0311781682472596
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:02:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.6187060296821588
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:20:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 1.084385701403318
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:38:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.6057603034061384
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:03:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.6191484551640283
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:21:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.6853036161622891
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:39:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 1.1143910661549012
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:04:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 1.089565684035974
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:22:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 1.4812886403330017
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:40:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.8267104494777773
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:05:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 1.3696066657894774
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:23:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.6849279791160628
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:41:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.6221466523297222
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:06:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 1.2450969688995248
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:24:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 1.222985684007379
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:42:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 1.1064266770215476
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:07:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 1.1265250579928898
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:25:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 1.0106217080735453
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:43:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.6116158151809022
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:08:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 1.3437464316760368
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:26:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 1.4757139286811176
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:09:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 1.0639108681478935
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:27:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 1.6147710093382726
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:10:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 1.4160653655048465
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:28:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.6083654615470651
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:11:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 1.4364555895928237
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:29:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.837994699104074
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T20:12:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.9549783710190957
+      }
+    }
+  ]
+}

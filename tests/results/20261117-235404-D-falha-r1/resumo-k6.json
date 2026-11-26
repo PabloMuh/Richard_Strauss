@@ -1,0 +1,37 @@
+{
+  "cenario": "D-falha",
+  "base_url": "http://richard-strauss-alb-987147931.us-east-2.elb.amazonaws.com",
+  "capacidade_rps": 1.5,
+  "iteracoes": null,
+  "escala_tempo": 1,
+  "timeout": "60s",
+  "plano": [
+    {
+      "fase": "constante",
+      "inicio_s": 0,
+      "fim_s": 600,
+      "taxa_inicial_rps": 1.2,
+      "taxa_final_rps": 1.2,
+      "fracao_inicial": 0.8,
+      "fracao_final": 0.8
+    }
+  ],
+  "inicio_utc": "2026-11-17T23:54:05.940Z",
+  "fim_utc": "2026-11-18T00:04:30.797Z",
+  "duracao_s": 624.853532074,
+  "requisicoes": 720,
+  "vazao_media_rps": 1.1522700329630722,
+  "taxa_falhas": 0,
+  "taxa_checks": 1,
+  "iteracoes_descartadas": 0,
+  "vus_max": 7,
+  "latencia_ms": {
+    "avg": 747.4684226819445,
+    "min": 555.181289,
+    "med": 690.561366,
+    "p(90)": 764.4842137,
+    "p(95)": 1109.760300249997,
+    "p(99)": 2060.5583102499977,
+    "max": 2782.300733
+  }
+}

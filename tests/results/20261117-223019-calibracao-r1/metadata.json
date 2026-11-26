@@ -1,0 +1,39 @@
+{
+  "experimento": "calibracao",
+  "objetivo": "Medir a vazão máxima de uma task (CAPACIDADE_RPS)",
+  "hipotese": "Com a fila sempre ocupada, a vazão se estabiliza no limite de CPU de uma task.",
+  "repeticao": 1,
+  "responsavel": "Pessoa 1",
+  "inicio_utc": "2026-11-17T22:30:19.859Z",
+  "fim_utc": "2026-11-17T22:33:38.052Z",
+  "identificacao": {
+    "ambiente": "aws",
+    "regiao": "us-east-2",
+    "conta": "7795****9628",
+    "cluster": "richard-strauss",
+    "servico": "richard-strauss-api",
+    "imagem": {
+      "tag": "api-189bf27",
+      "digest": "sha256:69fd745d5bd8607a276d99c6e69cbf97f846afa2240c9287f3c5ecb8b167ea71"
+    },
+    "task_definition": "arn:aws:ecs:us-east-2:7795****9628:task-definition/richard-strauss-api:2",
+    "alb": true,
+    "precondicoes_ignoradas": []
+  },
+  "auto_scaling": null,
+  "k6": {
+    "cenario": "calibracao",
+    "base_url": "http://richard-strauss-alb-987147931.us-east-2.elb.amazonaws.com",
+    "capacidade_rps": null,
+    "iteracoes": null,
+    "escala_tempo": 1.0,
+    "executor": "grafana/k6:1.0.0",
+    "codigo_saida": 0
+  },
+  "coleta": {
+    "intervalo_s": 10,
+    "observacao_apos_k6_s": 0,
+    "aguardar_metricas_s": 180
+  },
+  "falha": null
+}
