@@ -1,6 +1,6 @@
 # Inventário final e custo da sessão de 17/11 — conta `7795****9628`
 
-Responsável: Pessoa 1. Verificação em **25/11/2026 00:46 UTC** (24/11 21:46 BRT), região `us-east-2`, por AWS CloudShell e AWS CLI 2.42.3 (`aws login`, credencial temporária). Somente consultas de leitura. Fecha os dois itens pendentes de [`fechamento-infraestrutura.md`](fechamento-infraestrutura.md) referentes à conta de 17/11.
+Responsável: Pessoa 1. Verificação em **25/11/2026 00:46 UTC** (24/11 21:46 BRT), região `us-east-2`, por AWS CloudShell e AWS CLI 2.42.3 (`aws login`, credencial temporária). Somente consultas de leitura. Este inventário sustenta o fechamento do `CUSTO-01` para a conta de 17/11. [Fechamento de infraestrutura no PR #4](https://github.com/PabloMuh/Richard_Strauss/pull/4)
 
 ## Inventário final
 
@@ -15,7 +15,7 @@ Responsável: Pessoa 1. Verificação em **25/11/2026 00:46 UTC** (24/11 21:46 B
 | CloudWatch Logs `/ecs/richard-strauss` | **Mantido**, retenção de 7 dias. Os eventos de 17/11 já expiraram (0 eventos); restam 9 streams vazios |
 | Role `ecsTaskExecutionRole` | Mantida (criada manualmente em 17/11, fora dos scripts) |
 
-Os 9 streams (um por task) cobrem de **17/11 22:15 UTC a 18/11 00:39 UTC**. A última task parou às 00:39 UTC de 18/11, logo após o experimento D: a infraestrutura foi removida ao fim da sessão. A limpeza não foi registrada com o inventário `.state`, que ficou na máquina usada em 17/11; o estado acima é a evidência do encerramento.
+Os metadados dos nove streams (um por task) registram horários entre **17/11 22:15 UTC e 18/11 00:39 UTC**. O inventário `.state` ficou na máquina usada em 17/11. A verificação de 24/11 estabelece o estado dos recursos naquele momento. Os horários exatos de parada e remoção ficaram fora do levantamento.
 
 ## Custo da sessão (Cost Explorer, 16/11 a 24/11, diário)
 
@@ -23,7 +23,7 @@ Os 9 streams (um por task) cobrem de **17/11 22:15 UTC a 18/11 00:39 UTC**. A ú
 |---|---:|---|
 | Elastic Load Balancing | 0,0676 | 17 e 18/11 |
 | Elastic Container Service (Fargate) | 0,0528 | 17 e 18/11 |
-| VPC (IPv4 público das tasks) | 0,0470 | 17 e 18/11 |
+| VPC (IPv4 público) | 0,0470 | 17 e 18/11 |
 | ECR (armazenamento) | 0,0012 | 17 a 24/11 |
 | S3, Secrets Manager | < 0,0001 | dias isolados; não pertencem aos scripts do projeto |
 | Glue, KMS, SNS, SQS, CloudWatch | 0,0000 | outros usos da conta, sem custo |
@@ -33,8 +33,8 @@ Os 9 streams (um por task) cobrem de **17/11 22:15 UTC a 18/11 00:39 UTC**. A ú
 
 - Saldo do Free Plan após a sessão: **US$ 99,83 de US$ 100**, plano ativo até 17/05/2027.
 - Cobrança de ECS, ELB e VPC apenas em 17 e 18/11; 18/11 corresponde às tasks e ao ALB ativos após 00:00 UTC.
-- Cerca de 2,5 h de recursos para ≈ US$ 0,17, o que confirma a estimativa de planejamento de ~US$ 0,07/h com ALB e 2 tasks.
-- Custo recorrente após a sessão: só o armazenamento do ECR, abaixo de US$ 0,01 por mês.
+- A estimativa usada no planejamento era de cerca de US$ 0,07/h com ALB e duas tasks.
+- O armazenamento do ECR continuou gerando custo até 24/11 no intervalo observado.
 
 ## Evidências brutas
 
