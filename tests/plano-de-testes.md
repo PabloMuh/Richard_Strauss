@@ -73,18 +73,25 @@ As faixas numéricas são critérios de leitura definidos antes dos testes; os r
 
 ## 6. Definição dos tempos
 
-- **Scale-out (por degrau):** do alarme de alta entrar em `ALARM` (o gatilho observado) até a primeira amostra com alvos saudáveis no ALB ≥ novas tasks desejadas (a task disponível). Também são registrados dois intervalos:
-  - decisão do Auto Scaling → task disponível;
+- **Scale-out (por degrau):** da decisão do Auto Scaling que pediu as tasks daquele degrau (a atividade "Setting desired count to N") até a primeira amostra com alvos saudáveis no ALB ≥ N (a task disponível). Também são registrados dois intervalos:
+  - alarme de alta em `ALARM` → task disponível, só quando o degrau teve a própria transição do alarme. Se o alarme continua em `ALARM` desde o degrau anterior, a política pede a task seguinte depois do cooldown sem nova transição. Medir desde o alarme somaria o degrau anterior; em 17/11, isso deu 210 s no lugar de 30 s;
   - carga oferecida acima do alvo para as tasks existentes (0,6 C antes do 1º degrau, 1,2 C antes do 2º) → task disponível.
-- **Mesma carga, número de tasks diferente:** em cada fase de carga constante, as requisições são separadas pelo número de tasks saudáveis no momento em que terminaram. Assim latência e vazão são comparadas sob a mesma carga oferecida.
-- **Scale-in:** do início da redução da carga (fase `descida`) até a redução das tasks desejadas. Também é registrado o intervalo alarme de baixa → redução.
-- **Recuperação (D):** do pedido de `stop-task` até as tasks saudáveis voltarem ao número anterior. Também são registrados o momento em que a substituta aparece e os erros entre 5 s antes da parada e 30 s depois da recuperação.
+- **Mesma carga, número de tasks diferente:** em cada fase de carga constante, as requisições são separadas pelo número de tasks saudáveis no momento em que terminaram. Assim latência e vazão são comparadas sob a mesma carga oferecida. A tabela traz também o p50 e a fração acima de 1 s: quando essa fração está perto de 5%, o p95 muda de patamar por poucas requisições.
+- **Scale-in:** do início da redução da carga (fase `descida`) até a decisão de cada redução. Também é registrado o intervalo alarme de baixa → decisão, com a mesma regra do alarme contínuo.
+- **Recuperação (D):** do pedido de `stop-task` até os alvos saudáveis voltarem ao número anterior. Também são registrados:
+  - o momento da queda no ALB: o ECS não retira a task do balanceador no instante do pedido;
+  - o momento em que a substituta aparece;
+  - os erros entre 5 s antes da parada e 30 s depois da recuperação.
+- **CPU média:** média dos datapoints de 1 min inteiramente dentro da janela (ou da fase). Os minutos das bordas misturam carga e repouso.
 
 **Resolução:**
 
-- O estado do serviço é amostrado a cada 10 s, então os tempos têm incerteza dessa ordem.
+- O estado do serviço é amostrado a cada 10 s, então os tempos têm incerteza dessa ordem. O horário de cada amostra é o início do ciclo de coleta, e o estado é lido nos segundos seguintes. Por isso, a decisão do Auto Scaling pode ter horário até um intervalo depois da amostra que já mostra o novo número de tasks.
 - As métricas do CloudWatch têm períodos de 1 min.
 - Os horários do k6 e da coleta vêm da máquina que roda os testes, e os eventos da AWS vêm do relógio da AWS. Mantenha o relógio local sincronizado (NTP).
+- **Ritmo do k6:** a análise compara o início de cada requisição com o horário previsto no plano para aquela iteração (`ritmo_k6` no `resumo.json`).
+  - O fator maior que 1 indica que o gerador cumpriu o plano mais devagar que o relógio. Nesse caso, a carga efetiva é a planejada dividida pelo fator, e os instantes derivados do plano (carga acima do alvo, redução da carga) são corrigidos.
+  - As fases das requisições seguem o relógio real, então a última fase vai até o fim real do k6.
 
 ## 7. Se o scaling não acontecer
 
@@ -113,6 +120,8 @@ Estime o custo na região escolhida (horas de task, ALB e IPs públicos) e regis
 ## 9. Ameaças à validade
 
 - **Gerador de carga:** o k6 roda fora da AWS, então a latência inclui a internet. Registre de onde o teste partiu e mantenha o mesmo local entre repetições. Iterações descartadas (`dropped_iterations`) indicam que o gerador não sustentou a carga planejada.
+- **Ritmo do gerador:** em 17/11, o k6 em Docker no WSL2 executou todas as iterações do plano, mas 4,0% a 4,3% mais devagar que o relógio. A carga efetiva foi cerca de 96% da planejada. A análise mede o fator e corrige os instantes derivados do plano (seção 6).
+- **Cauda de latência periódica:** em 17/11, de 4% a 10% das requisições de cada task passaram de 1 s, quase sempre na mesma posição de um ciclo de 30 s, o intervalo do health check do container. A seção "Cauda de latência por task" do resumo mede esse efeito. Com carga baixa, compare o p50 e a fração acima de 1 s, não só o p95.
 - **Variação do Fargate:** a CPU de 0,25 vCPU pode variar entre tasks e horários. Por isso a calibração acontece no mesmo dia dos experimentos.
 - **Amostragem:** o estado a cada 10 s e as métricas de 1 min limitam a precisão dos tempos (seção 6).
 - **Health checks:** os valores ajustados (10 s, 2 acertos, drenagem de 30 s) fazem parte da configuração e influenciam os tempos medidos; mudar esses valores exige refazer os experimentos.
