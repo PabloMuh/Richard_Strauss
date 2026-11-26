@@ -181,7 +181,7 @@ Fonte: [tests/results/exemplo-local/tabela-experimental.md](../tests/results/exe
 | AWS-01 | Conta, região e permissões | Resolvido: deploys em 12/11 e 17/11 |
 | API-01 / API-02 | API entregue; `/health` sob carga | Resolvidos em 12/11 |
 | CUSTO-01 | Custos e encerramento da sessão | Resolvido em 25/11 |
-| EXP-01 | Experimentos A, B, C e D | Executados em 17/11 e revisados em 25/11, com uma repetição por cenário |
+| EXP-01 | Experimentos A, B, C e D | Executados em 17/11 e revisados em 25/11; falta decidir sobre as repetições 2 e 3 |
 
 Limitações: uma repetição por cenário (sem média nem desvio); gerador de carga numa máquina doméstica, com a latência incluindo a rede até `us-east-2`; só falha ordenada (`stop-task`). Fonte: [impedimentos.md](impedimentos.md).
 

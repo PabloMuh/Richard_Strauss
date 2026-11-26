@@ -366,7 +366,8 @@ def relatorio():
         "As três propriedades foram observadas com dados reais. As réplicas dividiram a carga pelo ALB; uma task encerrada foi "
         "reposta em 68 s sem erro visível ao cliente; e o serviço escalou de 1 para 3 tasks e voltou a 1, com latência menor sob "
         "carga alta. O ECS age em cerca de meio minuto; o que domina o tempo de reação é a configuração dos alarmes e dos cooldowns. "
-        "Os resultados valem para a configuração testada, com uma execução por cenário e falha ordenada, como descrito na seção 7.")]
+        "Como trabalho futuro ficam as repetições 2 e 3 de cada cenário, um teste de queda abrupta e uma política de escala mais "
+        "reativa.")]
 
     s += [P("Referências", h1),
           P("[1] YERRAM, S. <i>AWS EKS vs AWS ECS: A Research-Based Comparison for Container Orchestration</i>. Zenodo, 2025. "
