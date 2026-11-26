@@ -1,0 +1,37 @@
+[
+  {
+    "id": "7d88aba6-ac39-4846-bd63-120cd7f37a43",
+    "createdAt": "2026-11-17T19:51:06.455-03:00",
+    "message": "(service richard-strauss-api) has reached a steady state."
+  },
+  {
+    "id": "89e25064-cf44-4fec-b855-edb4a189bc99",
+    "createdAt": "2026-11-17T19:51:06.454-03:00",
+    "message": "(service richard-strauss-api) (deployment ecs-svc/0316170514152323679) deployment completed."
+  },
+  {
+    "id": "560a620d-05e3-464b-bf24-2e57fdb94b06",
+    "createdAt": "2026-11-17T19:50:04.867-03:00",
+    "message": "(service richard-strauss-api, taskSet ecs-svc/2901316704708330266) has begun draining connections on 1 tasks."
+  },
+  {
+    "id": "951480d9-e340-424f-97c4-30da90ef8fd9",
+    "createdAt": "2026-11-17T19:50:04.864-03:00",
+    "message": "(service richard-strauss-api) deregistered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-2:7795****9628:targetgroup/richard-strauss-api/80c6de7f6ffd80f5)"
+  },
+  {
+    "id": "05bc03fb-dd64-4da0-a409-5b98fd34c0c8",
+    "createdAt": "2026-11-17T19:49:54.548-03:00",
+    "message": "(service richard-strauss-api) has stopped 1 running tasks: (task 6c471c822df04494b4d224b67d4ea0b5)."
+  },
+  {
+    "id": "bcb14089-4c4d-495f-8acd-73699d33d464",
+    "createdAt": "2026-11-17T19:49:13.953-03:00",
+    "message": "(service richard-strauss-api) registered 1 targets in (target-group arn:aws:elasticloadbalancing:us-east-2:7795****9628:targetgroup/richard-strauss-api/80c6de7f6ffd80f5)"
+  },
+  {
+    "id": "31e9972c-3bd2-46e6-a232-435b7ba683f9",
+    "createdAt": "2026-11-17T19:48:43.631-03:00",
+    "message": "(service richard-strauss-api) has started 1 tasks: (task 5dfa3b11c57345a39d286da496616b7a)."
+  }
+]

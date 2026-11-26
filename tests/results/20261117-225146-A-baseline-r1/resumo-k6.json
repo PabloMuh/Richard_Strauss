@@ -1,0 +1,37 @@
+{
+  "cenario": "A-baseline",
+  "base_url": "http://richard-strauss-alb-987147931.us-east-2.elb.amazonaws.com",
+  "capacidade_rps": 1.5,
+  "iteracoes": null,
+  "escala_tempo": 1,
+  "timeout": "60s",
+  "plano": [
+    {
+      "fase": "constante",
+      "inicio_s": 0,
+      "fim_s": 300,
+      "taxa_inicial_rps": 0.75,
+      "taxa_final_rps": 0.75,
+      "fracao_inicial": 0.5,
+      "fracao_final": 0.5
+    }
+  ],
+  "inicio_utc": "2026-11-17T22:51:46.890Z",
+  "fim_utc": "2026-11-17T22:57:00.394Z",
+  "duracao_s": 313.50227155,
+  "requisicoes": 225,
+  "vazao_media_rps": 0.7176981490040499,
+  "taxa_falhas": 0,
+  "taxa_checks": 1,
+  "iteracoes_descartadas": 0,
+  "vus_max": 5,
+  "latencia_ms": {
+    "avg": 716.3091430222222,
+    "min": 548.659,
+    "med": 660.096861,
+    "p(90)": 725.9083441999999,
+    "p(95)": 1011.9194215999997,
+    "p(99)": 2019.5657919199991,
+    "max": 2081.408294
+  }
+}

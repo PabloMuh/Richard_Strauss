@@ -1,0 +1,27 @@
+{
+  "cenario": "smoke",
+  "base_url": "http://richard-strauss-alb-987147931.us-east-2.elb.amazonaws.com",
+  "capacidade_rps": null,
+  "iteracoes": null,
+  "escala_tempo": 1,
+  "timeout": "60s",
+  "plano": [],
+  "inicio_utc": "2026-11-17T22:22:07.936Z",
+  "fim_utc": "2026-11-17T22:22:11.148Z",
+  "duracao_s": 3.211542571,
+  "requisicoes": 9,
+  "vazao_media_rps": 2.802391623660654,
+  "taxa_falhas": 0,
+  "taxa_checks": 1,
+  "iteracoes_descartadas": 0,
+  "vus_max": 1,
+  "latencia_ms": {
+      "p(95)": 705.7981136,
+      "p(99)": 731.88994912,
+      "max": 738.412908,
+      "avg": 331.86757255555557,
+      "min": 155.009543,
+      "med": 156.217917,
+      "p(90)": 673.1833192
+    }
+}

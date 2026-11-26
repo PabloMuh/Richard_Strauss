@@ -1,0 +1,134 @@
+{
+  "pasta": "20261117-235404-D-falha-r1",
+  "experimento": "D-falha",
+  "repeticao": 1,
+  "ambiente": "aws",
+  "inicio_utc": "2026-11-17T23:54:05.940Z",
+  "fim_utc": "2026-11-18T00:04:30.797Z",
+  "duracao_s": 624.9,
+  "k6": {
+    "capacidade_rps": 1.5,
+    "iteracoes": null,
+    "escala_tempo": 1,
+    "iteracoes_descartadas": 0,
+    "vus_max": 7,
+    "taxa_checks": 1,
+    "capacidade_estimada_rps": null
+  },
+  "geral": {
+    "requisicoes": 720,
+    "erros": 0,
+    "taxa_erros_pct": 0.0,
+    "vazao_rps": 1.152,
+    "latencia_p50_ms": 690.5,
+    "latencia_p95_ms": 1106.3,
+    "latencia_p99_ms": 2067.6,
+    "latencia_max_ms": 2782.3
+  },
+  "fases": [
+    {
+      "fase": "constante",
+      "duracao_s": 600,
+      "carga_oferecida_rps": 1.2,
+      "requisicoes": 720,
+      "erros": 0,
+      "taxa_erros_pct": 0.0,
+      "vazao_rps": 1.2,
+      "latencia_p50_ms": 690.5,
+      "latencia_p95_ms": 1106.3,
+      "latencia_p99_ms": 2067.6,
+      "latencia_max_ms": 2782.3,
+      "instancias": {
+        "dafbb3464774400295b1fc1f38890670": 379,
+        "09a50126dad74b90a260f6f7308f2772": 127,
+        "c6767d66ff724c3e8a9a6f74849e5130": 214
+      }
+    }
+  ],
+  "instancias": {
+    "dafbb3464774400295b1fc1f38890670": 379,
+    "09a50126dad74b90a260f6f7308f2772": 127,
+    "c6767d66ff724c3e8a9a6f74849e5130": 214
+  },
+  "recursos": {
+    "cpu_media_pct": 37.7,
+    "cpu_maxima_pct": 76.1,
+    "memoria_media_pct": 6.9,
+    "observacao": "média dos datapoints de 1 min do serviço (média entre as tasks)"
+  },
+  "mesma_carga_por_tasks": [
+    {
+      "fase": "constante",
+      "carga_oferecida_rps": 1.2,
+      "grupos": [
+        {
+          "tasks_saudaveis": 1,
+          "duracao_s": 31.4,
+          "requisicoes": 36,
+          "erros": 0,
+          "taxa_erros_pct": 0.0,
+          "vazao_rps": 1.148,
+          "latencia_p50_ms": 706.7,
+          "latencia_p95_ms": 1709.8,
+          "latencia_p99_ms": 2099.7,
+          "latencia_max_ms": 2099.7
+        },
+        {
+          "tasks_saudaveis": 2,
+          "duracao_s": 568.6,
+          "requisicoes": 655,
+          "erros": 0,
+          "taxa_erros_pct": 0.0,
+          "vazao_rps": 1.152,
+          "latencia_p50_ms": 691.1,
+          "latencia_p95_ms": 1084.3,
+          "latencia_p99_ms": 2067.6,
+          "latencia_max_ms": 2782.3
+        }
+      ]
+    }
+  ],
+  "falha": {
+    "parada_utc": "2026-11-17T23:57:10.813Z",
+    "tarefa_encerrada": "09a50126dad74b90a260f6f7308f2772",
+    "saudaveis_antes": 2,
+    "queda_observada_utc": "2026-11-17T23:57:47.510Z",
+    "substituta_vista_utc": "2026-11-17T23:57:47.510Z",
+    "recuperada_utc": "2026-11-17T23:58:18.880Z",
+    "tempo_ate_substituta_s": 37.0,
+    "tempo_recuperacao_s": 68.0,
+    "erros_na_janela": 0,
+    "requisicoes_na_janela": 119,
+    "antes": {
+      "requisicoes": 69,
+      "erros": 0,
+      "taxa_erros_pct": 0.0,
+      "vazao_rps": 1.15,
+      "latencia_p50_ms": 711.9,
+      "latencia_p95_ms": 1311.1,
+      "latencia_p99_ms": 2140.0,
+      "latencia_max_ms": 2140.0
+    },
+    "durante": {
+      "requisicoes": 79,
+      "erros": 0,
+      "taxa_erros_pct": 0.0,
+      "vazao_rps": 1.161,
+      "latencia_p50_ms": 701.8,
+      "latencia_p95_ms": 1659.4,
+      "latencia_p99_ms": 2099.7,
+      "latencia_max_ms": 2099.7
+    },
+    "depois": {
+      "requisicoes": 395,
+      "erros": 0,
+      "taxa_erros_pct": 0.0,
+      "vazao_rps": 1.155,
+      "latencia_p50_ms": 682.1,
+      "latencia_p95_ms": 1084.3,
+      "latencia_p99_ms": 1981.9,
+      "latencia_max_ms": 2176.1
+    },
+    "resolucao_s": 10
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "Label": "HTTPCode_ELB_5XX_Count",
+  "Datapoints": [
+    {
+      "Timestamp": "2026-11-17T19:39:00-03:00",
+      "Sum": 1.0,
+      "Unit": "Count"
+    }
+  ]
+}

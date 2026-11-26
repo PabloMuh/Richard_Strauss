@@ -1,0 +1,42 @@
+{
+  "experimento": "D-falha",
+  "objetivo": "Encerrar 1 de 2 tasks sob 80% da capacidade de uma task",
+  "hipotese": "O ECS inicia uma task substituta e volta a 2 tasks saudáveis; a task restante absorve a carga e os erros ficam restritos ao momento da parada.",
+  "repeticao": 1,
+  "responsavel": "Pessoa 1",
+  "inicio_utc": "2026-11-17T23:54:04.701Z",
+  "fim_utc": "2026-11-18T00:06:39.232Z",
+  "identificacao": {
+    "ambiente": "aws",
+    "regiao": "us-east-2",
+    "conta": "7795****9628",
+    "cluster": "richard-strauss",
+    "servico": "richard-strauss-api",
+    "imagem": {
+      "tag": "api-62f1e8e",
+      "digest": "sha256:922b1b43fc74cfb588c4da07e8f410a74c2dc4541744008fc68bd6db31633a15"
+    },
+    "task_definition": "arn:aws:ecs:us-east-2:7795****9628:task-definition/richard-strauss-api:3",
+    "alb": true,
+    "precondicoes_ignoradas": []
+  },
+  "auto_scaling": null,
+  "k6": {
+    "cenario": "D-falha",
+    "base_url": "http://richard-strauss-alb-987147931.us-east-2.elb.amazonaws.com",
+    "capacidade_rps": 1.5,
+    "iteracoes": null,
+    "escala_tempo": 1.0,
+    "executor": "grafana/k6:1.0.0",
+    "codigo_saida": 0
+  },
+  "coleta": {
+    "intervalo_s": 10,
+    "observacao_apos_k6_s": 120,
+    "aguardar_metricas_s": 180
+  },
+  "falha": {
+    "parar_apos_s": 180.0,
+    "reposicao_local_s": null
+  }
+}

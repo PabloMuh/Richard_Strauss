@@ -1,0 +1,280 @@
+{
+  "Label": "RequestCount",
+  "Datapoints": [
+    {
+      "Timestamp": "2026-11-17T20:25:00-03:00",
+      "Sum": 17.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:08:00-03:00",
+      "Sum": 74.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:44:00-03:00",
+      "Sum": 0.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:27:00-03:00",
+      "Sum": 18.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:10:00-03:00",
+      "Sum": 74.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:46:00-03:00",
+      "Sum": 0.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:29:00-03:00",
+      "Sum": 17.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:21:00-03:00",
+      "Sum": 17.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:04:00-03:00",
+      "Sum": 62.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:40:00-03:00",
+      "Sum": 17.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:23:00-03:00",
+      "Sum": 18.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:06:00-03:00",
+      "Sum": 74.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:42:00-03:00",
+      "Sum": 18.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:16:00-03:00",
+      "Sum": 129.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:17:00-03:00",
+      "Sum": 129.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:18:00-03:00",
+      "Sum": 130.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:19:00-03:00",
+      "Sum": 101.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:20:00-03:00",
+      "Sum": 23.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:47:00-03:00",
+      "Sum": 0.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:12:00-03:00",
+      "Sum": 129.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:48:00-03:00",
+      "Sum": 0.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:13:00-03:00",
+      "Sum": 130.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:49:00-03:00",
+      "Sum": 0.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:14:00-03:00",
+      "Sum": 130.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:50:00-03:00",
+      "Sum": 0.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:15:00-03:00",
+      "Sum": 130.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:43:00-03:00",
+      "Sum": 4.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:26:00-03:00",
+      "Sum": 17.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:09:00-03:00",
+      "Sum": 74.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:45:00-03:00",
+      "Sum": 0.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:28:00-03:00",
+      "Sum": 17.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:11:00-03:00",
+      "Sum": 104.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:03:00-03:00",
+      "Sum": 29.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:39:00-03:00",
+      "Sum": 17.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:22:00-03:00",
+      "Sum": 17.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:05:00-03:00",
+      "Sum": 74.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:41:00-03:00",
+      "Sum": 17.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:24:00-03:00",
+      "Sum": 17.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:07:00-03:00",
+      "Sum": 75.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:34:00-03:00",
+      "Sum": 18.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T19:59:00-03:00",
+      "Sum": 0.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:35:00-03:00",
+      "Sum": 17.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:00:00-03:00",
+      "Sum": 0.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:36:00-03:00",
+      "Sum": 17.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:01:00-03:00",
+      "Sum": 10.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:37:00-03:00",
+      "Sum": 17.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:02:00-03:00",
+      "Sum": 26.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:38:00-03:00",
+      "Sum": 18.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:30:00-03:00",
+      "Sum": 17.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:31:00-03:00",
+      "Sum": 18.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T19:56:00-03:00",
+      "Sum": 43.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:32:00-03:00",
+      "Sum": 17.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T19:57:00-03:00",
+      "Sum": 1.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T20:33:00-03:00",
+      "Sum": 17.0,
+      "Unit": "Count"
+    },
+    {
+      "Timestamp": "2026-11-17T19:58:00-03:00",
+      "Sum": 0.0,
+      "Unit": "Count"
+    }
+  ]
+}

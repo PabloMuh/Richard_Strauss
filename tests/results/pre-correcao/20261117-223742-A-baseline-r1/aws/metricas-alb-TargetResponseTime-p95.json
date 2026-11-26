@@ -1,0 +1,61 @@
+{
+  "Label": "TargetResponseTime",
+  "Datapoints": [
+    {
+      "Timestamp": "2026-11-17T19:37:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.769243483683861
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T19:33:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 3.20201356805259
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T19:42:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.7441880227006171
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T19:38:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.6765345660914701
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T19:39:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.6204542872945029
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T19:40:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.6169308398518191
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T19:32:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 3.2884757046410593
+      }
+    },
+    {
+      "Timestamp": "2026-11-17T19:41:00-03:00",
+      "Unit": "Seconds",
+      "ExtendedStatistics": {
+        "p95": 0.896186530085387
+      }
+    }
+  ]
+}

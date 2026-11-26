@@ -1,0 +1,77 @@
+{
+  "pasta": "20261117-223742-A-baseline-r1",
+  "experimento": "A-baseline",
+  "repeticao": 1,
+  "ambiente": "aws",
+  "inicio_utc": "2026-11-17T22:37:43.579Z",
+  "fim_utc": "2026-11-17T22:42:56.004Z",
+  "duracao_s": 312.4,
+  "k6": {
+    "capacidade_rps": 1.5,
+    "iteracoes": null,
+    "escala_tempo": 1,
+    "iteracoes_descartadas": 0,
+    "vus_max": 5,
+    "taxa_checks": 0.9955555555555555,
+    "capacidade_estimada_rps": null
+  },
+  "geral": {
+    "requisicoes": 225,
+    "erros": 1,
+    "taxa_erros_pct": 0.444,
+    "vazao_rps": 0.717,
+    "latencia_p50_ms": 695.7,
+    "latencia_p95_ms": 942.0,
+    "latencia_p99_ms": 2026.9,
+    "latencia_max_ms": 2097.6
+  },
+  "fases": [
+    {
+      "fase": "constante",
+      "duracao_s": 300,
+      "carga_oferecida_rps": 0.75,
+      "requisicoes": 225,
+      "erros": 1,
+      "taxa_erros_pct": 0.444,
+      "vazao_rps": 0.747,
+      "latencia_p50_ms": 695.7,
+      "latencia_p95_ms": 942.0,
+      "latencia_p99_ms": 2026.9,
+      "latencia_max_ms": 2097.6,
+      "instancias": {
+        "6c471c822df04494b4d224b67d4ea0b5": 224,
+        "balanceador": 1
+      }
+    }
+  ],
+  "instancias": {
+    "6c471c822df04494b4d224b67d4ea0b5": 224,
+    "balanceador": 1
+  },
+  "recursos": {
+    "cpu_media_pct": 41.2,
+    "cpu_maxima_pct": 59.4,
+    "memoria_media_pct": 7.0,
+    "observacao": "média dos datapoints de 1 min do serviço (média entre as tasks)"
+  },
+  "mesma_carga_por_tasks": [
+    {
+      "fase": "constante",
+      "carga_oferecida_rps": 0.75,
+      "grupos": [
+        {
+          "tasks_saudaveis": 1,
+          "duracao_s": 300.0,
+          "requisicoes": 215,
+          "erros": 1,
+          "taxa_erros_pct": 0.465,
+          "vazao_rps": 0.713,
+          "latencia_p50_ms": 695.7,
+          "latencia_p95_ms": 942.0,
+          "latencia_p99_ms": 2026.9,
+          "latencia_max_ms": 2097.6
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "pasta": "20261117-223019-calibracao-r1",
+  "experimento": "calibracao",
+  "repeticao": 1,
+  "ambiente": "aws",
+  "inicio_utc": "2026-11-17T22:30:21.306Z",
+  "fim_utc": "2026-11-17T22:33:31.141Z",
+  "duracao_s": 189.8,
+  "k6": {
+    "capacidade_rps": null,
+    "iteracoes": null,
+    "escala_tempo": 1,
+    "iteracoes_descartadas": 0,
+    "vus_max": 4,
+    "taxa_checks": 1,
+    "capacidade_estimada_rps": 1.490774889096868
+  },
+  "geral": {
+    "requisicoes": 283,
+    "erros": 0,
+    "taxa_erros_pct": 0.0,
+    "vazao_rps": 1.491,
+    "latencia_p50_ms": 2487.3,
+    "latencia_p95_ms": 3829.2,
+    "latencia_p99_ms": 4782.8,
+    "latencia_max_ms": 4872.9
+  },
+  "fases": [],
+  "instancias": {
+    "6c471c822df04494b4d224b67d4ea0b5": 283
+  },
+  "recursos": {
+    "cpu_media_pct": 71.5,
+    "cpu_maxima_pct": 100.0,
+    "memoria_media_pct": 7.0,
+    "observacao": "média dos datapoints de 1 min do serviço (média entre as tasks)"
+  },
+  "calibracao": {
+    "capacidade_estimada_rps": 1.491,
+    "vazao_estavel_rps": 1.501,
+    "observacao": "use vazao_estavel_rps (exclui os 20 s iniciais) como CAPACIDADE_RPS"
+  }
+}
