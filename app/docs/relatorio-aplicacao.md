@@ -16,7 +16,7 @@ O cálculo de `/work` roda numa thread separada do event loop, com no máximo `W
 
 Toda resposta carrega os headers `x-instance-id` e `x-request-id`. Os logs são emitidos em JSON (uma linha por requisição) em stdout e coletados pelo CloudWatch Logs, contendo status, latência, instância e ID da requisição.
 
-A configuração é feita apenas por variáveis de ambiente (`PORT`, padrão 8000, `APP_VERSION`, `WORK_DEFAULT_ITERATIONS`, `WORK_MAX_ITERATIONS`, `WORK_CONCURRENCY`, `KEEP_ALIVE_TIMEOUT`, padrão 75 s, `LOG_LEVEL`), o que permite usar a mesma imagem em todos os ambientes. O `KEEP_ALIVE_TIMEOUT` mantém as conexões ociosas abertas por mais tempo que o idle timeout do ALB (60 s); a seção "Erro encontrado nos testes na AWS" explica o motivo.
+A configuração é feita apenas por variáveis de ambiente (`PORT`, padrão 8000, `APP_VERSION`, `WORK_DEFAULT_ITERATIONS`, `WORK_MAX_ITERATIONS`, `WORK_CONCURRENCY`, `KEEP_ALIVE_TIMEOUT`, padrão 75 s, `LOG_LEVEL`), o que permite usar a mesma imagem em todos os ambientes. O `KEEP_ALIVE_TIMEOUT` mantém as conexões ociosas abertas por mais tempo que o idle timeout do ALB (60 s); a seção "Erro 502 do ALB e ajuste do keep-alive" explica o motivo.
 
 ## Empacotamento
 
@@ -43,23 +43,23 @@ As duas tags são imutáveis no ECR `richard-strauss` (`us-east-2`) e continuava
 | `api-189bf27` | `189bf27` | `sha256:69fd745d5bd8607a276d99c6e69cbf97f846afa2240c9287f3c5ecb8b167ea71` | Deploy com 1 e 2 tasks (task definition rev. 1 e 2), smoke, calibração e o baseline anterior à correção |
 | **`api-62f1e8e`** | `62f1e8e` | `sha256:922b1b43fc74cfb588c4da07e8f410a74c2dc4541744008fc68bd6db31633a15` | **Versão dos experimentos A, B/C e D** (task definition `richard-strauss-api:3`, fixada no digest) |
 
-A diferença entre as duas é só o keep-alive do Uvicorn (5 s → 75 s). O custo de CPU de `/work` não muda; por isso a calibração feita com `api-189bf27` vale para a versão final.
+A versão `api-62f1e8e` alterou o keep-alive do Uvicorn de 5 s para 75 s. Como o código de `/work` permaneceu igual, os experimentos usaram a calibração de `api-189bf27` como referência de capacidade.
 
 ### Comportamento observado
 
 - Duas tasks Fargate (0,25 vCPU, 512 MiB) atrás do ALB responderam com `instance_id` distintos (IDs das tasks lidos dos metadados ECS v4), em zonas diferentes, com distribuição de 15/15 em 30 requisições.
-- **Custo de `/work` no Fargate:** `iterations=200000` (padrão) levou de 520 a 560 ms medidos pela própria API (`duration_ms`), cerca de 2,7 ms por 1.000 iterações, aproximadamente 8 vezes o custo local. Com `WORK_CONCURRENCY=1`, isso limita uma task a cerca de 1,5 req/s: a calibração mediu vazão estável de **1,50 req/s** com CPU em até 100% (`tests/results/20261117-223019-calibracao-r1`). Esse valor é a capacidade C usada nos experimentos.
-- Logs JSON por requisição no CloudWatch Logs, um stream por task (9 tasks na sessão). Os eventos expiraram com a retenção de 7 dias; restam os streams ([inventário de 24/11](../../docs/inventario-custos-20261124.md)).
+- **Custo de `/work` no Fargate:** `iterations=200000` (padrão) levou de 520 a 560 ms medidos pela própria API (`duration_ms`), cerca de 2,7 ms por 1.000 iterações, aproximadamente 8 vezes o custo local. Com `WORK_CONCURRENCY=1`, a calibração mediu vazão de **1,491 req/s** em uma task. Os experimentos adotaram **C = 1,50 req/s**. [Evidência da calibração](https://github.com/PabloMuh/Richard_Strauss/blob/629f0a7/tests/results/20261117-223019-calibracao-r1/resumo.md)
+- Logs JSON por requisição no CloudWatch Logs, um stream por task (9 tasks na sessão). Os eventos expiraram com a retenção de 7 dias; restam os streams ([inventário de 24/11 no PR #6](https://github.com/PabloMuh/Richard_Strauss/pull/6)).
 - `/health` manteve as tasks saudáveis durante toda a carga: nos experimentos não houve substituição de task por falha de health check, só as substituições provocadas pelo Auto Scaling e pela parada intencional do experimento D. Isso confirma a correção do API-02 no ambiente real.
 
-### Erro encontrado nos testes na AWS: 502 do ALB por keep-alive
+### Erro 502 do ALB e ajuste do keep-alive
 
-Na primeira execução do baseline A (`tests/results/pre-correcao/20261117-223742-A-baseline-r1`, imagem `api-189bf27`), **1 de 225 requisições (0,44%) recebeu HTTP 502**. As métricas do ALB mostram que o erro foi gerado pelo próprio balanceador (`HTTPCode_ELB_5XX_Count` = 1, `HTTPCode_Target_5XX_Count` = 0). A requisição não chegou à aplicação.
+Na primeira execução do baseline A (`tests/results/pre-correcao/20261117-223742-A-baseline-r1`, imagem `api-189bf27`), **1 de 225 requisições (0,44%) recebeu HTTP 502**. As métricas do ALB mostram que o erro foi gerado pelo próprio balanceador (`HTTPCode_ELB_5XX_Count` = 1, `HTTPCode_Target_5XX_Count` = 0). [Evidência do baseline anterior ao ajuste](https://github.com/PabloMuh/Richard_Strauss/tree/629f0a7/tests/results/pre-correcao/20261117-223742-A-baseline-r1)
 
-- **Causa:** o Uvicorn fecha conexões ociosas após 5 s por padrão, enquanto o ALB mantém e reutiliza conexões com o target por até 60 s (idle timeout). Quando o ALB enviava uma requisição por uma conexão que o servidor acabara de fechar, respondia 502 ao cliente.
+- **Causa provável.** O keep-alive de 5 s do Uvicorn era menor que o idle timeout de 60 s do ALB. Se o target fecha uma conexão enquanto o ALB aguarda a resposta de uma requisição, o balanceador pode retornar 502. [Diagnóstico de HTTP 502 na AWS](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-troubleshooting.html#http-502-issues)
 - **Correção** (commit `62f1e8e`): `timeout_keep_alive` do Uvicorn configurável por `KEEP_ALIVE_TIMEOUT`, com padrão de 75 s, acima dos 60 s do ALB. Um teste automatizado impede que o padrão volte a ficar abaixo do idle timeout.
-- **Verificação:** com `api-62f1e8e`, A, B/C e D somaram 3.036 requisições com **0 erros** no k6 e `HTTPCode_ELB_5XX_Count` zerado nos três experimentos.
+- **Verificação:** com `api-62f1e8e`, A, B/C e D somaram 3.036 requisições com **0 erros** no k6 e nenhum 5XX do ALB nas métricas exportadas. Houve uma execução de cada cenário com essa imagem.
 
-O erro só aparece com um balanceador reutilizando conexões e carga intermitente; a validação local (cliente → container direto) não o reproduzia. Foi o único erro de aplicação observado na sessão.
+A validação local usou conexão direta ao container. O 502 foi observado no baseline da AWS anterior ao ajuste.
 
 Detalhes da implantação em [docs/deploy-aws-20261117.md](../../docs/deploy-aws-20261117.md).

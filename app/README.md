@@ -32,7 +32,7 @@ Custo de referência:
 |---|---|---|---|
 | Local, 1 núcleo | ~0,35 ms | ~70 ms | — |
 | Local, container limitado a 0,25 vCPU | — | ~0,45 s | — |
-| **Fargate, 0,25 vCPU (17/11)** | **~2,7 ms** | **520–560 ms** | **1,50 req/s** (calibração, `WORK_CONCURRENCY=1`) |
+| **Fargate, 0,25 vCPU (17/11)** | **~2,7 ms** | **520–560 ms** | **1,50 req/s** (C adotado a partir da calibração, `WORK_CONCURRENCY=1`) |
 
 ## Versão usada nos testes na AWS
 
@@ -140,7 +140,7 @@ Mostra as respostas distribuídas entre os IDs das tasks.
   - efeito: sob carga, a latência de `/work` cresce com a fila, e é esse o sinal que o scale-out deve reduzir.
 - **Logs**: uma linha JSON por requisição em stdout (sem buffer: `PYTHONUNBUFFERED=1`); `/health` não é logado para não poluir o CloudWatch.
 
-- **Keep-alive maior que o idle timeout do ALB**: `KEEP_ALIVE_TIMEOUT` = 75 s (o padrão do Uvicorn, 5 s, causou um 502 gerado pelo ALB no primeiro baseline na AWS; corrigido em `62f1e8e`).
+- **Keep-alive maior que o idle timeout do ALB**: `KEEP_ALIVE_TIMEOUT` = 75 s (o padrão de 5 s do Uvicorn é a causa provável do 502 gerado pelo ALB no primeiro baseline na AWS). Ajuste implementado em `62f1e8e`.
 
 ## Problemas comuns
 
